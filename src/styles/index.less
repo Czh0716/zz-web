@@ -1,0 +1,29 @@
+html {
+    overflow-y: hidden;
+}
+
+.my-scrollbar {
+    // padding-right: @scrollbar-width !important;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    > * {
+        width: calc(100% + @scrollbar-width);
+        padding: 0 20px;
+    }
+    &::-webkit-scrollbar {
+        width: @scrollbar-width;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 2px;
+        visibility: hidden;
+        transition: 0.3s;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            opacity: 1;
+            background-color: @grey-l-2;
+            visibility: visible;
+        }
+    }
+}
