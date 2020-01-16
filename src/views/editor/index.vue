@@ -1,7 +1,11 @@
 <template>
     <div class="editor">
         <editor-header></editor-header>
-        <left-side-bar></left-side-bar>
+        <div class="main">
+            <left-side-bar></left-side-bar>
+            <div class="content"></div>
+            <right-side-bar></right-side-bar>
+        </div>
     </div>
 </template>
 
@@ -21,5 +25,12 @@ export default {
 <style lang="less" scoped>
 .editor {
     height: 100%;
+    .main {
+        height: 100%;
+        display: flex;
+    }
+    .content {
+        flex: 1;
+    }
 }
 </style>

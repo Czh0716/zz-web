@@ -63,7 +63,7 @@ export default {}
     display: flex;
     height: 60px;
     justify-content: space-between;
-    border-bottom: thin solid @grey-l-1;
+    border-bottom: thin solid @grey-l-3;
     .l,
     .edit-operation,
     .r {
