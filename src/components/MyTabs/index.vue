@@ -5,11 +5,9 @@ export default {
     },
     data() {
         return {
-            activeTab: this.value || '0',
-            test: 3
+            activeTab: this.value || '0'
         }
     },
-
     computed: {
         tabs() {
             return this.$slots.default.filter(item =>
@@ -21,7 +19,7 @@ export default {
         genTabBar() {
             const tabNavs = this.tabs.map((vnode, idx) => {
                 const scopedSlots = vnode.data.scopedSlots
-                return this.$createElement(
+                return this._c(
                     'div',
                     {
                         staticClass: 'tabs-item',
@@ -36,12 +34,10 @@ export default {
                     },
                     scopedSlots && scopedSlots.label
                         ? vnode.data.scopedSlots.label()
-                        : vnode.componentOptions.propsData.label
-                        ? vnode.componentOptions.propsData.label
-                        : ''
+                        : vnode.componentOptions.propsData.label || ''
                 )
             })
-            return this.$createElement(
+            return this._c(
                 'div',
                 {
                     staticClass: 'tabs-bar'
@@ -51,29 +47,28 @@ export default {
         },
         genTabContent() {
             const contentItems = this.tabs.map((vnode, idx) => {
-                return this.$createElement(
+                const isActive =
+                    this.activeTab === (vnode.componentOptions.propsData.name || idx + '')
+                return this._c(
                     'div',
                     {
                         staticClass: 'tab-content-item my-scrollbar',
                         class: {
-                            active:
-                                this.activeTab ===
-                                (vnode.componentOptions.propsData.name || idx + '')
+                            active: isActive
                         },
-                        style: {
-                            display:
-                                this.activeTab ===
-                                (vnode.componentOptions.propsData.name || idx + '')
-                                    ? ''
-                                    : 'none'
-                        },
+                        directives: [
+                            {
+                                name: 'show',
+                                value: isActive
+                            }
+                        ],
                         key: idx + ''
                     },
                     [vnode]
                 )
             })
 
-            return this.$createElement(
+            return this._c(
                 'transition-group',
                 {
                     staticClass: 'tab-content',
@@ -85,12 +80,8 @@ export default {
             )
         },
         changeTab(val) {
-            console.log(val)
             this.activeTab = val + ''
         }
-    },
-    created() {
-        console.log(this.tabs)
     },
     render(h) {
         return h(
@@ -141,6 +132,7 @@ export default {
     .tab-content,
     .tab-content-item {
         height: 100%;
+        background-color: #fff;
     }
 }
 </style>
