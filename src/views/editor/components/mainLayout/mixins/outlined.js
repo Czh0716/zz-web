@@ -1,30 +1,21 @@
 export default {
     methods: {
         genOutlined() {
-            if (Object.keys(this.outlinedStyle).length === 0) return
+            if (this.hideOutlined) return
 
             const h = this.$createElement
-            const origins = [
-                'left top',
-                'center top',
-                'right top',
-                'left center',
-                'right center',
-                'left bottom',
-                'center bottom',
-                'right bottom'
+            const resizeOrigin = [
+                { origin: '0 0', cursor: 'nwse' },
+                { origin: '50% 0', cursor: 'ns' },
+                { origin: '100% 0', cursor: 'nesw' },
+                { origin: '0 50%', cursor: 'ew' },
+                { origin: '100% 50%', cursor: 'ew' },
+                { origin: '0 100%', cursor: 'nesw' },
+                { origin: '50% 100%', cursor: 'ns' },
+                { origin: '100% 100%', cursor: 'nwse' }
             ]
-
-            const map = {
-                left: '0',
-                right: '100%',
-                top: '0',
-                bottom: '100%',
-                center: '50%'
-            }
-
-            const resizeEls = origins.map(origin => {
-                const [x, y] = origin.split(' ')
+            const resizeEls = resizeOrigin.map(({ origin, cursor }) => {
+                const [left, top] = origin.split(' ')
                 const size = 6
 
                 return h('div', {
@@ -32,10 +23,18 @@ export default {
                     style: {
                         width: `${size}px`,
                         height: `${size}px`,
-                        left: `${map[x]}`,
-                        top: `${map[y]}`,
                         marginLeft: `${-size / 2}px`,
-                        marginTop: `${-size / 2}px`
+                        marginTop: `${-size / 2}px`,
+                        cursor: `${cursor}-resize`,
+                        left,
+                        top
+                    },
+                    on: {
+                        mousedown: e => {
+                            this.operationType = 'selection'
+                            this.selectionType === 'resize'
+                        },
+                        mouseup: () => {}
                     }
                 })
             })
@@ -52,7 +51,7 @@ export default {
         initOutlined() {
             const activeEl = this.els[this.activeIdx]
             if (!activeEl) return
-
+            this.hideOutlined = false
             this.outlinedStyle = activeEl.svgData.style
         }
     }

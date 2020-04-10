@@ -1,106 +1,67 @@
 <script>
 import outlined from './mixins/outlined'
+import createElement from './mixins/createElement'
+import selection from './mixins/selection'
 
 const type = {
     shape: ['rect', 'ellipse']
 }
 export default {
-    mixins: [outlined],
+    mixins: [outlined, selection, createElement],
     data() {
         return {
             els: [],
             activeIdx: null,
-            createStartPoint: {},
+            startPoint: {},
+            operationType: 'create',
             createType: 'rect',
+            selectionType: 'normal',
+            hideOutlined: true,
             outlinedStyle: {}
         }
     },
     methods: {
         onMouseDown(e) {
-            if (type.shape.includes(this.createType)) {
-                const pos = e.currentTarget.getBoundingClientRect()
-                const clientX = e.clientX
-                const clientY = e.clientY
-                const localX = clientX - pos.left
-                const localY = clientY - pos.top
-                const index = this.els.length
-                const initOptions = {
-                    tag: this.createType,
-                    type: 'shape',
-                    svgData: {
-                        staticClass: 'layout__element',
-                        style: {
-                            left: `${localX}px`,
-                            top: `${localY}px`
-                        },
-                        attrs: {
-                            fill: 'none',
-                            stroke: 'grey',
-                            'stroke-width': 2
-                        },
-                        on: {
-                            click: () => {
-                                this.initOutlined(index)
-                            }
-                        },
-                        key: `el-${index}`
-                    },
-                    data: {
-                        attrs: {}
-                    }
-                }
-                this.createStartPoint = {
-                    clientX,
-                    clientY,
-                    localX,
-                    localY
-                }
-                this.els.push(initOptions)
-                this.activeIdx = this.els.length - 1
+            this.getStartPoint(e)
+
+            if (e.target === e.currentTarget) {
+                this.hideOutlined = true
+                this.activeIdx = null
+            }
+
+            if (this.operationType === 'create') {
+                this.createElement(e)
             }
         },
         onMouseMove(e) {
-            if (!Object.keys(this.createStartPoint).length) return
-
-            const { clientX, clientY, localX, localY } = this.createStartPoint
-
-            const currentElOptions = this.els[this.activeIdx]
-            const svgStyleData = currentElOptions.svgData.style
-            let width = e.clientX - clientX
-            let height = e.clientY - clientY
-            let attrs = {}
-
-            // 判断反向拖拽
-            if (width < 0) {
-                svgStyleData.left = svgStyleData.left.replace(/(-?\d*)/, localX + width)
-            }
-            if (height < 0) {
-                svgStyleData.top = svgStyleData.top.replace(/(-?\d*)/, localY + height)
+            if (this.operationType === 'create') {
+                this.stretchElement(e)
             }
 
-            // 保证宽高为正数
-            width = Math.abs(width)
-            height = Math.abs(height)
-
-            svgStyleData.width = `${width}px`
-            svgStyleData.height = `${height}px`
-
-            if ((currentElOptions.tag = 'rect')) {
-                attrs = {
-                    x: 0,
-                    y: 0,
-                    width,
-                    height
+            if (this.operationType === 'selection') {
+                if (this.selectionType === 'normal') {
+                    this.els[this.activeIdx] && this.dragElement(e)
                 }
             }
-
-            currentElOptions.data.attrs = attrs
-
-            this.els.splice(this.activeIdx, 1, currentElOptions)
         },
         onMouseUp() {
-            this.createStartPoint = {}
-            this.initOutlined()
+            if (this.operationType === 'create') {
+                this.completeCreation()
+            }
+            this.startPoint = {}
+        },
+        getStartPoint(e) {
+            const pos = e.currentTarget.getBoundingClientRect()
+            const clientX = e.clientX
+            const clientY = e.clientY
+            const localX = clientX - pos.left
+            const localY = clientY - pos.top
+            this.startPoint = {
+                clientX,
+                clientY,
+                localX,
+                localY
+            }
         }
     },
     render(h) {
@@ -112,23 +73,59 @@ export default {
             return h('div', { ...option })
         })
 
-        return h(
-            'div',
-            {
-                staticClass: 'main-layout',
-                on: {
-                    mousedown: this.onMouseDown,
-                    mousemove: this.onMouseMove,
-                    mouseup: this.onMouseUp
-                }
-            },
-            [...layoutEls, this.genOutlined()]
-        )
+        const header = h('div', [
+            h(
+                'span',
+                {
+                    on: {
+                        click: e => {
+                            this.operationType = 'selection'
+                            this.selectionType = 'normal'
+                            e.stopPropagation()
+                        }
+                    }
+                },
+                'selection'
+            ),
+            h(
+                'span',
+                {
+                    on: {
+                        click: e => {
+                            this.operationType = 'create'
+                            this.createType = 'rect'
+                            e.stopPropagation()
+                        }
+                    }
+                },
+                'create'
+            )
+        ])
+
+        return h('div', { staticClass: 'content' }, [
+            header,
+            h(
+                'div',
+                {
+                    staticClass: 'main-layout',
+                    on: {
+                        mousedown: this.onMouseDown,
+                        mousemove: this.onMouseMove,
+                        mouseup: this.onMouseUp
+                    }
+                },
+                [...layoutEls, this.genOutlined()]
+            )
+        ])
     }
 }
 </script>
 
 <style lang="less" scoped>
+.content {
+    flex: 1;
+    display: flex;
+}
 .main-layout {
     position: relative;
     flex: 1;
