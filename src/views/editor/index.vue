@@ -2,23 +2,28 @@
     <div class="editor">
         <editor-header></editor-header>
         <div class="main">
-            <left-side-bar></left-side-bar>
-            <div class="content"></div>
-            <right-side-bar></right-side-bar>
+            <left-side-bar v-show="compsVisible['left']"></left-side-bar>
+            <main-layout></main-layout>
+            <right-side-bar v-show="compsVisible['right']"></right-side-bar>
         </div>
     </div>
 </template>
 
 <script>
-const componentsFiles = require.context('./components', true, /\.vue$/)
+const componentsFiles = require.context('./components', true, /index\.vue$/)
 const components = componentsFiles.keys().reduce((components, componentPath) => {
-    const componentName = componentPath.replace(/^\.\/(.*)\.vue$/, '$1')
-
+    const componentName = componentPath.replace(/^\.\/(.*)\/index\.vue$/, '$1')
     components[componentName] = () => import(`./components/${componentName}`)
+
     return components
 }, {})
 export default {
-    components
+    components,
+    computed: {
+        compsVisible() {
+            return this.$store.state.app.windowCompsVisible
+        }
+    }
 }
 </script>
 

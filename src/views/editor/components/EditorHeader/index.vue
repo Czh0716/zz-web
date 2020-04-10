@@ -6,13 +6,13 @@
                 <img src="@/assets/icons/logo.png" alt />
             </div>
             <div class="layout-operation">
-                <button v-ripple class="btn">
+                <button v-ripple class="btn" @click="changeCompVisible('dir')">
                     <img src="@/assets/icons/file-manager-layout.svg" alt />
                 </button>
-                <button v-ripple class="btn">
+                <button v-ripple class="btn" @click="changeCompVisible('left')">
                     <img src="@/assets/icons/left-column-layout.svg" alt />
                 </button>
-                <button v-ripple class="btn">
+                <button v-ripple class="btn" @click="changeCompVisible('right')">
                     <img src="@/assets/icons/right-column-layout.svg" alt />
                 </button>
             </div>
@@ -55,7 +55,14 @@
 </template>
 
 <script>
-export default {}
+export default {
+    mounted() {},
+    methods: {
+        changeCompVisible(comp) {
+            this.$store.dispatch('app/toggleWindowCompVisible', comp)
+        }
+    }
+}
 </script>
 
 <style lang="less" scoped>

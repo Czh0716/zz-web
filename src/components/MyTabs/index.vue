@@ -52,7 +52,7 @@ export default {
                 return this._c(
                     'div',
                     {
-                        staticClass: 'tab-content-item my-scrollbar',
+                        staticClass: 'tab-content-item',
                         class: {
                             active: isActive
                         },
@@ -73,7 +73,8 @@ export default {
                 {
                     staticClass: 'tab-content',
                     props: {
-                        tag: 'div'
+                        tag: 'div',
+                        name: 'fade'
                     }
                 },
                 contentItems
@@ -96,11 +97,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.v-enter {
+.fade-enter {
     opacity: 0;
 }
 
-.v-enter-active {
+.fade-enter-active {
     transition: 0.3s;
 }
 

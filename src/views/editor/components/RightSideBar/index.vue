@@ -8,7 +8,11 @@
                     </div>
                     <div>内容</div>
                 </template>
-                hahahha
+                <div class="my-scrollbar">
+                    <div>
+                        <style-opts></style-opts>
+                    </div>
+                </div>
             </my-tab-pane>
             <my-tab-pane>
                 <template #label>
@@ -17,17 +21,26 @@
                     </div>
                     <div>样式</div>
                 </template>
-                asdaasd
+                <div class="my-scrollbar">
+                    <div></div>
+                </div>
             </my-tab-pane>
         </my-tabs>
     </div>
 </template>
 
 <script>
+import StyleOpts from './styleOpts'
 export default {
     components: {
         MyTabs: () => import('@/components/MyTabs'),
-        MyTabPane: () => import('@/components/MyTabPane')
+        MyTabPane: () => import('@/components/MyTabPane'),
+        MyItemGroup: () => import('@/components/MyItemGroup'),
+        MyItem: () => import('@/components/MyItem'),
+        StyleOpts
+    },
+    data() {
+        return {}
     }
 }
 </script>

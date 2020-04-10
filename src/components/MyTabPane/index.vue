@@ -17,5 +17,6 @@ export default {
 .my-tab-pane {
     background-color: #fff;
     height: 100%;
+    position: relative;
 }
 </style>

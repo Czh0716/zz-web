@@ -15,9 +15,22 @@ module.exports = {
     },
     configureWebpack: {
         resolve: {
+            extensions: ['.js', '.ts', '.d.ts', '.vue', '.json'],
             alias: {
                 '@': resolve('src')
             }
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    loader: 'ts-loader',
+                    exclude: /node_modules/,
+                    options: {
+                        appendTsSuffixTo: [/\.vue$/]
+                    }
+                }
+            ]
         }
     }
 }
