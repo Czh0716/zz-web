@@ -1,14 +1,18 @@
 <script>
+import outlined from './mixins/outlined'
+
 const type = {
     shape: ['rect', 'ellipse']
 }
 export default {
+    mixins: [outlined],
     data() {
         return {
             els: [],
-            activeEl: null,
+            activeIdx: null,
             createStartPoint: {},
-            createType: 'rect'
+            createType: 'rect',
+            outlinedStyle: {}
         }
     },
     methods: {
@@ -19,6 +23,7 @@ export default {
                 const clientY = e.clientY
                 const localX = clientX - pos.left
                 const localY = clientY - pos.top
+                const index = this.els.length
                 const initOptions = {
                     tag: this.createType,
                     type: 'shape',
@@ -30,10 +35,15 @@ export default {
                         },
                         attrs: {
                             fill: 'none',
-                            stroke: 'blue',
+                            stroke: 'grey',
                             'stroke-width': 2
                         },
-                        key: `el-${this.els.length}`
+                        on: {
+                            click: () => {
+                                this.initOutlined(index)
+                            }
+                        },
+                        key: `el-${index}`
                     },
                     data: {
                         attrs: {}
@@ -46,15 +56,15 @@ export default {
                     localY
                 }
                 this.els.push(initOptions)
-                this.activeEl = this.els.length - 1
+                this.activeIdx = this.els.length - 1
             }
         },
         onMouseMove(e) {
-            if (!!Object.keys(this.createStartPoint).length) return
+            if (!Object.keys(this.createStartPoint).length) return
 
             const { clientX, clientY, localX, localY } = this.createStartPoint
 
-            const currentElOptions = this.els[this.activeEl]
+            const currentElOptions = this.els[this.activeIdx]
             const svgStyleData = currentElOptions.svgData.style
             let width = e.clientX - clientX
             let height = e.clientY - clientY
@@ -86,10 +96,11 @@ export default {
 
             currentElOptions.data.attrs = attrs
 
-            this.els.splice(this.activeEl, 1, currentElOptions)
+            this.els.splice(this.activeIdx, 1, currentElOptions)
         },
         onMouseUp() {
             this.createStartPoint = {}
+            this.initOutlined()
         }
     },
     render(h) {
@@ -100,6 +111,7 @@ export default {
 
             return h('div', { ...option })
         })
+
         return h(
             'div',
             {
@@ -110,7 +122,7 @@ export default {
                     mouseup: this.onMouseUp
                 }
             },
-            layoutEls
+            [...layoutEls, this.genOutlined()]
         )
     }
 }
@@ -134,6 +146,15 @@ export default {
         position: absolute;
         width: 0;
         height: 0;
+    }
+
+    .auxiliary-outlined {
+        position: absolute;
+        border: 1px solid #4f80ff;
+        .outlined--resize {
+            position: absolute;
+            background-color: #4f80ff;
+        }
     }
 }
 </style>
