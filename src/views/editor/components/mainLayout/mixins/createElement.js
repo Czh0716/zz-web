@@ -1,7 +1,10 @@
 export default {
+    data() {
+        return {}
+    },
     methods: {
         createElement() {
-            const { clientX, clientY, localX, localY } = this.startPoint
+            const { clientX, clientY, localX, localY } = this.startPosition
             const index = this.els.length
             const initOptions = {
                 tag: this.createType,
@@ -15,19 +18,19 @@ export default {
                     attrs: {
                         fill: 'none',
                         stroke: 'grey',
-                        'stroke-width': 2
+                        'stroke-width': 2,
+                        'data-id': index
                     },
                     on: {
-                        click: () => {
-                            this.initOutlined(index)
-                        }
+                        mousedown: this.onElementMouseDown,
+                        mouseup: this.onElementMouseUp
                     },
                     key: `el-${index}`
                 },
                 data: {
                     attrs: {}
                 },
-                startPoint: {
+                startPosition: {
                     clientX,
                     clientY,
                     localX,
@@ -36,12 +39,12 @@ export default {
             }
 
             this.els.push(initOptions)
-            this.activeIdx = this.els.length - 1
+            this.activeIdx = index
         },
         stretchElement(e) {
-            if (Object.keys(this.startPoint).length === 0) return
+            if (Object.keys(this.startPosition).length === 0) return
 
-            const { clientX, clientY, localX, localY } = this.startPoint
+            const { clientX, clientY, localX, localY } = this.startPosition
 
             const currentElOptions = this.els[this.activeIdx]
             const svgStyleData = currentElOptions.svgData.style

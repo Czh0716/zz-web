@@ -7,30 +7,36 @@ const type = {
     shape: ['rect', 'ellipse']
 }
 export default {
-    mixins: [outlined, selection, createElement],
+    mixins: [selection, outlined, createElement],
     data() {
         return {
             els: [],
             activeIdx: null,
-            startPoint: {},
+            startPosition: {},
             operationType: 'create',
             createType: 'rect',
             selectionType: 'normal',
             hideOutlined: true,
-            outlinedStyle: {}
+            outlinedStyle: {},
+            outlinedStyleCopy: {} //缓存一开始的数据 并不是实时的，用于计算拖拽
         }
     },
     methods: {
         onMouseDown(e) {
-            this.getStartPoint(e)
+            const MOUSE_KEY = e.button //0=>左键 1=>中键 2=>右键
 
-            if (e.target === e.currentTarget) {
-                this.hideOutlined = true
-                this.activeIdx = null
-            }
+            if (MOUSE_KEY === 0) {
+                this.getStartPosition(e)
+                if (e.target === e.currentTarget) {
+                    this.hideOutlined = true
+                    this.activeIdx = null
+                }
 
-            if (this.operationType === 'create') {
-                this.createElement(e)
+                if (this.operationType === 'create') {
+                    this.createElement(e)
+                }
+            } else if ((MOUSE_KEY = 1)) {
+            } else {
             }
         },
         onMouseMove(e) {
@@ -40,7 +46,9 @@ export default {
 
             if (this.operationType === 'selection') {
                 if (this.selectionType === 'normal') {
-                    this.els[this.activeIdx] && this.dragElement(e)
+                    this.clutched && this.dragElement(e)
+                } else if (this.selectionType === 'resize') {
+                    this.resizeElement(e)
                 }
             }
         },
@@ -48,15 +56,15 @@ export default {
             if (this.operationType === 'create') {
                 this.completeCreation()
             }
-            this.startPoint = {}
+            this.startPosition = {}
         },
-        getStartPoint(e) {
-            const pos = e.currentTarget.getBoundingClientRect()
+        getStartPosition(e) {
+            const { left, top } = e.currentTarget.getBoundingClientRect()
             const clientX = e.clientX
             const clientY = e.clientY
-            const localX = clientX - pos.left
-            const localY = clientY - pos.top
-            this.startPoint = {
+            const localX = clientX - left
+            const localY = clientY - top
+            this.startPosition = {
                 clientX,
                 clientY,
                 localX,

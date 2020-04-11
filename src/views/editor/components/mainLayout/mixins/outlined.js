@@ -1,4 +1,9 @@
 export default {
+    data() {
+        return {
+            clutched: false
+        }
+    },
     methods: {
         genOutlined() {
             if (this.hideOutlined) return
@@ -43,7 +48,11 @@ export default {
                 'div',
                 {
                     staticClass: 'auxiliary-outlined',
-                    style: this.outlinedStyle
+                    style: this.outlinedStyle,
+                    on: {
+                        mousedown: this.onOutlinedMouseDown,
+                        mouseup: this.onOutlinedMouseUp
+                    }
                 },
                 resizeEls
             )
@@ -53,6 +62,30 @@ export default {
             if (!activeEl) return
             this.hideOutlined = false
             this.outlinedStyle = activeEl.svgData.style
+            this.outlinedStyleCopy = { ...this.outlinedStyle }
+        },
+        onOutlinedMouseDown(e) {
+            if (this.operationType === 'selection') {
+                this.clutched = true
+                this.initOutlined()
+            }
+        },
+        onOutlinedMouseUp(e) {
+            this.clutched = false
+        },
+        dragElement(e) {
+            const { clientX, clientY } = this.startPosition
+            const { left, top } = this.outlinedStyleCopy
+            const startLeft = +this.outlinedStyleCopy.left.replace('px', '')
+            const startTop = +this.outlinedStyleCopy.top.replace('px', '')
+            const offsetX = e.clientX - clientX
+            const offsetY = e.clientY - clientY
+
+            console.log(left, top)
+
+            this.outlinedStyle.left = `${startLeft + offsetX}px`
+
+            this.outlinedStyle.top = `${startTop + offsetY}px`
         }
     }
 }
