@@ -13,7 +13,9 @@ export default {
                     staticClass: 'layout__element',
                     style: {
                         left: `${localX}px`,
-                        top: `${localY}px`
+                        top: `${localY}px`,
+                        width: '0',
+                        height: '0'
                     },
                     attrs: {
                         fill: 'none',
@@ -28,7 +30,10 @@ export default {
                     key: `el-${index}`
                 },
                 data: {
-                    attrs: {}
+                    attrs: {
+                        x: 0,
+                        y: 0
+                    }
                 },
                 startPosition: {
                     clientX,
@@ -38,35 +43,49 @@ export default {
                 }
             }
 
+            this.canResizeWidth = this.canResizeHeight = true
             this.els.push(initOptions)
             this.activeIdx = index
         },
         stretchElement(e) {
             if (Object.keys(this.startPosition).length === 0) return
 
-            const { clientX, clientY, localX, localY } = this.startPosition
-
+            const { clientX, clientY, posLeft, posTop } = this.startPosition
             const currentElOptions = this.els[this.activeIdx]
             const svgStyleData = currentElOptions.svgData.style
-            let width = e.clientX - clientX
-            let height = e.clientY - clientY
+            const offsetX = e.clientX - clientX
+            const offsetY = e.clientY - clientY
+            const localX = e.clientX - posLeft
+            const localY = e.clientY - posTop
+            const {
+                width: startWidth = '0',
+                height: startHeight = '0',
+                left
+            } = this.outlinedStyleCopy
+            let width = +startWidth.replace('px', '')
+            let height = +startHeight.replace('px', '')
             let attrs = {}
 
-            // 判断反向拖拽
-            if (width < 0) {
-                svgStyleData.left = svgStyleData.left.replace(
-                    /(-?[\d\.]*)/,
-                    localX + width
-                )
-            }
-            if (height < 0) {
-                svgStyleData.top = svgStyleData.top.replace(
-                    /(-?[\d\.]*)/,
-                    localY + height
-                )
+            if (this.canResizeWidth) {
+                // if (left && localX < 0) {
+                // }
+
+                width += offsetX
+
+                // 判断反向拖拽
+                if (width < 0) {
+                    svgStyleData.left = `${localX}px`
+                }
             }
 
-            // 保证宽高为正数
+            if (this.canResizeHeight) {
+                height += offsetY
+                // 判断反向拖拽
+                if (height < 0) {
+                    svgStyleData.top = `${localY}px`
+                }
+            }
+
             width = Math.abs(width)
             height = Math.abs(height)
 
@@ -75,8 +94,6 @@ export default {
 
             if ((currentElOptions.tag = 'rect')) {
                 attrs = {
-                    x: 0,
-                    y: 0,
                     width,
                     height
                 }

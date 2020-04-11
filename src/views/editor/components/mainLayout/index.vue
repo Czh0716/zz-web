@@ -17,22 +17,23 @@ export default {
             createType: 'rect',
             selectionType: 'normal',
             hideOutlined: true,
-            outlinedStyle: {},
-            outlinedStyleCopy: {} //缓存一开始的数据 并不是实时的，用于计算拖拽
+            canResizeWidth: false,
+            canResizeHeight: false
         }
     },
     methods: {
         onMouseDown(e) {
             const MOUSE_KEY = e.button //0=>左键 1=>中键 2=>右键
-
             if (MOUSE_KEY === 0) {
                 this.getStartPosition(e)
+
                 if (e.target === e.currentTarget) {
-                    this.hideOutlined = true
                     this.activeIdx = null
+                    this.resizeOutlined()
                 }
 
                 if (this.operationType === 'create') {
+                    this.resizeOutlined()
                     this.createElement(e)
                 }
             } else if ((MOUSE_KEY = 1)) {
@@ -48,7 +49,7 @@ export default {
                 if (this.selectionType === 'normal') {
                     this.clutched && this.dragElement(e)
                 } else if (this.selectionType === 'resize') {
-                    this.resizeElement(e)
+                    this.stretchElement(e)
                 }
             }
         },
@@ -59,7 +60,7 @@ export default {
             this.startPosition = {}
         },
         getStartPosition(e) {
-            const { left, top } = e.currentTarget.getBoundingClientRect()
+            const { left, top } = this.$refs.canvas.getBoundingClientRect()
             const clientX = e.clientX
             const clientY = e.clientY
             const localX = clientX - left
@@ -68,7 +69,9 @@ export default {
                 clientX,
                 clientY,
                 localX,
-                localY
+                localY,
+                posLeft: left,
+                posTop: top
             }
         }
     },
@@ -120,7 +123,8 @@ export default {
                         mousedown: this.onMouseDown,
                         mousemove: this.onMouseMove,
                         mouseup: this.onMouseUp
-                    }
+                    },
+                    ref: 'canvas'
                 },
                 [...layoutEls, this.genOutlined()]
             )

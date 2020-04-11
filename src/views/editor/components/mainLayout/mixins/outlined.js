@@ -1,7 +1,9 @@
 export default {
     data() {
         return {
-            clutched: false
+            clutched: false,
+            outlinedStyle: {},
+            outlinedStyleCopy: {} //缓存一开始的数据 并不是实时的，用于计算拖拽
         }
     },
     methods: {
@@ -19,6 +21,13 @@ export default {
                 { origin: '50% 100%', cursor: 'ns' },
                 { origin: '100% 100%', cursor: 'nwse' }
             ]
+
+            const directionMap = {
+                '0': ['left', 'top'],
+                '50%': ['center', 'center'],
+                '100%': ['right', 'bottom']
+            }
+
             const resizeEls = resizeOrigin.map(({ origin, cursor }) => {
                 const [left, top] = origin.split(' ')
                 const size = 6
@@ -37,9 +46,17 @@ export default {
                     on: {
                         mousedown: e => {
                             this.operationType = 'selection'
-                            this.selectionType === 'resize'
+                            this.selectionType = 'resize'
+                            this.canResizeWidth = left !== '50%'
+                            this.canResizeHeight = top !== '50%'
+                            this.getStartPosition(e)
+                            this.initOutlined()
+                            e.stopPropagation()
                         },
-                        mouseup: () => {}
+                        mouseup: () => {
+                            console.log('end')
+                            this.selectionType = 'normal'
+                        }
                     }
                 })
             })
@@ -64,6 +81,11 @@ export default {
             this.outlinedStyle = activeEl.svgData.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
+        resizeOutlined() {
+            this.hideOutlined = true
+            this.outlinedStyle = {}
+            this.outlinedStyleCopy = {}
+        },
         onOutlinedMouseDown(e) {
             if (this.operationType === 'selection') {
                 this.clutched = true
@@ -74,18 +96,31 @@ export default {
             this.clutched = false
         },
         dragElement(e) {
-            const { clientX, clientY } = this.startPosition
+            const { clientX, clientY, posLeft, posTop } = this.startPosition
             const { left, top } = this.outlinedStyleCopy
             const startLeft = +this.outlinedStyleCopy.left.replace('px', '')
             const startTop = +this.outlinedStyleCopy.top.replace('px', '')
             const offsetX = e.clientX - clientX
             const offsetY = e.clientY - clientY
 
-            console.log(left, top)
-
             this.outlinedStyle.left = `${startLeft + offsetX}px`
-
             this.outlinedStyle.top = `${startTop + offsetY}px`
+        },
+        resizeElement(e) {
+            const { clientX, clientY } = this.startPosition
+            const startStyle = this.outlinedStyleCopy
+            const offsetX = e.clientX - clientX
+            const offsetY = e.clientY - clientY
+            const width = +startStyle.width.replace('px', '') + offsetX
+            const height = +startStyle.height.replace('px', '') + offsetY
+            if (this.canResizeWidth) {
+                if (width < 0) {
+                    this.outlinedStyle.left = `${e.clientX - posLeft}px`
+                }
+
+                this.outlinedStyle.width = `${Math.abs(width)}px`
+                console.log(`${Math.abs(width)}px`, this.outlinedStyle.width)
+            }
         }
     }
 }
