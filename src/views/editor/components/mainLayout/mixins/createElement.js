@@ -47,49 +47,54 @@ export default {
             this.els.push(initOptions)
             this.activeIdx = index
         },
-        stretchElement(e) {
+        stretchElement(e, isResize = false) {
             if (Object.keys(this.startPosition).length === 0) return
 
             const { clientX, clientY, posLeft, posTop } = this.startPosition
             const currentElOptions = this.els[this.activeIdx]
-            const svgStyleData = currentElOptions.svgData.style
-            const offsetX = e.clientX - clientX
-            const offsetY = e.clientY - clientY
+            const styleData = currentElOptions.svgData.style
             const localX = e.clientX - posLeft
             const localY = e.clientY - posTop
-            const {
-                width: startWidth = '0',
-                height: startHeight = '0',
-                left
-            } = this.outlinedStyleCopy
-            let width = +startWidth.replace('px', '')
-            let height = +startHeight.replace('px', '')
+            let { width = '0', height = '0' } = this.outlinedStyleCopy
+            let offsetX = e.clientX - clientX
+            let offsetY = e.clientY - clientY
             let attrs = {}
 
-            if (this.canResizeWidth) {
-                // if (left && localX < 0) {
-                // }
+            width = +width.replace('px', '')
+            height = +height.replace('px', '')
+
+            if (isResize) {
+                const [left, top] = this.resizeOrigin
+                //判断是否resize左侧的点
+                if (left === '0') {
+                    if (offsetX < width) styleData.left = `${localX}px`
+                    offsetX = -offsetX
+                } else if (left === '100%') {
+                    if (-offsetX > width) styleData.left = `${localX}px`
+                }
+                //判断是否resize上侧的点
+                if (top === '0') {
+                    if (offsetY < height) styleData.top = `${localY}px`
+                    offsetY = -offsetY
+                } else if (top === '100%') {
+                    if (-offsetY > height) styleData.top = `${localY}px`
+                }
+
+                if (left !== '50%') width += offsetX
+                if (top !== '50%') height += offsetY
+            } else {
+                // 判断创建模式反向拖拽
+                if (offsetX < 0) styleData.left = `${localX}px`
+                if (offsetY < 0) styleData.top = `${localY}px`
                 width += offsetX
-
-                // 判断反向拖拽
-                if (width < 0) {
-                    svgStyleData.left = `${localX}px`
-                }
-            }
-
-            if (this.canResizeHeight) {
                 height += offsetY
-                // 判断反向拖拽
-                if (height < 0) {
-                    svgStyleData.top = `${localY}px`
-                }
             }
 
             width = Math.abs(width)
             height = Math.abs(height)
 
-            svgStyleData.width = `${width}px`
-            svgStyleData.height = `${height}px`
+            styleData.width = `${width}px`
+            styleData.height = `${height}px`
 
             if ((currentElOptions.tag = 'rect')) {
                 attrs = {

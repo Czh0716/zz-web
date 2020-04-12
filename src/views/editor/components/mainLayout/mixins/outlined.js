@@ -2,6 +2,8 @@ export default {
     data() {
         return {
             clutched: false,
+            hideOutlined: true,
+            resizeOrigin: [],
             outlinedStyle: {},
             outlinedStyleCopy: {} //缓存一开始的数据 并不是实时的，用于计算拖拽
         }
@@ -11,7 +13,7 @@ export default {
             if (this.hideOutlined) return
 
             const h = this.$createElement
-            const resizeOrigin = [
+            const resizeOrigins = [
                 { origin: '0 0', cursor: 'nwse' },
                 { origin: '50% 0', cursor: 'ns' },
                 { origin: '100% 0', cursor: 'nesw' },
@@ -22,7 +24,7 @@ export default {
                 { origin: '100% 100%', cursor: 'nwse' }
             ]
 
-            const resizeEls = resizeOrigin.map(({ origin, cursor }) => {
+            const resizeEls = resizeOrigins.map(({ origin, cursor }) => {
                 const [left, top] = origin.split(' ')
                 const size = 6
 
@@ -40,8 +42,7 @@ export default {
                     on: {
                         mousedown: e => {
                             this.operationType = `${cursor}-resize`
-                            this.canResizeWidth = left !== '50%'
-                            this.canResizeHeight = top !== '50%'
+                            this.resizeOrigin = [left, top]
                             this.getStartPosition(e)
                             this.initOutlined()
                             e.stopPropagation()
@@ -88,8 +89,7 @@ export default {
             this.clutched = false
         },
         dragElement(e) {
-            const { clientX, clientY, posLeft, posTop } = this.startPosition
-            const { left, top } = this.outlinedStyleCopy
+            const { clientX, clientY } = this.startPosition
             const startLeft = +this.outlinedStyleCopy.left.replace('px', '')
             const startTop = +this.outlinedStyleCopy.top.replace('px', '')
             const offsetX = e.clientX - clientX

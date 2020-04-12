@@ -15,10 +15,7 @@ export default {
             startPosition: {},
             operationType: 'create',
             createType: 'rect',
-            selectionType: 'normal',
-            hideOutlined: true,
-            canResizeWidth: false,
-            canResizeHeight: false
+            selectionType: 'normal'
         }
     },
     methods: {
@@ -48,7 +45,7 @@ export default {
                     this.clutched && this.dragElement(e)
                 }
             } else if (this.operationType.includes('resize')) {
-                this.stretchElement(e)
+                this.stretchElement(e, true)
             }
         },
         onMouseUp() {
