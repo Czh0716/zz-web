@@ -22,12 +22,6 @@ export default {
                 { origin: '100% 100%', cursor: 'nwse' }
             ]
 
-            const directionMap = {
-                '0': ['left', 'top'],
-                '50%': ['center', 'center'],
-                '100%': ['right', 'bottom']
-            }
-
             const resizeEls = resizeOrigin.map(({ origin, cursor }) => {
                 const [left, top] = origin.split(' ')
                 const size = 6
@@ -45,8 +39,7 @@ export default {
                     },
                     on: {
                         mousedown: e => {
-                            this.operationType = 'selection'
-                            this.selectionType = 'resize'
+                            this.operationType = `${cursor}-resize`
                             this.canResizeWidth = left !== '50%'
                             this.canResizeHeight = top !== '50%'
                             this.getStartPosition(e)
@@ -54,8 +47,7 @@ export default {
                             e.stopPropagation()
                         },
                         mouseup: () => {
-                            console.log('end')
-                            this.selectionType = 'normal'
+                            this.operationType = 'selection'
                         }
                     }
                 })

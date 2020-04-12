@@ -69,7 +69,6 @@ export default {
             if (this.canResizeWidth) {
                 // if (left && localX < 0) {
                 // }
-
                 width += offsetX
 
                 // 判断反向拖拽

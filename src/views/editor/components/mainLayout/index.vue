@@ -43,20 +43,21 @@ export default {
         onMouseMove(e) {
             if (this.operationType === 'create') {
                 this.stretchElement(e)
-            }
-
-            if (this.operationType === 'selection') {
+            } else if (this.operationType === 'selection') {
                 if (this.selectionType === 'normal') {
                     this.clutched && this.dragElement(e)
-                } else if (this.selectionType === 'resize') {
-                    this.stretchElement(e)
                 }
+            } else if (this.operationType.includes('resize')) {
+                this.stretchElement(e)
             }
         },
         onMouseUp() {
             if (this.operationType === 'create') {
                 this.completeCreation()
+            } else if (this.operationType.includes('size')) {
+                this.operationType = 'selection'
             }
+
             this.startPosition = {}
         },
         getStartPosition(e) {
@@ -113,22 +114,31 @@ export default {
             )
         ])
 
-        return h('div', { staticClass: 'content' }, [
-            header,
-            h(
-                'div',
-                {
-                    staticClass: 'main-layout',
-                    on: {
-                        mousedown: this.onMouseDown,
-                        mousemove: this.onMouseMove,
-                        mouseup: this.onMouseUp
+        return h(
+            'div',
+            {
+                staticClass: 'content'
+            },
+            [
+                header,
+                h(
+                    'div',
+                    {
+                        staticClass: 'main-layout',
+                        class: {
+                            [this.operationType]: true
+                        },
+                        on: {
+                            mousedown: this.onMouseDown,
+                            mousemove: this.onMouseMove,
+                            mouseup: this.onMouseUp
+                        },
+                        ref: 'canvas'
                     },
-                    ref: 'canvas'
-                },
-                [...layoutEls, this.genOutlined()]
-            )
-        ])
+                    [...layoutEls, this.genOutlined()]
+                )
+            ]
+        )
     }
 }
 </script>
@@ -165,5 +175,21 @@ export default {
             background-color: #4f80ff;
         }
     }
+}
+
+.nwse-resize {
+    cursor: nwse-resize;
+}
+
+.ns-resize {
+    cursor: ns-resize;
+}
+
+.nesw-resize {
+    cursor: nesw-resize;
+}
+
+.ew-resize {
+    cursor: ew-resize;
 }
 </style>
