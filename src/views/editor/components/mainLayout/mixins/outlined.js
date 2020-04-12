@@ -97,22 +97,6 @@ export default {
 
             this.outlinedStyle.left = `${startLeft + offsetX}px`
             this.outlinedStyle.top = `${startTop + offsetY}px`
-        },
-        resizeElement(e) {
-            const { clientX, clientY } = this.startPosition
-            const startStyle = this.outlinedStyleCopy
-            const offsetX = e.clientX - clientX
-            const offsetY = e.clientY - clientY
-            const width = +startStyle.width.replace('px', '') + offsetX
-            const height = +startStyle.height.replace('px', '') + offsetY
-            if (this.canResizeWidth) {
-                if (width < 0) {
-                    this.outlinedStyle.left = `${e.clientX - posLeft}px`
-                }
-
-                this.outlinedStyle.width = `${Math.abs(width)}px`
-                console.log(`${Math.abs(width)}px`, this.outlinedStyle.width)
-            }
         }
     }
 }
