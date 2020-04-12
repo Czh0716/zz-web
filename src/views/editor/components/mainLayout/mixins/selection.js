@@ -7,8 +7,8 @@ export default {
             const MOUSE_KEY = e.button
 
             if (MOUSE_KEY === 0) {
-                if (this.operationType === 'create') {
-                } else if (this.operationType === 'selection') {
+                if (this.action.includes('create')) {
+                } else if (this.action.includes('selection')) {
                     this.activeIdx = e.currentTarget.dataset.id
                     this.clutched = true
                     this.initOutlined()

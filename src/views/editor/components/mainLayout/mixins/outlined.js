@@ -41,14 +41,14 @@ export default {
                     },
                     on: {
                         mousedown: e => {
-                            this.operationType = `${cursor}-resize`
+                            this.changeAction(`${cursor}-resize`)
                             this.resizeOrigin = [left, top]
                             this.getStartPosition(e)
                             this.initOutlined()
                             e.stopPropagation()
                         },
                         mouseup: () => {
-                            this.operationType = 'selection'
+                            this.changeAction('selection')
                         }
                     }
                 })
@@ -80,7 +80,7 @@ export default {
             this.outlinedStyleCopy = {}
         },
         onOutlinedMouseDown(e) {
-            if (this.operationType === 'selection') {
+            if (this.action.includes('selection')) {
                 this.clutched = true
                 this.initOutlined()
             }

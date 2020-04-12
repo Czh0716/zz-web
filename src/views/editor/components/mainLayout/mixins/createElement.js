@@ -6,8 +6,9 @@ export default {
         createElement() {
             const { clientX, clientY, localX, localY } = this.startPosition
             const index = this.els.length
+            const shape = this.action.split('-')[1]
             const initOptions = {
-                tag: this.createType,
+                tag: shape,
                 type: 'shape',
                 svgData: {
                     staticClass: 'layout__element',
@@ -18,9 +19,7 @@ export default {
                         height: '0'
                     },
                     attrs: {
-                        fill: 'none',
-                        stroke: 'grey',
-                        'stroke-width': 2,
+                        fill: 'pink',
                         'data-id': index
                     },
                     on: {
@@ -52,6 +51,7 @@ export default {
 
             const { clientX, clientY, posLeft, posTop } = this.startPosition
             const currentElOptions = this.els[this.activeIdx]
+            const shape = currentElOptions.tag
             const styleData = currentElOptions.svgData.style
             const localX = e.clientX - posLeft
             const localY = e.clientY - posTop
@@ -96,10 +96,17 @@ export default {
             styleData.width = `${width}px`
             styleData.height = `${height}px`
 
-            if ((currentElOptions.tag = 'rect')) {
+            if (shape === 'rect') {
                 attrs = {
                     width,
                     height
+                }
+            } else if (shape === 'ellipse') {
+                attrs = {
+                    cx: width / 2,
+                    cy: height / 2,
+                    rx: width / 2,
+                    ry: height / 2
                 }
             }
 
@@ -109,7 +116,7 @@ export default {
         },
         completeCreation() {
             this.initOutlined()
-            this.els[this.activeIdx].svgData.attrs.fill = 'white'
+            // this.els[this.activeIdx].svgData.attrs.fill = 'white'
         }
     }
 }

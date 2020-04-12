@@ -2,7 +2,8 @@
 import outlined from './mixins/outlined'
 import createElement from './mixins/createElement'
 import selection from './mixins/selection'
-
+import { mapGetters, mapActions } from 'vuex'
+console.log()
 const type = {
     shape: ['rect', 'ellipse']
 }
@@ -18,7 +19,11 @@ export default {
             selectionType: 'normal'
         }
     },
+    computed: {
+        ...mapGetters(['action'])
+    },
     methods: {
+        ...mapActions({ changeAction: 'app/changeAction' }),
         onMouseDown(e) {
             const MOUSE_KEY = e.button //0=>左键 1=>中键 2=>右键
             if (MOUSE_KEY === 0) {
@@ -29,7 +34,7 @@ export default {
                     this.resizeOutlined()
                 }
 
-                if (this.operationType === 'create') {
+                if (this.action.includes('create')) {
                     this.resizeOutlined()
                     this.createElement(e)
                 }
@@ -38,21 +43,21 @@ export default {
             }
         },
         onMouseMove(e) {
-            if (this.operationType === 'create') {
+            if (this.action.includes('create')) {
                 this.stretchElement(e)
-            } else if (this.operationType === 'selection') {
+            } else if (this.action.includes('selection')) {
                 if (this.selectionType === 'normal') {
                     this.clutched && this.dragElement(e)
                 }
-            } else if (this.operationType.includes('resize')) {
+            } else if (this.action.includes('resize')) {
                 this.stretchElement(e, true)
             }
         },
         onMouseUp() {
-            if (this.operationType === 'create') {
+            if (this.action.includes('create')) {
                 this.completeCreation()
-            } else if (this.operationType.includes('size')) {
-                this.operationType = 'selection'
+            } else if (this.action.includes('resize')) {
+                this.changeAction('selection')
             }
 
             this.startPosition = {}
@@ -75,6 +80,7 @@ export default {
     },
     render(h) {
         const layoutEls = this.els.map(option => {
+            console.log(option)
             if (option.type === 'shape') {
                 return h('svg', { ...option.svgData }, [h(option.tag, { ...option.data })])
             }
@@ -82,48 +88,18 @@ export default {
             return h('div', { ...option })
         })
 
-        const header = h('div', [
-            h(
-                'span',
-                {
-                    on: {
-                        click: e => {
-                            this.operationType = 'selection'
-                            this.selectionType = 'normal'
-                            e.stopPropagation()
-                        }
-                    }
-                },
-                'selection'
-            ),
-            h(
-                'span',
-                {
-                    on: {
-                        click: e => {
-                            this.operationType = 'create'
-                            this.createType = 'rect'
-                            e.stopPropagation()
-                        }
-                    }
-                },
-                'create'
-            )
-        ])
-
         return h(
             'div',
             {
                 staticClass: 'content'
             },
             [
-                header,
                 h(
                     'div',
                     {
                         staticClass: 'main-layout',
                         class: {
-                            [this.operationType]: true
+                            [this.action]: true
                         },
                         on: {
                             mousedown: this.onMouseDown,
@@ -144,6 +120,7 @@ export default {
 .content {
     flex: 1;
     display: flex;
+    flex-direction: column;
 }
 .main-layout {
     position: relative;

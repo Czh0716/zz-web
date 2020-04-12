@@ -3,19 +3,25 @@ const state = {
         dir: true,
         left: true,
         right: true
-    }
+    },
+    action: 'selection'
 }
 
 const mutations = {
     TOGGLE_WINDOW_COMP_VISIBLE(state, comp) {
         state.windowCompsVisible[comp] = !state.windowCompsVisible[comp]
+    },
+    CHANGE_ACTION(state, action) {
+        state.action = action
     }
 }
 
 const actions = {
     toggleWindowCompVisible({ commit }, comp) {
-        console.log(comp)
         commit('TOGGLE_WINDOW_COMP_VISIBLE', comp)
+    },
+    changeAction({ commit }, action) {
+        commit('CHANGE_ACTION', action)
     }
 }
 

@@ -2,7 +2,8 @@
     <div class="editor">
         <editor-header></editor-header>
         <div class="main">
-            <left-side-bar v-show="compsVisible['left']"></left-side-bar>
+            <!-- <left-side-bar v-show="compsVisible['left']"></left-side-bar> -->
+            <side-bar></side-bar>
             <main-layout></main-layout>
             <right-side-bar v-show="compsVisible['right']"></right-side-bar>
         </div>
