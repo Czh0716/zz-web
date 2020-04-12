@@ -80,7 +80,6 @@ export default {
     },
     render(h) {
         const layoutEls = this.els.map(option => {
-            console.log(option)
             if (option.type === 'shape') {
                 return h('svg', { ...option.svgData }, [h(option.tag, { ...option.data })])
             }
