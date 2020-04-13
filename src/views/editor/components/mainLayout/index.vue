@@ -3,7 +3,6 @@ import outlined from './mixins/outlined'
 import createElement from './mixins/createElement'
 import selection from './mixins/selection'
 import { mapGetters, mapActions } from 'vuex'
-console.log()
 const type = {
     shape: ['rect', 'ellipse']
 }
@@ -20,7 +19,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['action'])
+        ...mapGetters(['action', 'isShape', 'subAction'])
     },
     methods: {
         ...mapActions({ changeAction: 'app/changeAction' }),
@@ -30,8 +29,8 @@ export default {
                 this.getStartPosition(e)
 
                 if (e.target === e.currentTarget) {
-                    this.activeIdx = null
                     this.resizeOutlined()
+                    this.activeIdx = null
                 }
 
                 if (this.action.includes('create')) {
@@ -43,12 +42,12 @@ export default {
             }
         },
         onMouseMove(e) {
+            e.preventDefault()
+
             if (this.action.includes('create')) {
                 this.stretchElement(e)
             } else if (this.action.includes('selection')) {
-                if (this.selectionType === 'normal') {
-                    this.clutched && this.dragElement(e)
-                }
+                this.clutched && this.dragElement(e)
             } else if (this.action.includes('resize')) {
                 this.stretchElement(e, true)
             }
@@ -81,10 +80,10 @@ export default {
     render(h) {
         const layoutEls = this.els.map(option => {
             if (option.type === 'shape') {
-                return h('svg', { ...option.svgData }, [h(option.tag, { ...option.data })])
+                return h('svg', { ...option.data }, [h(option.tag, { ...option.subData })])
+            } else {
+                return h('div', { ...option.data }, option.subData)
             }
-
-            return h('div', { ...option })
         })
 
         return h(
@@ -138,6 +137,10 @@ export default {
         position: absolute;
         width: 0;
         height: 0;
+        overflow: hidden;
+    }
+    .layout__element--text {
+        line-height: 24px;
     }
 
     .auxiliary-outlined {
@@ -146,6 +149,18 @@ export default {
         .outlined--resize {
             position: absolute;
             background-color: #4f80ff;
+        }
+        .text-editor {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: -1px;
+            right: -1px;
+            top: -1px;
+            bottom: -1px;
+            resize: none;
+            outline: none;
+            color: inherit;
         }
     }
 }

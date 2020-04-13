@@ -23,6 +23,7 @@ export default {
         return {
             category: [
                 [{ action: 'selection', icon: 'mdi-cursor-default' }],
+                [{ action: 'create-text', icon: 'mdi-format-text' }],
                 [
                     { action: 'create-rect', icon: 'mdi-rectangle-outline' },
                     {

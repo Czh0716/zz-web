@@ -3,6 +3,8 @@ export default {
         return {
             clutched: false,
             hideOutlined: true,
+            hideOutlinedResize: false,
+            hideTextEditor: true,
             resizeOrigin: [],
             outlinedStyle: {},
             outlinedStyleCopy: {} //缓存一开始的数据 并不是实时的，用于计算拖拽
@@ -24,35 +26,56 @@ export default {
                 { origin: '100% 100%', cursor: 'nwse' }
             ]
 
-            const resizeEls = resizeOrigins.map(({ origin, cursor }) => {
-                const [left, top] = origin.split(' ')
-                const size = 6
+            const resizeEls = this.hideOutlinedResize
+                ? []
+                : resizeOrigins.map(({ origin, cursor }) => {
+                      const [left, top] = origin.split(' ')
+                      const size = 6
 
-                return h('div', {
-                    staticClass: 'outlined--resize',
-                    style: {
-                        width: `${size}px`,
-                        height: `${size}px`,
-                        marginLeft: `${-size / 2}px`,
-                        marginTop: `${-size / 2}px`,
-                        cursor: `${cursor}-resize`,
-                        left,
-                        top
-                    },
-                    on: {
-                        mousedown: e => {
-                            this.changeAction(`${cursor}-resize`)
-                            this.resizeOrigin = [left, top]
-                            this.getStartPosition(e)
-                            this.initOutlined()
-                            e.stopPropagation()
-                        },
-                        mouseup: () => {
-                            this.changeAction('selection')
-                        }
-                    }
-                })
-            })
+                      return h('div', {
+                          staticClass: 'outlined--resize',
+                          style: {
+                              width: `${size}px`,
+                              height: `${size}px`,
+                              marginLeft: `${-size / 2}px`,
+                              marginTop: `${-size / 2}px`,
+                              cursor: `${cursor}-resize`,
+                              left,
+                              top
+                          },
+                          on: {
+                              mousedown: e => {
+                                  this.changeAction(`${cursor}-resize`)
+                                  this.resizeOrigin = [left, top]
+                                  this.getStartPosition(e)
+                                  this.initOutlined()
+                                  e.stopPropagation()
+                              },
+                              mouseup: () => {
+                                  this.changeAction('selection')
+                              }
+                          }
+                      })
+                  })
+
+            const activeEl = this.els[this.activeIdx]
+
+            const textEditor = this.hideTextEditor
+                ? []
+                : h('textarea', {
+                      staticClass: 'text-editor',
+                      attrs: {
+                          autoFocus: true
+                      },
+                      domProps: {
+                          value: activeEl.subData
+                      },
+                      on: {
+                          input(e) {
+                              activeEl.subData = e.target.value
+                          }
+                      }
+                  })
 
             return h(
                 'div',
@@ -61,17 +84,20 @@ export default {
                     style: this.outlinedStyle,
                     on: {
                         mousedown: this.onOutlinedMouseDown,
-                        mouseup: this.onOutlinedMouseUp
+                        mouseup: this.onOutlinedMouseUp,
+                        dblclick: this.onOutlinedDblclick
                     }
                 },
-                resizeEls
+                [...resizeEls, textEditor]
             )
         },
-        initOutlined() {
+        initOutlined(hideResize = false) {
             const activeEl = this.els[this.activeIdx]
             if (!activeEl) return
             this.hideOutlined = false
-            this.outlinedStyle = activeEl.svgData.style
+            this.hideTextEditor = true
+            this.hideOutlinedResize = hideResize
+            this.outlinedStyle = activeEl.data.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
         resizeOutlined() {
@@ -80,13 +106,21 @@ export default {
             this.outlinedStyleCopy = {}
         },
         onOutlinedMouseDown(e) {
-            if (this.action.includes('selection')) {
+            const activeEl = this.els[this.activeIdx]
+
+            if (this.action.includes('selection') && this.hideTextEditor) {
                 this.clutched = true
                 this.initOutlined()
             }
         },
         onOutlinedMouseUp(e) {
             this.clutched = false
+        },
+        onOutlinedDblclick() {
+            const activeEl = this.els[this.activeIdx]
+            if (activeEl.type === 'text') {
+                this.hideTextEditor = false
+            }
         },
         dragElement(e) {
             const { clientX, clientY } = this.startPosition

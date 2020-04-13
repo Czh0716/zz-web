@@ -4,7 +4,8 @@ const state = {
         left: true,
         right: true
     },
-    action: 'selection'
+    action: 'selection',
+    shapes: ['rect', 'circle']
 }
 
 const mutations = {
