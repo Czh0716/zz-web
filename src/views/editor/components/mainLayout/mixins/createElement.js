@@ -93,7 +93,7 @@ export default {
             width = Math.abs(width)
             height = Math.abs(height)
 
-            if (e.shiftKey) width > height ? (height = width) : (height = width)
+            if (e.shiftKey) width > height ? (height = width) : (width = height)
 
             styleData.width = `${width}px`
             styleData.height = `${height}px`
