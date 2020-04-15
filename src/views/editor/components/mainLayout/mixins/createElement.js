@@ -50,7 +50,14 @@ export default {
         stretchElement(e, isResize = false) {
             if (Object.keys(this.startPosition).length === 0) return
 
-            const { clientX, clientY, posLeft, posTop } = this.startPosition
+            const {
+                clientX,
+                clientY,
+                localX: startLocalX,
+                localY: startLocalY,
+                posLeft,
+                posTop
+            } = this.startPosition
             const currentElOptions = this.els[this.activeIdx]
             const tag = currentElOptions.tag
             const style = currentElOptions.data.style
@@ -91,6 +98,9 @@ export default {
                 height += offsetY
             }
 
+            const cacheWidth = width
+            const cacheHeight = height
+
             width = Math.abs(width)
             height = Math.abs(height)
 
@@ -112,6 +122,14 @@ export default {
                         cy: height / 2,
                         rx: width / 2,
                         ry: height / 2
+                    }
+                } else if (tag === 'line') {
+                    attrs = {
+                        x1: cacheWidth > 0 ? 0 : width,
+                        y1: cacheHeight > 0 ? 0 : height,
+                        x2: cacheWidth > 0 ? width : 0,
+                        y2: cacheHeight > 0 ? height : 0,
+                        stroke: 'pink'
                     }
                 }
                 currentElOptions.subData = { attrs }

@@ -5,7 +5,7 @@ const state = {
         right: true
     },
     action: 'selection',
-    shapes: ['rect', 'ellipse']
+    shapes: ['rect', 'ellipse', 'line']
 }
 
 const mutations = {

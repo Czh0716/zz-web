@@ -29,7 +29,8 @@ export default {
                     {
                         action: 'create-ellipse',
                         icon: 'mdi-checkbox-blank-circle-outline'
-                    }
+                    },
+                    { action: 'create-line', icon: 'mdi-vector-line' }
                 ]
             ]
         }
