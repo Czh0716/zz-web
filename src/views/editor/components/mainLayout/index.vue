@@ -19,7 +19,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['action', 'isShape', 'subAction'])
+        ...mapGetters(['action', 'shapes', 'isShape', 'subAction'])
     },
     methods: {
         ...mapActions({ changeAction: 'app/changeAction' }),

@@ -52,7 +52,7 @@ export default {
 
             const { clientX, clientY, posLeft, posTop } = this.startPosition
             const currentElOptions = this.els[this.activeIdx]
-            const shape = currentElOptions.tag
+            const tag = currentElOptions.tag
             const style = currentElOptions.data.style
             const localX = e.clientX - posLeft
             const localY = e.clientY - posTop
@@ -98,16 +98,15 @@ export default {
 
             style.width = `${width}px`
             style.height = `${height}px`
-
-            if (this.isShape) {
-                if (shape === 'rect') {
+            if (this.isShape || this.shapes.includes(tag)) {
+                if (tag === 'rect') {
                     attrs = {
                         x: 0,
                         y: 0,
                         width,
                         height
                     }
-                } else if (shape === 'ellipse') {
+                } else if (tag === 'ellipse') {
                     attrs = {
                         cx: width / 2,
                         cy: height / 2,
