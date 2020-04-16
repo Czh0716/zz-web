@@ -10,6 +10,7 @@
                 v-for="(item,itemIndex) in group"
                 :key="itemIndex"
                 :title="item.title"
+                :class="{active: item.action === $store.getters.action}"
                 @click="$store.dispatch('app/changeAction',item.action)"
             >
                 <v-icon>{{item.icon}}</v-icon>
@@ -55,6 +56,11 @@ export default {
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: 0.3s;
+            &.active,
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.15);
+            }
         }
     }
 }

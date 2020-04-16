@@ -105,8 +105,6 @@ export default {
             this.outlinedStyleCopy = {}
         },
         onOutlinedMouseDown(e) {
-            const activeEl = this.els[this.activeIdx]
-
             if (this.action.includes('selection') && this.hideTextEditor) {
                 this.clutched = true
                 this.initOutlined()
@@ -116,8 +114,7 @@ export default {
             this.clutched = false
         },
         onOutlinedDblclick() {
-            const activeEl = this.els[this.activeIdx]
-            if (activeEl.type === 'text') {
+            if (this.activeElement && this.activeElement.type === 'text') {
                 this.hideTextEditor = false
             }
         },
