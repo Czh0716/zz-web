@@ -19,7 +19,15 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['action', 'shapes', 'isShape', 'subAction'])
+        ...mapGetters([
+            'action',
+            'shapes',
+            'isShape',
+            'subAction',
+            'elementNameMap',
+            'elements',
+            'activeElement'
+        ])
     },
     methods: {
         ...mapActions({ changeAction: 'app/changeAction' }),
@@ -30,7 +38,7 @@ export default {
 
                 if (e.target === e.currentTarget) {
                     this.resizeOutlined()
-                    this.activeIdx = null
+                    this.$store.commit('config/SET_CURRENT_ELEMENT')
                 }
 
                 if (this.action.includes('create')) {
@@ -78,7 +86,7 @@ export default {
         }
     },
     render(h) {
-        const layoutEls = this.els.map(option => {
+        const layoutEls = this.elements.map(option => {
             if (option.type === 'shape') {
                 return h('svg', { ...option.data }, [h(option.tag, { ...option.subData })])
             } else {

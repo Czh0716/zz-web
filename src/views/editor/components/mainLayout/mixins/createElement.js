@@ -5,10 +5,10 @@ export default {
     methods: {
         createElement() {
             const { clientX, clientY, localX, localY } = this.startPosition
-            const index = this.els.length
             const isShape = this.isShape
             const tag = isShape ? this.subAction : 'div'
-            const initOptions = {
+            const initOption = {
+                name: this.elementNameMap[this.subAction] || '',
                 tag,
                 type: isShape ? 'shape' : this.subAction,
                 data: {
@@ -24,16 +24,14 @@ export default {
                         opacity: 0.4
                     },
                     attrs: {
-                        ...(isShape ? { fill: 'pink' } : {}),
-                        'data-id': index
+                        ...(isShape ? { fill: 'pink' } : {})
                     },
                     on: {
                         mousedown: this.onElementMouseDown,
                         mouseup: this.onElementMouseUp
-                    },
-                    key: `el-${index}`
+                    }
                 },
-                subData: '',
+                subData: this.subAction === 'text' ? 'Text Content' : {},
                 startPosition: {
                     clientX,
                     clientY,
@@ -42,25 +40,19 @@ export default {
                 }
             }
 
-            this.els.push(initOptions)
-            this.activeIdx = index
+            this.$store.commit('config/ADD_ELEMENT', initOption)
 
             if (this.subAction === 'text') this.initOutlined(true)
         },
         stretchElement(e, isResize = false) {
             if (Object.keys(this.startPosition).length === 0) return
 
-            const {
-                clientX,
-                clientY,
-                localX: startLocalX,
-                localY: startLocalY,
-                posLeft,
-                posTop
-            } = this.startPosition
-            const currentElOptions = this.els[this.activeIdx]
-            const tag = currentElOptions.tag
-            const style = currentElOptions.data.style
+            const element = this.activeElement
+            if (!element) return
+
+            const { clientX, clientY, posLeft, posTop } = this.startPosition
+            const tag = element.tag
+            const style = element.data.style
             const localX = e.clientX - posLeft
             const localY = e.clientY - posTop
             let { width = '0', height = '0' } = this.outlinedStyleCopy
@@ -132,10 +124,10 @@ export default {
                         stroke: 'pink'
                     }
                 }
-                currentElOptions.subData = { attrs }
+                element.subData = { attrs }
             }
 
-            this.els.splice(this.activeIdx, 1, currentElOptions)
+            this.$store.commit('config/UPDATE_CURRENT_ELEMENT', element)
         },
         completeCreation() {
             this.initOutlined()

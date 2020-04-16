@@ -9,6 +9,7 @@
                 class="group-item"
                 v-for="(item,itemIndex) in group"
                 :key="itemIndex"
+                :title="item.title"
                 @click="$store.dispatch('app/changeAction',item.action)"
             >
                 <v-icon>{{item.icon}}</v-icon>
@@ -22,15 +23,16 @@ export default {
     data() {
         return {
             category: [
-                [{ action: 'selection', icon: 'mdi-cursor-default' }],
-                [{ action: 'create-text', icon: 'mdi-format-text' }],
+                [{ action: 'selection', icon: 'mdi-cursor-default', title: '选择' }],
+                [{ action: 'create-text', icon: 'mdi-format-text', title: '文本' }],
                 [
-                    { action: 'create-rect', icon: 'mdi-rectangle-outline' },
+                    { action: 'create-rect', icon: 'mdi-rectangle-outline', title: '矩形' },
                     {
                         action: 'create-ellipse',
-                        icon: 'mdi-checkbox-blank-circle-outline'
+                        icon: 'mdi-checkbox-blank-circle-outline',
+                        title: '椭圆'
                     },
-                    { action: 'create-line', icon: 'mdi-vector-line' }
+                    { action: 'create-line', icon: 'mdi-vector-line', title: '线' }
                 ]
             ]
         }

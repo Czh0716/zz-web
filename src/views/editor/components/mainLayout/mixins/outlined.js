@@ -92,12 +92,12 @@ export default {
             )
         },
         initOutlined(hideResize = false) {
-            const activeEl = this.els[this.activeIdx]
-            if (!activeEl) return
+            if (!this.activeElement) return
+
             this.hideOutlined = false
             this.hideTextEditor = true
             this.hideOutlinedResize = hideResize
-            this.outlinedStyle = activeEl.data.style
+            this.outlinedStyle = this.activeElement.data.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
         resizeOutlined() {
