@@ -93,7 +93,6 @@ export default {
         },
         initOutlined(hideResize = false) {
             if (!this.activeElement) return
-
             this.hideOutlined = false
             this.hideTextEditor = true
             this.hideOutlinedResize = hideResize

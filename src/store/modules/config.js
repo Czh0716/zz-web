@@ -15,7 +15,7 @@ const mutations = {
         const currentPage = state.pages[state.currentPageIndex]
         const elements = currentPage.elements
         const length = elements.length
-        const key = `${state.currentPageIndex}-${length - 1}`
+        const key = `${state.currentPageIndex}-${length}`
 
         element.data.key = key
         element.data.attrs['data-id'] = key
