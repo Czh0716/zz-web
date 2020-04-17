@@ -8,7 +8,6 @@ export default {}
 
 <style lang="less" scoped>
 .layer-list {
-    height: 40%;
     background-color: pink;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="right-side-bar">
-        <attribute></attribute>
+        <attr-bar></attr-bar>
         <layer></layer>
     </div>
 </template>
@@ -9,7 +9,7 @@
 import StyleOpts from './styleOpts'
 export default {
     components: {
-        attribute: () => import('./attribute'),
+        AttrBar: () => import('./AttrBar'),
         layer: () => import('./layer'),
         StyleOpts
     },

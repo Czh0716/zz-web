@@ -5,12 +5,7 @@ const state = {
         right: true
     },
     action: 'selection',
-    shapes: ['rect', 'ellipse', 'line'],
-    elementNameMap: {
-        rect: '矩形',
-        ellipse: '椭圆',
-        line: '直线'
-    }
+    shapes: ['rect', 'ellipse', 'line']
 }
 
 const mutations = {

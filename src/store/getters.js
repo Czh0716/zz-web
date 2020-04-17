@@ -3,10 +3,11 @@ const getters = {
     subAction: state => state.app.action.split('-')[1] || '',
     shapes: state => state.app.shapes,
     isShape: state => state.app.shapes.includes(state.app.action.split('-')[1]),
-    elementNameMap: state => state.app.elementNameMap,
+    elementNameMap: state => state.config.elementNameMap,
     elements: state =>
         state.config.pages[state.config.currentPageIndex].elements,
     activeElement: (state, getters) =>
-        getters.elements[state.config.currentElementIndex]
+        getters.elements[state.config.currentElementIndex],
+    activeElementStyleCache: state => state.config.activeElementStyleCache
 }
 export default getters

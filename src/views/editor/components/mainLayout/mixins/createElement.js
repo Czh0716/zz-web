@@ -7,8 +7,9 @@ export default {
             const { clientX, clientY, localX, localY } = this.startPosition
             const isShape = this.isShape
             const tag = isShape ? this.subAction : 'div'
+            const nameMap = this.elementNameMap[this.subAction]
             const initOption = {
-                name: this.elementNameMap[this.subAction] || '',
+                name: nameMap ? `${nameMap.text}${nameMap.count}` : '未命名',
                 tag,
                 type: isShape ? 'shape' : this.subAction,
                 data: {
@@ -44,59 +45,66 @@ export default {
 
             if (this.subAction === 'text') this.initOutlined(true)
         },
-        stretchElement(e, isResize = false) {
-            if (Object.keys(this.startPosition).length === 0) return
-
+        stretchElement(e, isResize = false, forced = false) {
+            if (Object.keys(this.startPosition).length === 0 && !forced) return
             const element = this.activeElement
             if (!element) return
 
-            const { clientX, clientY, posLeft, posTop } = this.startPosition
+            let { width = '0', height = '0' } = forced
+                ? element.data.style
+                : this.outlinedStyleCopy
+            let cacheWidth = width
+            let cacheHeight = height
             const tag = element.tag
             const style = element.data.style
-            const localX = e.clientX - posLeft
-            const localY = e.clientY - posTop
-            let { width = '0', height = '0' } = this.outlinedStyleCopy
-            let offsetX = e.clientX - clientX
-            let offsetY = e.clientY - clientY
             let attrs = {}
 
             width = +width.replace('px', '')
             height = +height.replace('px', '')
 
-            if (isResize) {
-                const [left, top] = this.resizeOrigin
-                //判断是否resize左侧的点
-                if (left === '0') {
-                    if (offsetX < width) style.left = `${localX}px`
-                    offsetX = -offsetX
-                } else if (left === '100%') {
-                    if (-offsetX > width) style.left = `${localX}px`
-                }
-                //判断是否resize上侧的点
-                if (top === '0') {
-                    if (offsetY < height) style.top = `${localY}px`
-                    offsetY = -offsetY
-                } else if (top === '100%') {
-                    if (-offsetY > height) style.top = `${localY}px`
+            if (e) {
+                const { clientX, clientY, posLeft, posTop } = this.startPosition
+                const localX = e.clientX - posLeft
+                const localY = e.clientY - posTop
+                let offsetX = e.clientX - clientX
+                let offsetY = e.clientY - clientY
+
+                if (isResize) {
+                    const [left, top] = this.resizeOrigin
+                    //判断是否resize左侧的点
+                    if (left === '0') {
+                        if (offsetX < width) style.left = `${localX}px`
+                        offsetX = -offsetX
+                    } else if (left === '100%') {
+                        if (-offsetX > width) style.left = `${localX}px`
+                    }
+                    //判断是否resize上侧的点
+                    if (top === '0') {
+                        if (offsetY < height) style.top = `${localY}px`
+                        offsetY = -offsetY
+                    } else if (top === '100%') {
+                        if (-offsetY > height) style.top = `${localY}px`
+                    }
+
+                    if (left !== '50%') width += offsetX
+                    if (top !== '50%') height += offsetY
+                } else {
+                    // 判断创建模式反向拖拽
+                    if (offsetX < 0) style.left = `${localX}px`
+                    if (offsetY < 0) style.top = `${localY}px`
+                    width += offsetX
+                    height += offsetY
                 }
 
-                if (left !== '50%') width += offsetX
-                if (top !== '50%') height += offsetY
-            } else {
-                // 判断创建模式反向拖拽
-                if (offsetX < 0) style.left = `${localX}px`
-                if (offsetY < 0) style.top = `${localY}px`
-                width += offsetX
-                height += offsetY
+                cacheWidth = width
+                cacheHeight = height
+
+                width = Math.abs(width)
+                height = Math.abs(height)
+
+                if (e.shiftKey)
+                    width > height ? (height = width) : (width = height)
             }
-
-            const cacheWidth = width
-            const cacheHeight = height
-
-            width = Math.abs(width)
-            height = Math.abs(height)
-
-            if (e.shiftKey) width > height ? (height = width) : (width = height)
 
             style.width = `${width}px`
             style.height = `${height}px`

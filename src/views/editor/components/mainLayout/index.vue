@@ -67,6 +67,8 @@ export default {
                 this.changeAction('selection')
             }
 
+            this.$store.commit('config/UPDATE_ELEMENT_CACHE')
+
             this.startPosition = {}
         },
         getStartPosition(e) {
@@ -154,6 +156,7 @@ export default {
     .auxiliary-outlined {
         position: absolute;
         border: 1px solid #4f80ff;
+        opacity: 1 !important;
         .outlined--resize {
             position: absolute;
             background-color: #4f80ff;
