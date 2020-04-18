@@ -31,6 +31,7 @@ export default {
             if (!this.activeElement) return
 
             const value = typeof e === 'object' ? e.target.value : e
+
             this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
                 key,
                 value,

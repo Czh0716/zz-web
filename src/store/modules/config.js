@@ -78,7 +78,7 @@ const mutations = {
         const element = currentPage.elements[state.currentElementIndex]
         if (!element) return
 
-        Vue.set(isStyleAttr ? element.data.style : element.data, key, value)
+        Vue.set(isStyleAttr ? element.data.style : element, key, value)
     }
 }
 
