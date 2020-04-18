@@ -1,6 +1,6 @@
 <template>
-    <div class="color-input" @click.stop="pickerVisible = true">
-        <div @click.stop="pickerVisible = !pickerVisible" class="color-select" :label="label">
+    <div ref="picker" class="color-input" @click.stop="togglePicker">
+        <div class="color-select" :label="label">
             <div class="bar" :style="{backgroundColor: value}"></div>
         </div>
         <div class="color-picker">
@@ -39,7 +39,7 @@ export default {
     },
 
     mounted() {
-        document.addEventListener('click', () => {
+        document.addEventListener('click', e => {
             this.pickerVisible = false
         })
     },
@@ -60,6 +60,11 @@ export default {
     methods: {
         changeColor(val) {
             this.$emit('input', `rgba(${Object.values(val).join(',')})`)
+        },
+        togglePicker() {
+            const event = new Event('click')
+            document.dispatchEvent(event)
+            this.pickerVisible = !this.pickerVisible
         }
     },
     data() {
