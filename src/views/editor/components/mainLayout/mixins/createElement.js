@@ -23,7 +23,8 @@ export default {
                         width: '0',
                         height: '0',
                         opacity: 0.4,
-                        filter: ''
+                        filter: '',
+                        transform: 'translate3d(0,0,0)'
                     },
                     attrs: {
                         ...(isShape ? { fill: 'pink' } : {})

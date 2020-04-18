@@ -12,7 +12,7 @@ export default {
     },
     components: {
         common: () => import('./common'),
-        ShapeAttr: () => import('./shapeAttr'),
+        ShapeAttr: () => import('./shapeAttr')
     },
     methods: {
         updateAttr(e, key) {
