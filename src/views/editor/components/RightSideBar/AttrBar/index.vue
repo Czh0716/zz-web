@@ -12,7 +12,7 @@ export default {
     },
     components: {
         common: () => import('./common'),
-        ShapeAttr: () => import('./shapeAttr')
+        ShapeAttr: () => import('./shapeAttr'),
     },
     methods: {
         updateAttr(e, key) {
@@ -31,35 +31,6 @@ export default {
 .attribute-form {
     .v-input {
         font-size: 13px !important;
-    }
-    .color-select {
-        font-size: 13px;
-        text-align: center;
-        position: relative;
-        cursor: pointer;
-        border: 1px solid rgba(0, 0, 0, 0.42);
-        border-radius: 4px;
-        line-height: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        &::before {
-            content: attr(label);
-            position: absolute;
-            left: 10px;
-            top: -20px;
-            background-color: #fff;
-            color: rgba(0, 0, 0, 0.7);
-        }
-
-        .bar {
-            position: relative;
-            width: 100%;
-            margin: 0 10px;
-            height: 6px;
-            background-color: pink;
-            border-radius: 2px;
-        }
     }
 }
 </style>

@@ -32,9 +32,9 @@
         <v-row>
             <v-col cols="6">
                 <v-text-field
-                    v-model="shadowX"
+                    :value="removeUnit(shadow[1])"
+                    @input.native="e => updateShadow(e,1)"
                     label="阴影偏移X"
-                    value="1"
                     suffix="px"
                     type="number"
                     hide-details
@@ -44,9 +44,9 @@
             </v-col>
             <v-col cols="6">
                 <v-text-field
-                    v-model="shadowY"
+                    :value="removeUnit(shadow[2])"
+                    @input.native="e => updateShadow(e,2)"
                     label="阴影偏移Y"
-                    value="1"
                     suffix="px"
                     type="number"
                     hide-details
@@ -56,9 +56,9 @@
             </v-col>
             <v-col cols="12">
                 <v-text-field
-                    v-model="shadowSize"
+                    :value="removeUnit(shadow[3])"
+                    @input.native="e => updateShadow(e,3)"
                     label="阴影模糊大小"
-                    value="1"
                     suffix="px"
                     type="number"
                     hide-details
@@ -67,9 +67,7 @@
                 ></v-text-field>
             </v-col>
             <v-col cols="12">
-                <div class="color-select" label="阴影颜色">
-                    <div class="bar"></div>
-                </div>
+                <color-input label="阴影颜色" :value="shadow[0]" @input="(val)=>updateShadow(val,0)"></color-input>
             </v-col>
         </v-row>
     </div>
@@ -80,12 +78,18 @@ import { mapGetters } from 'vuex'
 
 export default {
     inject: ['triggerElementStretch'],
-
     computed: {
         ...mapGetters(['activeElement', 'activeElementStyleCache']),
         styles() {
             const element = this.activeElement
             return element ? (element.data ? element.data.style : {}) : {}
+        },
+        filter() {
+            return this.styles.filter || 'drop-shadow(rgba(0,0,0,0) 0px 0px 0px)'
+        },
+        shadow() {
+            const shadow = this.filter.match(/drop-shadow\((.*)\)/)[1].split(' ')
+            return shadow
         }
     },
     methods: {
@@ -104,6 +108,18 @@ export default {
                 value: hasUnit ? value + unit : value
             })
             if (key !== 'opacity') this.triggerElementStretch()
+        },
+        updateShadow(e, pos, unit = 'px') {
+            const value = typeof e === 'object' ? `${e.target.value}${unit}` : e
+            const shadow = [...this.shadow]
+            shadow[pos] = value
+            this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
+                key: 'filter',
+                value: this.filter.replace(
+                    /drop-shadow\((.*)\)/,
+                    `drop-shadow(${shadow.join(' ')})`
+                )
+            })
         }
     },
     data() {
@@ -114,6 +130,9 @@ export default {
             shadowSize: 0,
             shadowColor: ''
         }
+    },
+    components: {
+        ColorInput: () => import('./colorInput')
     }
 }
 </script>

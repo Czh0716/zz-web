@@ -157,6 +157,7 @@ export default {
         position: absolute;
         border: 1px solid #4f80ff;
         opacity: 1 !important;
+        filter: none !important;
         .outlined--resize {
             position: absolute;
             background-color: #4f80ff;

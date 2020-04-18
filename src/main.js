@@ -5,6 +5,8 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 
 import '@/styles/index.less'
+import clickOutside from '@/directives/clickOutside'
+Vue.directive('clickOutside', clickOutside)
 
 Vue.config.productionTip = false
 

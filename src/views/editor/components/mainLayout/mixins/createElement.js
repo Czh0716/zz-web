@@ -22,7 +22,8 @@ export default {
                         top: `${localY}px`,
                         width: '0',
                         height: '0',
-                        opacity: 0.4
+                        opacity: 0.4,
+                        filter: ''
                     },
                     attrs: {
                         ...(isShape ? { fill: 'pink' } : {})
