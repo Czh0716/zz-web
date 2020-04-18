@@ -26,5 +26,6 @@ export default {
     border-left: 1px solid @grey-l-3;
     display: flex;
     flex-direction: column;
+    background-color: #fff;
 }
 </style>

@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const state = {
     currentPageIndex: 0,
     currentElementIndex: null,
@@ -71,13 +73,12 @@ const mutations = {
             ...element.data.style
         }
     },
-    UPDATE_ELEMENT_ATTR(state, target) {
+    UPDATE_ELEMENT_ATTR(state, { key, value, isStyleAttr = true }) {
         const currentPage = state.pages[state.currentPageIndex]
         const element = currentPage.elements[state.currentElementIndex]
         if (!element) return
 
-        element.data.style[target.key] = target.value
-        // elements.splice(state.currentElementIndex, 1, )
+        Vue.set(isStyleAttr ? element.data.style : element.data, key, value)
     }
 }
 

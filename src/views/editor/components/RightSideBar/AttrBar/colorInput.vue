@@ -76,8 +76,9 @@ export default {
 }
 .color-picker {
     position: absolute;
-    left: -100%;
-    top: 80%;
+    left: -220px;
+    bottom: 0;
+    z-index: 1000;
 }
 .color-select {
     font-size: 13px;

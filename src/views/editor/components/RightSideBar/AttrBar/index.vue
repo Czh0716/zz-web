@@ -1,29 +1,23 @@
 <template>
     <div class="attribute-form">
-        <common></common>
+        <shapeAttrs v-if="activeElement"></shapeAttrs>
         <!-- <shape-attr></shape-attr> -->
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {}
     },
     components: {
         common: () => import('./common'),
-        ShapeAttr: () => import('./shapeAttr')
+        ShapeAttrs: () => import('./shapeAttrs')
     },
-    methods: {
-        updateAttr(e, key) {
-            const unit = 'px'
-            const value = e.target.value
-            if (Math.isNaN(value)) return
-
-            // this.$store.commit('config/UPDATE_ELEMENT_ATTR', { key, value: value + unit })
-        }
-    },
-    computed: {}
+    computed: {
+        ...mapGetters(['activeElement'])
+    }
 }
 </script>
 
@@ -37,7 +31,6 @@ export default {
 
 <style lang="less" scoped>
 .attribute-form {
-    height: 60%;
     background-color: white;
     padding: 20px;
 }

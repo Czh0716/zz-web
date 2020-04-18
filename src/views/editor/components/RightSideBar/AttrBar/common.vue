@@ -1,12 +1,13 @@
 <template>
-    <div class="common-attr">
+    <div class="attr-list">
+        <slot name="beforeSize"></slot>
         <v-row>
             <v-col cols="6" v-for="item in size" :key="item">
                 <v-text-field
                     :label="item"
                     :value="removeUnit(activeElementStyleCache[item])"
                     :suffix="item === 'rotate' ? 'deg':'px'"
-                    @input.native="(e)=>updateAttr(e,item)"
+                    @input.native="(e)=>updateStyle(e,item)"
                     type="number"
                     hide-details
                     dense
@@ -29,6 +30,7 @@
                 ></v-slider>
             </v-col>
         </v-row>
+        <slot name="beforeShadow"></slot>
         <v-row>
             <v-col cols="6">
                 <v-text-field
@@ -70,45 +72,15 @@
                 <color-input label="阴影颜色" :value="shadow[0]" @input="(val)=>updateShadow(val,0)"></color-input>
             </v-col>
         </v-row>
+        <slot></slot>
     </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import common from './mixins'
 export default {
-    inject: ['triggerElementStretch'],
-    computed: {
-        ...mapGetters(['activeElement', 'activeElementStyleCache']),
-        styles() {
-            const element = this.activeElement
-            return element ? (element.data ? element.data.style : {}) : {}
-        },
-        filter() {
-            return this.styles.filter || 'drop-shadow(rgba(0,0,0,0) 0px 0px 0px)'
-        },
-        shadow() {
-            const shadow = this.filter.match(/drop-shadow\((.*)\)/)[1].split(' ')
-            return shadow
-        }
-    },
+    mixins: [common],
     methods: {
-        removeUnit(value) {
-            const str = String(value)
-            return str ? +str.replace('px', '') : ''
-        },
-        updateAttr(e, key, hasUnit = true) {
-            if (!this.activeElement) return
-
-            const unit = 'px'
-            const value = typeof e === 'object' ? e.target.value : e
-            if (isNaN(value)) return
-            this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
-                key,
-                value: hasUnit ? value + unit : value
-            })
-            if (key !== 'opacity') this.triggerElementStretch()
-        },
         updateShadow(e, pos, unit = 'px') {
             const value = typeof e === 'object' ? `${e.target.value}${unit}` : e
             const shadow = [...this.shadow]
@@ -124,11 +96,7 @@ export default {
     },
     data() {
         return {
-            size: ['left', 'top', 'width', 'height'],
-            shadowX: 0,
-            shadowY: 0,
-            shadowSize: 0,
-            shadowColor: ''
+            size: ['left', 'top', 'width', 'height']
         }
     },
     components: {
@@ -138,6 +106,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.common-attr {
+.attr-list {
 }
 </style>

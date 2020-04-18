@@ -24,11 +24,10 @@ export default {
                         height: '0',
                         opacity: 0.4,
                         filter: '',
-                        transform: 'translate3d(0,0,0)'
+                        transform: 'translate3d(0,0,0)',
+                        ...(isShape ? { fill: 'rgba(255,192,203,0.9)' } : {})
                     },
-                    attrs: {
-                        ...(isShape ? { fill: 'pink' } : {})
-                    },
+                    attrs: {},
                     on: {
                         mousedown: this.onElementMouseDown,
                         mouseup: this.onElementMouseUp
