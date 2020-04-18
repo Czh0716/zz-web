@@ -3,7 +3,17 @@ import Vue from 'vue'
 const state = {
     currentPageIndex: 0,
     currentElementIndex: null,
-    pages: [{ name: '页面1', elements: [] }],
+    pages: [
+        {
+            name: '页面1',
+            style: {
+                backgroundColor: 'rgba(255,255,255,1)',
+                width: '375px',
+                height: '667px'
+            },
+            elements: []
+        }
+    ],
     elementNameMap: {
         rect: {
             text: '矩形',
@@ -25,8 +35,18 @@ const mutations = {
     ADD_PAGE(state) {
         state.pages.push({
             name: `页面${state.pages.length}`,
+            style: {
+                backgroundColor: 'rgba(255,255,255,1)',
+                width: '375px',
+                height: '667px'
+            },
             elements: []
         })
+    },
+    UPDATE_PAGE_ATTR(state, { key, value, isStyleAttr = true }) {
+        const currentPage = state.pages[state.currentPageIndex]
+
+        Vue.set(isStyleAttr ? currentPage.style : currentPage, key, value)
     },
     ADD_ELEMENT(state, element) {
         const currentPage = state.pages[state.currentPageIndex]

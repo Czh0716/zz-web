@@ -1,7 +1,7 @@
 <template>
     <div class="attribute-form">
-        <shapeAttrs v-if="activeElement"></shapeAttrs>
-        <!-- <shape-attr></shape-attr> -->
+        <shape-attrs v-if="activeElement"></shape-attrs>
+        <page-attrs v-else></page-attrs>
     </div>
 </template>
 
@@ -12,8 +12,8 @@ export default {
         return {}
     },
     components: {
-        common: () => import('./common'),
-        ShapeAttrs: () => import('./shapeAttrs')
+        ShapeAttrs: () => import('./shapeAttrs'),
+        PageAttrs: () => import('./pageAttrs')
     },
     computed: {
         ...mapGetters(['activeElement'])

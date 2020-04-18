@@ -25,7 +25,7 @@ export default {
                         opacity: 0.4,
                         filter: '',
                         transform: 'translate3d(0,0,0)',
-                        ...(isShape ? { fill: 'rgba(255,192,203,0.9)' } : {})
+                        ...(isShape ? { fill: 'rgba(255,192,203,1)' } : {})
                     },
                     attrs: {},
                     on: {

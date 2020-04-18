@@ -19,7 +19,7 @@
             <v-col>
                 <v-slider
                     :value="styles['opacity']"
-                    @input="(val)=>updateAttr(val,'opacity',false)"
+                    @input="(val)=>updateStyle(val,'opacity',false)"
                     label="opacity"
                     hide-details
                     thumb-label

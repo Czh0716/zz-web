@@ -24,6 +24,7 @@ export default {
             'shapes',
             'isShape',
             'subAction',
+            'activePage',
             'elementNameMap',
             'elements',
             'activeElement'
@@ -72,11 +73,12 @@ export default {
             this.startPosition = {}
         },
         getStartPosition(e) {
-            const { left, top } = this.$refs.canvas.getBoundingClientRect()
+            const { left, top } = this.$refs.content.getBoundingClientRect()
+            const { left: canvasLeft, top: canvasTop } = this.$refs.canvas.getBoundingClientRect()
             const clientX = e.clientX
             const clientY = e.clientY
-            const localX = clientX - left
-            const localY = clientY - top
+            const localX = clientX - canvasLeft
+            const localY = clientY - canvasTop
             this.startPosition = {
                 clientX,
                 clientY,
@@ -95,24 +97,28 @@ export default {
                 return h('div', { ...option.data }, option.subData)
             }
         })
-
         return h(
             'div',
             {
-                staticClass: 'content'
+                staticClass: 'content',
+                class: {
+                    [this.action]: true
+                },
+                on: {
+                    mousedown: this.onMouseDown,
+                    mousemove: this.onMouseMove,
+                    mouseup: this.onMouseUp
+                },
+                ref: 'content'
             },
             [
                 h(
                     'div',
                     {
                         staticClass: 'main-layout',
-                        class: {
-                            [this.action]: true
-                        },
-                        on: {
-                            mousedown: this.onMouseDown,
-                            mousemove: this.onMouseMove,
-                            mouseup: this.onMouseUp
+
+                        style: {
+                            ...this.activePage.style
                         },
                         ref: 'canvas'
                     },
@@ -126,23 +132,14 @@ export default {
 
 <style lang="less" scoped>
 .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    width: 100%;
 }
 .main-layout {
     position: relative;
-    flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    .test {
-        top: 0;
-        position: absolute;
-        width: 100%;
-        height: 50vh;
-        pointer-events: none;
-    }
-
+    width: 100%;
+    margin: 0 auto;
     .layout__element {
         position: absolute;
         width: 0;
