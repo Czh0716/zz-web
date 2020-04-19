@@ -5,6 +5,7 @@
             <!-- <left-side-bar v-show="compsVisible['left']"></left-side-bar> -->
             <side-bar></side-bar>
             <main-layout ref="main"></main-layout>
+            <element-tree></element-tree>
             <right-side-bar v-show="compsVisible['right']"></right-side-bar>
         </div>
     </div>
@@ -21,7 +22,8 @@ export default {
         EditorHeader: () => import('./components/EditorHeader'),
         MainLayout: () => import('./components/MainLayout'),
         SideBar: () => import('./components/SideBar'),
-        RightSideBar: () => import('./components/RightSideBar')
+        RightSideBar: () => import('./components/RightSideBar'),
+        ElementTree: () => import('./components/elementTree')
     },
     computed: {
         compsVisible() {

@@ -25,6 +25,7 @@ export default {
     height: @sidebar-height;
     border-left: 1px solid @grey-l-3;
     display: flex;
+    flex-shrink: 0;
     flex-direction: column;
     background-color: #fff;
 }

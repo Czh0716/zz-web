@@ -11,7 +11,8 @@ export default {
             const initOption = {
                 name: nameMap ? `${nameMap.text}${nameMap.count}` : '未命名',
                 tag,
-                type: isShape ? 'shape' : this.subAction,
+                isShape,
+                type: this.subAction,
                 data: {
                     staticClass: 'layout__element',
                     class: {

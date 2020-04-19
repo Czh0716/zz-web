@@ -6,12 +6,15 @@ const state = {
     pages: [
         {
             name: '页面1',
+            id: 'page-1',
+            type: 'page',
             style: {
                 backgroundColor: 'rgba(255,255,255,1)',
                 width: '375px',
                 height: '667px'
             },
-            elements: []
+            elements: [],
+            visible: true
         }
     ],
     elementNameMap: {
@@ -35,12 +38,14 @@ const mutations = {
     ADD_PAGE(state) {
         state.pages.push({
             name: `页面${state.pages.length}`,
+            type: 'page',
             style: {
                 backgroundColor: 'rgba(255,255,255,1)',
                 width: '375px',
                 height: '667px'
             },
-            elements: []
+            elements: [],
+            visible: true
         })
     },
     UPDATE_PAGE_ATTR(state, { key, value, isStyleAttr = true }) {
@@ -56,6 +61,8 @@ const mutations = {
 
         state.elementNameMap[element.tag].count++
 
+        element.visible = true
+        element.id = key
         element.data.key = key
         element.data.attrs['data-id'] = key
         elements.push(element)
@@ -99,6 +106,14 @@ const mutations = {
         if (!element) return
 
         Vue.set(isStyleAttr ? element.data.style : element, key, value)
+    },
+    TOGGLE_PAGE_VISIBLE(state, index) {
+        const page = state.pages[index]
+        page.visible = !page.visible
+    },
+    TOGGLE_ELEMENT_VISIBLE(state, { pageIndex, elementIndex }) {
+        const element = state.pages[pageIndex].elements[elementIndex]
+        element.visible = !element.visible
     }
 }
 

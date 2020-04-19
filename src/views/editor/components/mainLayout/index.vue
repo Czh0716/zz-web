@@ -37,7 +37,7 @@ export default {
             if (MOUSE_KEY === 0) {
                 this.getStartPosition(e)
 
-                if (e.target === e.currentTarget) {
+                if ([this.$refs.content, this.$refs.canvas].includes(e.target)) {
                     this.resizeOutlined()
                     this.$store.commit('config/SET_CURRENT_ELEMENT')
                 }
@@ -91,10 +91,12 @@ export default {
     },
     render(h) {
         const layoutEls = this.elements.map(option => {
-            if (option.type === 'shape') {
-                return h('svg', { ...option.data }, [h(option.tag, { ...option.subData })])
+            const { style } = option.data
+            style.visibility = option.visible ? 'visible' : 'hidden'
+            if (option.isShape) {
+                return h('svg', { ...option.data, style }, [h(option.tag, { ...option.subData })])
             } else {
-                return h('div', { ...option.data }, option.subData)
+                return h('div', { ...option.data, style }, option.subData)
             }
         })
         return h(
@@ -133,13 +135,13 @@ export default {
 <style lang="less" scoped>
 .content {
     width: 100%;
+    overflow: hidden;
 }
 .main-layout {
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
     width: 100%;
     margin: 0 auto;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
     .layout__element {
         position: absolute;
         width: 0;
