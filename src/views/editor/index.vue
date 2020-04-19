@@ -5,7 +5,7 @@
             <!-- <left-side-bar v-show="compsVisible['left']"></left-side-bar> -->
             <side-bar></side-bar>
             <main-layout ref="main"></main-layout>
-            <element-tree></element-tree>
+            <element-tree @initOutlined="initOutlined"></element-tree>
             <right-side-bar v-show="compsVisible['right']"></right-side-bar>
         </div>
     </div>
@@ -33,6 +33,9 @@ export default {
     methods: {
         triggerElementStretch() {
             this.$refs.main.stretchElement(null, false, true)
+        },
+        initOutlined(hideResize = false) {
+            this.$refs.main.initOutlined(hideResize)
         }
     }
 }

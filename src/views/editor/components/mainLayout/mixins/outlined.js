@@ -96,6 +96,7 @@ export default {
             this.hideOutlined = false
             this.hideTextEditor = true
             this.hideOutlinedResize = hideResize
+
             this.outlinedStyle = this.activeElement.data.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
@@ -104,13 +105,13 @@ export default {
             this.outlinedStyle = {}
             this.outlinedStyleCopy = {}
         },
-        onOutlinedMouseDown(e) {
+        onOutlinedMouseDown() {
             if (this.action.includes('selection') && this.hideTextEditor) {
                 this.clutched = true
                 this.initOutlined()
             }
         },
-        onOutlinedMouseUp(e) {
+        onOutlinedMouseUp() {
             this.clutched = false
         },
         onOutlinedDblclick() {

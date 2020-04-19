@@ -58,6 +58,7 @@ export default {
     methods: {
         setActiveElement(e) {
             this.$store.commit('config/SET_CURRENT_ELEMENT', e)
+            this.$emit('initOutlined')
         }
     },
     created() {
