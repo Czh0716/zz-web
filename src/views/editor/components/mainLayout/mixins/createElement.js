@@ -43,7 +43,7 @@ export default {
                 }
             }
 
-            this.$store.commit('config/ADD_ELEMENT', initOption)
+            this.$store.dispatch('config/addElement', initOption)
 
             if (this.subAction === 'text') this.initOutlined(true)
         },
@@ -142,8 +142,11 @@ export default {
         completeCreation() {
             this.initOutlined()
             this.outlinedStyle.opacity = '1'
-            if (this.subAction === 'text')
-                this.els[this.activeIdx].subData = 'Text Content'
+            const subAction = this.subAction
+            if (subAction === 'text') {
+            } else if (subAction === 'resize') {
+            } else if (this.shapes.includes(subAction)) {
+            }
         }
     }
 }

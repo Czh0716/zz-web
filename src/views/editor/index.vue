@@ -48,6 +48,9 @@ export default {
         resizeOutlined() {
             this.$refs.main.resizeOutlined()
         }
+    },
+    created() {
+        this.$store.commit('config/SET_CONFIG_RECORD')
     }
 }
 </script>

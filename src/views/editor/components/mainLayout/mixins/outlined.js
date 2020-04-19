@@ -13,7 +13,6 @@ export default {
     methods: {
         genOutlined() {
             if (this.hideOutlined) return
-
             const h = this.$createElement
             const resizeOrigins = [
                 { origin: '0 0', cursor: 'nwse' },
@@ -58,7 +57,7 @@ export default {
                       })
                   })
 
-            const activeEl = this.els[this.activeIdx]
+            const activeEl = this.activeElement
 
             const textEditor = this.hideTextEditor
                 ? []

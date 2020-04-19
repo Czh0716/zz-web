@@ -9,6 +9,8 @@ const getters = {
     elements: (state, getters) => getters.activePage.elements,
     activeElement: (state, getters) =>
         getters.elements[state.config.currentElementIndex],
-    activeElementStyleCache: state => state.config.activeElementStyleCache
+    activeElementStyleCache: state => state.config.activeElementStyleCache,
+    configRecord: state => state.config.configRecord,
+    currentRecordIndex: state => state.config.currentRecordIndex
 }
 export default getters

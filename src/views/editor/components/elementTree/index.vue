@@ -14,7 +14,7 @@
                     >
                         <v-icon
                             :class="{hidden:!page.visible}"
-                            @click.stop="$store.commit('config/TOGGLE_PAGE_VISIBLE',pageIndex)"
+                            @click.stop="$store.dispatch('config/togglePageVisble',pageIndex)"
                             class="visibility"
                         >mdi-eye-{{page.visible ? '':'off-'}}outline</v-icon>
                         <v-icon
@@ -36,7 +36,7 @@
                         >
                             <v-icon
                                 :class="{hidden:!el.visible}"
-                                @click.stop="$store.commit('config/TOGGLE_ELEMENT_VISIBLE',{pageIndex,elementIndex})"
+                                @click.stop="$store.dispatch('config/toggleElementVisible',{pageIndex,elementIndex})"
                                 class="visibility"
                             >mdi-eye-{{el.visible ? '':'off-'}}outline</v-icon>
                             <span>

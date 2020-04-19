@@ -1,6 +1,9 @@
 import Vue from 'vue'
+import { cloneDeep } from 'lodash'
 
 const state = {
+    configRecord: [],
+    currentRecordIndex: -1,
     currentPageIndex: 0,
     currentElementIndex: null,
     pages: [
@@ -17,6 +20,7 @@ const state = {
             visible: true
         }
     ],
+    activeElementStyleCache: {},
     elementNameMap: {
         rect: {
             text: '矩形',
@@ -30,8 +34,7 @@ const state = {
             text: '直线',
             count: 0
         }
-    },
-    activeElementStyleCache: {}
+    }
 }
 
 const mutations = {
@@ -120,10 +123,57 @@ const mutations = {
     TOGGLE_ELEMENT_VISIBLE(state, { pageIndex, elementIndex }) {
         const element = state.pages[pageIndex].elements[elementIndex]
         element.visible = !element.visible
+    },
+    SET_CONFIG_RECORD(state) {
+        const {
+            currentPageIndex,
+            currentElementIndex,
+            pages,
+            activeElementStyleCache
+        } = state
+
+        state.configRecord.push(
+            cloneDeep({
+                currentPageIndex,
+                currentElementIndex,
+                pages,
+                activeElementStyleCache
+            })
+        )
+        state.currentRecordIndex++
+        state.configRecord.splice(state.currentRecordIndex + 1)
+    },
+    BACK_CONFIG_RECORD(state) {
+        console.log('asd')
+        state.currentRecordIndex--
+        const config = state.configRecord[state.currentRecordIndex]
+        Object.keys(config).forEach(key => (state[key] = config[key]))
+    },
+    FORWARD_CONFIG_RECORD(state) {
+        state.currentRecordIndex++
+        const config = state.configRecord[state.currentRecordIndex]
+        Object.keys(config).forEach(key => (state[key] = config[key]))
     }
 }
 
-const actions = {}
+const actions = {
+    addPage({ commit }) {
+        commit('ADD_PAGE')
+        commit('SET_CONFIG_RECORD')
+    },
+    addElement({ commit }, element) {
+        commit('ADD_ELEMENT', element)
+        commit('SET_CONFIG_RECORD')
+    },
+    togglePageVisible({ commit }, index) {
+        commit('TOGGLE_PAGE_VISIBLE', index)
+        commit('SET_CONFIG_RECORD')
+    },
+    toggleElementVisible({ commit }, value) {
+        commit('TOGGLE_ELEMENT_VISIBLE', value)
+        commit('SET_CONFIG_RECORD')
+    }
+}
 
 export default {
     namespaced: true,

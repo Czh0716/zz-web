@@ -25,7 +25,7 @@ export default {
     methods: {
         addPage() {
             this.$emit('resizeOutlined')
-            this.$store.commit('config/ADD_PAGE')
+            this.$store.dispatch('config/addPage')
         }
     },
     data() {

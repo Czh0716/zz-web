@@ -10,12 +10,7 @@ export default {
     mixins: [selection, outlined, createElement],
     data() {
         return {
-            els: [],
-            activeIdx: null,
-            startPosition: {},
-            operationType: 'create',
-            createType: 'rect',
-            selectionType: 'normal'
+            startPosition: {}
         }
     },
     computed: {

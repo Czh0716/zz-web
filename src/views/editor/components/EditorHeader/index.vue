@@ -18,10 +18,22 @@
             </div>
         </div>
         <div class="edit-operation">
-            <button v-ripple class="btn">
+            <button
+                v-ripple
+                class="btn"
+                :class="{disabled:backDisabled}"
+                :disabled="backDisabled"
+                @click="$store.commit('config/BACK_CONFIG_RECORD')"
+            >
                 <img src="@/assets/icons/ot1.svg" alt />
             </button>
-            <button v-ripple class="btn">
+            <button
+                v-ripple
+                class="btn"
+                :class="{disabled:forwardDisabled}"
+                :disabled="forwardDisabled"
+                @click="$store.commit('config/FORWARD_CONFIG_RECORD')"
+            >
                 <img src="@/assets/icons/ot2.svg" alt />
             </button>
             <button v-ripple class="btn">
@@ -55,9 +67,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-    mounted() {},
+    computed: {
+        ...mapGetters(['configRecord', 'currentRecordIndex']),
+        backDisabled() {
+            return this.configRecord.length === 0 || this.currentRecordIndex === 0
+        },
+        forwardDisabled() {
+            return (
+                this.configRecord.length === 0 ||
+                this.currentRecordIndex === this.configRecord.length - 1
+            )
+        }
+    },
     methods: {
+        test() {
+            console.log('test')
+        },
         changeCompVisible(comp) {
             this.$store.dispatch('app/toggleWindowCompVisible', comp)
         }
@@ -118,6 +145,9 @@ export default {
         }
     }
     .edit-operation {
+        .disabled {
+            opacity: 0.5;
+        }
         button {
             &:nth-child(2) {
                 margin-right: 10px;
