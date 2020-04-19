@@ -5,8 +5,8 @@ const state = {
     currentElementIndex: null,
     pages: [
         {
-            name: '页面1',
-            id: 'page-1',
+            name: '页面0',
+            id: 'page-0',
             type: 'page',
             style: {
                 backgroundColor: 'rgba(255,255,255,1)',
@@ -36,8 +36,10 @@ const state = {
 
 const mutations = {
     ADD_PAGE(state) {
+        const length = state.pages.length
         state.pages.push({
-            name: `页面${state.pages.length}`,
+            name: `页面${length}`,
+            id: `page-${length}`,
             type: 'page',
             style: {
                 backgroundColor: 'rgba(255,255,255,1)',
@@ -47,11 +49,15 @@ const mutations = {
             elements: [],
             visible: true
         })
+        state.currentPageIndex = length
     },
     UPDATE_PAGE_ATTR(state, { key, value, isStyleAttr = true }) {
         const currentPage = state.pages[state.currentPageIndex]
 
         Vue.set(isStyleAttr ? currentPage.style : currentPage, key, value)
+    },
+    SET_CURRENT_PAGE(state, index) {
+        state.currentPageIndex = index
     },
     ADD_ELEMENT(state, element) {
         const currentPage = state.pages[state.currentPageIndex]

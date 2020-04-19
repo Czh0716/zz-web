@@ -8,16 +8,18 @@
             <div class="tree">
                 <div class="page" v-for="(page,pageIndex) in pages" :key="page.id">
                     <div
+                        @click="setActivePage(pageIndex)"
                         :class="{active: activePage.id === page.id}"
                         class="page-name"
-                        @click="$set(pagesExpand,pageIndex,!pagesExpand[pageIndex])"
                     >
                         <v-icon
                             :class="{hidden:!page.visible}"
                             @click.stop="$store.commit('config/TOGGLE_PAGE_VISIBLE',pageIndex)"
                             class="visibility"
                         >mdi-eye-{{page.visible ? '':'off-'}}outline</v-icon>
-                        <v-icon>mdi-menu-{{pagesExpand[pageIndex]?'down':'right'}}</v-icon>
+                        <v-icon
+                            @click.stop="$set(pagesExpand,pageIndex,!pagesExpand[pageIndex])"
+                        >mdi-menu-{{pagesExpand[pageIndex]?'down':'right'}}</v-icon>
                         <span>
                             <v-icon>{{iconMap['page']}}</v-icon>
                             {{page.name}}
@@ -59,6 +61,12 @@ export default {
         setActiveElement(e) {
             this.$store.commit('config/SET_CURRENT_ELEMENT', e)
             this.$emit('initOutlined')
+        },
+        setActivePage(index) {
+            this.pagesExpand[index] = true
+            this.$store.commit('config/SET_CURRENT_PAGE', index)
+            this.$store.commit('config/SET_CURRENT_ELEMENT')
+            this.$emit('resizeOutlined')
         }
     },
     created() {
@@ -81,10 +89,10 @@ export default {
 <style lang="less" scoped>
 .element-tree {
     width: 220px;
-    border-left: 1px solid #e6e6e6;
+    background: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
     font-size: 14px;
-    background: #fff;
     .tab-bar {
         display: flex;
         align-items: center;

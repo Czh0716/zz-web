@@ -71,6 +71,8 @@ export default {
     height: 60px;
     justify-content: space-between;
     border-bottom: thin solid @grey-l-3;
+    position: relative;
+    z-index: 100;
     .l,
     .edit-operation,
     .r {

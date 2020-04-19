@@ -3,9 +3,9 @@
         <editor-header></editor-header>
         <div class="main">
             <!-- <left-side-bar v-show="compsVisible['left']"></left-side-bar> -->
-            <side-bar></side-bar>
+            <side-bar v-on="layoutListeners"></side-bar>
             <main-layout ref="main"></main-layout>
-            <element-tree @initOutlined="initOutlined"></element-tree>
+            <element-tree v-on="layoutListeners"></element-tree>
             <right-side-bar v-show="compsVisible['right']"></right-side-bar>
         </div>
     </div>
@@ -28,6 +28,14 @@ export default {
     computed: {
         compsVisible() {
             return this.$store.state.app.windowCompsVisible
+        },
+
+        layoutListeners() {
+            const { initOutlined, resizeOutlined } = this
+            return {
+                initOutlined,
+                resizeOutlined
+            }
         }
     },
     methods: {
@@ -36,6 +44,9 @@ export default {
         },
         initOutlined(hideResize = false) {
             this.$refs.main.initOutlined(hideResize)
+        },
+        resizeOutlined() {
+            this.$refs.main.resizeOutlined()
         }
     }
 }
