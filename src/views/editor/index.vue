@@ -1,6 +1,6 @@
 <template>
     <div class="editor">
-        <editor-header></editor-header>
+        <editor-header v-on="layoutListeners"></editor-header>
         <div class="main">
             <!-- <left-side-bar v-show="compsVisible['left']"></left-side-bar> -->
             <side-bar v-on="layoutListeners"></side-bar>

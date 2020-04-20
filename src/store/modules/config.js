@@ -131,7 +131,7 @@ const mutations = {
             pages,
             activeElementStyleCache
         } = state
-
+        state.configRecord.splice(state.currentRecordIndex + 1)
         state.configRecord.push(
             cloneDeep({
                 currentPageIndex,
@@ -140,18 +140,18 @@ const mutations = {
                 activeElementStyleCache
             })
         )
+
         state.currentRecordIndex++
-        state.configRecord.splice(state.currentRecordIndex + 1)
     },
     BACK_CONFIG_RECORD(state) {
-        console.log('asd')
         state.currentRecordIndex--
-        const config = state.configRecord[state.currentRecordIndex]
+
+        const config = cloneDeep(state.configRecord[state.currentRecordIndex])
         Object.keys(config).forEach(key => (state[key] = config[key]))
     },
     FORWARD_CONFIG_RECORD(state) {
         state.currentRecordIndex++
-        const config = state.configRecord[state.currentRecordIndex]
+        const config = cloneDeep(state.configRecord[state.currentRecordIndex])
         Object.keys(config).forEach(key => (state[key] = config[key]))
     }
 }
@@ -159,10 +159,6 @@ const mutations = {
 const actions = {
     addPage({ commit }) {
         commit('ADD_PAGE')
-        commit('SET_CONFIG_RECORD')
-    },
-    addElement({ commit }, element) {
-        commit('ADD_ELEMENT', element)
         commit('SET_CONFIG_RECORD')
     },
     togglePageVisible({ commit }, index) {

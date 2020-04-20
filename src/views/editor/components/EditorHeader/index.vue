@@ -23,7 +23,7 @@
                 class="btn"
                 :class="{disabled:backDisabled}"
                 :disabled="backDisabled"
-                @click="$store.commit('config/BACK_CONFIG_RECORD')"
+                @click="backConfig"
             >
                 <img src="@/assets/icons/ot1.svg" alt />
             </button>
@@ -32,7 +32,7 @@
                 class="btn"
                 :class="{disabled:forwardDisabled}"
                 :disabled="forwardDisabled"
-                @click="$store.commit('config/FORWARD_CONFIG_RECORD')"
+                @click="forwardConfig"
             >
                 <img src="@/assets/icons/ot2.svg" alt />
             </button>
@@ -82,11 +82,16 @@ export default {
         }
     },
     methods: {
-        test() {
-            console.log('test')
-        },
         changeCompVisible(comp) {
             this.$store.dispatch('app/toggleWindowCompVisible', comp)
+        },
+        backConfig() {
+            this.$emit('resizeOutlined')
+            this.$store.commit('config/BACK_CONFIG_RECORD')
+        },
+        forwardConfig() {
+            this.$emit('resizeOutlined')
+            this.$store.commit('config/FORWARD_CONFIG_RECORD')
         }
     }
 }

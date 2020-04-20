@@ -43,7 +43,7 @@ export default {
                 }
             }
 
-            this.$store.dispatch('config/addElement', initOption)
+            this.$store.commit('config/ADD_ELEMENT', initOption)
 
             if (this.subAction === 'text') this.initOutlined(true)
         },
@@ -146,6 +146,7 @@ export default {
             if (subAction === 'text') {
             } else if (subAction === 'resize') {
             } else if (this.shapes.includes(subAction)) {
+                this.$store.commit('config/SET_CONFIG_RECORD')
             }
         }
     }

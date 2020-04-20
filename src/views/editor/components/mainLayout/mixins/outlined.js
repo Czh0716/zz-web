@@ -12,7 +12,7 @@ export default {
     },
     methods: {
         genOutlined() {
-            if (this.hideOutlined) return
+            if (this.hideOutlined || !this.activeElement) return
             const h = this.$createElement
             const resizeOrigins = [
                 { origin: '0 0', cursor: 'nwse' },
