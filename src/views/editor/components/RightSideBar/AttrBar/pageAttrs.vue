@@ -96,5 +96,6 @@ export default {
 
 <style lang="less" scoped>
 .page-attrs {
+    position: relative;
 }
 </style>

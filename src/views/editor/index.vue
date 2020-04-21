@@ -22,6 +22,7 @@ export default {
         EditorHeader: () => import('./components/EditorHeader'),
         MainLayout: () => import('./components/MainLayout'),
         SideBar: () => import('./components/SideBar'),
+        LeftSideBar: () => import('./components/LeftSideBar'),
         RightSideBar: () => import('./components/RightSideBar'),
         ElementTree: () => import('./components/elementTree')
     },
@@ -59,7 +60,7 @@ export default {
 .editor {
     height: 100%;
     .main {
-        height: 100%;
+        height: calc(100% - @header-height);
         display: flex;
     }
 }

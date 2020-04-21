@@ -3,7 +3,7 @@
         <div class="color-select" :label="label">
             <div class="bar" :style="{backgroundColor: value}"></div>
         </div>
-        <div class="color-picker">
+        <div class="color-picker" ref="main">
             <v-color-picker
                 v-show="pickerVisible"
                 :value="colorObj"
@@ -37,7 +37,6 @@ export default {
             default: '颜色'
         }
     },
-
     mounted() {
         document.addEventListener('click', e => {
             this.pickerVisible = false
@@ -81,8 +80,6 @@ export default {
 }
 .color-picker {
     position: absolute;
-    left: -220px;
-    bottom: 0;
     z-index: 1000;
 }
 .color-select {

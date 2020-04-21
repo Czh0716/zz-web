@@ -65,11 +65,18 @@ export default {
             height = +height.replace('px', '')
 
             if (e) {
-                const { clientX, clientY, posLeft, posTop } = this.startPosition
-                const localX = e.clientX - posLeft
-                const localY = e.clientY - posTop
+                let {
+                    clientX,
+                    clientY,
+                    localX,
+                    localY,
+                    posLeft,
+                    posTop
+                } = this.startPosition
                 let offsetX = e.clientX - clientX
                 let offsetY = e.clientY - clientY
+                localX += offsetX
+                localY += offsetY
                 if (isResize) {
                     const [left, top] = this.resizeOrigin
                     //判断是否resize左侧的点

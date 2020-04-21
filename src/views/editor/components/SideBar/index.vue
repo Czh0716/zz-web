@@ -50,6 +50,7 @@ export default {
 
 <style lang="less" scoped>
 .my-side-bar {
+    position: relative;
     flex-shrink: 0;
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);

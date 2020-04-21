@@ -100,7 +100,7 @@ export default {
 <style lang="less" scoped>
 .header {
     display: flex;
-    height: 60px;
+    height: @header-height;
     justify-content: space-between;
     border-bottom: thin solid @grey-l-3;
     position: relative;
