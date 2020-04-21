@@ -88,7 +88,7 @@ export default {
 
 <style lang="less" scoped>
 .element-tree {
-    width: 220px;
+    width: 260px;
     background: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;

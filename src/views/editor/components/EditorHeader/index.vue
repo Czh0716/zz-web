@@ -105,6 +105,7 @@ export default {
     border-bottom: thin solid @grey-l-3;
     position: relative;
     z-index: 100;
+    background-color: #fff;
     .l,
     .edit-operation,
     .r {

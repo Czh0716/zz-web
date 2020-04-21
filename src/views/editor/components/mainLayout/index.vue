@@ -79,8 +79,8 @@ export default {
                 clientY,
                 localX,
                 localY,
-                posLeft: left,
-                posTop: top
+                posLeft: canvasLeft,
+                posTop: canvasTop
             }
         }
     },

@@ -70,7 +70,6 @@ export default {
                 const localY = e.clientY - posTop
                 let offsetX = e.clientX - clientX
                 let offsetY = e.clientY - clientY
-
                 if (isResize) {
                     const [left, top] = this.resizeOrigin
                     //判断是否resize左侧的点
