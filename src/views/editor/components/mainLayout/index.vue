@@ -57,10 +57,18 @@ export default {
             }
         },
         onMouseUp() {
-            if (this.action.includes('create')) {
+            const action = this.action
+            if (action.includes('create')) {
                 this.completeCreation()
-            } else if (this.action.includes('resize')) {
+                this.$store.commit('config/SET_CONFIG_RECORD')
+            } else if (action.includes('resize')) {
+                this.$store.commit('config/SET_CONFIG_RECORD')
                 this.changeAction('selection')
+            } else if (action.includes('selection')) {
+                if (this.hadMove) {
+                    this.hadMove = false
+                    this.$store.commit('config/SET_CONFIG_RECORD')
+                }
             }
 
             this.$store.commit('config/UPDATE_ELEMENT_CACHE')

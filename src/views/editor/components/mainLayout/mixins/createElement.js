@@ -152,7 +152,6 @@ export default {
             if (subAction === 'text') {
             } else if (subAction === 'resize') {
             } else if (this.shapes.includes(subAction)) {
-                this.$store.commit('config/SET_CONFIG_RECORD')
             }
         }
     }

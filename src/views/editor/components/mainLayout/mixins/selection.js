@@ -18,7 +18,6 @@ export default {
         },
         onElementMouseUp() {
             this.clutched = false
-        },
-        resizeElement(e) {}
+        }
     }
 }

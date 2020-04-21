@@ -2,6 +2,7 @@ export default {
     data() {
         return {
             clutched: false,
+            hadMove: false,
             hideOutlined: true,
             hideOutlinedResize: false,
             hideTextEditor: true,
@@ -49,9 +50,6 @@ export default {
                                   this.getStartPosition(e)
                                   this.initOutlined()
                                   e.stopPropagation()
-                              },
-                              mouseup: () => {
-                                  this.changeAction('selection')
                               }
                           }
                       })
@@ -119,6 +117,7 @@ export default {
             }
         },
         dragElement(e) {
+            this.hadMove = true
             const { clientX, clientY } = this.startPosition
             const startLeft = +this.outlinedStyleCopy.left.replace('px', '')
             const startTop = +this.outlinedStyleCopy.top.replace('px', '')
