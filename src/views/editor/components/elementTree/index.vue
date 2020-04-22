@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="bottom-bar">
-            <v-btn icon title="分组">
+            <v-btn icon title="对象组">
                 <v-icon>mdi-folder-open-outline</v-icon>
             </v-btn>
 
@@ -59,7 +59,7 @@
                 <v-icon>mdi-lock-outline</v-icon>
             </v-btn>
             <v-btn icon title="事件">
-                <v-icon>mdi-wifi-strength-1-alert</v-icon>
+                <v-icon>mdi-information-outline</v-icon>
             </v-btn>
             <v-btn icon title="删除">
                 <v-icon>mdi-delete-outline</v-icon>

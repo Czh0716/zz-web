@@ -5,7 +5,7 @@
             <v-col cols="6" v-for="item in size" :key="item">
                 <v-text-field
                     :label="item"
-                    :value="removeUnit(activeElementStyleCache[item])"
+                    :value="style[item]"
                     :suffix="item === 'rotate' ? 'deg':'px'"
                     @input.native="(e)=>updateStyle(e,item)"
                     type="number"
@@ -18,7 +18,7 @@
         <v-row>
             <v-col>
                 <v-slider
-                    :value="styles['opacity']"
+                    :value="style['opacity']"
                     @input="(val)=>updateStyle(val,'opacity',false)"
                     label="opacity"
                     hide-details
@@ -34,7 +34,7 @@
         <v-row>
             <v-col cols="6">
                 <v-text-field
-                    :value="removeUnit(shadow[1])"
+                    :value="shadow[1]"
                     @input.native="e => updateShadow(e,1)"
                     label="阴影偏移X"
                     suffix="px"
@@ -46,7 +46,7 @@
             </v-col>
             <v-col cols="6">
                 <v-text-field
-                    :value="removeUnit(shadow[2])"
+                    :value="shadow[2]"
                     @input.native="e => updateShadow(e,2)"
                     label="阴影偏移Y"
                     suffix="px"
@@ -58,7 +58,7 @@
             </v-col>
             <v-col cols="12">
                 <v-text-field
-                    :value="removeUnit(shadow[3])"
+                    :value="shadow[3]"
                     @input.native="e => updateShadow(e,3)"
                     label="阴影模糊大小"
                     suffix="px"

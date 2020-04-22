@@ -16,7 +16,8 @@
         <v-row>
             <v-col cols="6">
                 <v-text-field
-                    :value="removeUnit(pageStyle.width)"
+                    type="number"
+                    :value="removeUnit(style.width)"
                     @input="(e)=>updateStyle(e,'width')"
                     label="width"
                     suffix="px"
@@ -27,7 +28,8 @@
             </v-col>
             <v-col cols="6">
                 <v-text-field
-                    :value="removeUnit(pageStyle.height)"
+                    type="number"
+                    :value="removeUnit(style.height)"
                     @input="(e)=>updateStyle(e,'height')"
                     label="height"
                     suffix="px"
@@ -41,7 +43,7 @@
             <v-col>
                 <color-input
                     label="背景颜色"
-                    :value="pageStyle.backgroundColor"
+                    :value="style.backgroundColor"
                     @input="(val)=>updateStyle(val,'backgroundColor','')"
                 ></color-input>
             </v-col>
@@ -66,7 +68,7 @@ import { mapGetters } from 'vuex'
 export default {
     computed: {
         ...mapGetters(['activePage']),
-        pageStyle() {
+        style() {
             return this.activePage.style
         }
     },

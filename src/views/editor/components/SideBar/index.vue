@@ -13,8 +13,21 @@
             </div>
         </div>
         <div class="operation--group">
+            <div class="group-item" title="对象组">
+                <v-icon>mdi-folder-open-outline</v-icon>
+            </div>
+        </div>
+        <div class="operation--group">
             <div @click="addPage" class="group-item" title="页面">
                 <v-icon>mdi-file-alert-outline</v-icon>
+            </div>
+        </div>
+        <div class="operation--group">
+            <div class="group-item" title="抓手工具">
+                <v-icon>mdi-hand-right</v-icon>
+            </div>
+            <div class="group-item" title="缩放工具">
+                <v-icon>mdi-magnify</v-icon>
             </div>
         </div>
     </div>
@@ -32,13 +45,31 @@ export default {
         return {
             category: [
                 [{ action: 'selection', icon: 'mdi-cursor-default', title: '选择' }],
-                [{ action: 'create-text', icon: 'mdi-format-text', title: '文本' }],
+                [
+                    { action: 'create-text', icon: 'mdi-format-text', title: '文本' },
+                    {
+                        action: 'create-input',
+                        icon: 'mdi-pencil-box-outline',
+                        title: '输入框'
+                    }
+                ],
                 [
                     { action: 'create-rect', icon: 'mdi-rectangle-outline', title: '矩形' },
+                    {
+                        action: 'create-star',
+                        icon: 'mdi-star',
+                        title: '星形'
+                    },
                     {
                         action: 'create-ellipse',
                         icon: 'mdi-checkbox-blank-circle-outline',
                         title: '椭圆'
+                    },
+
+                    {
+                        action: 'create-heart',
+                        icon: 'mdi-cards-heart',
+                        title: '心形'
                     },
                     { action: 'create-line', icon: 'mdi-vector-line', title: '线' }
                 ]

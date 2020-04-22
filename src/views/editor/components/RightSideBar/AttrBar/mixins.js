@@ -4,14 +4,11 @@ export default {
     inject: ['triggerElementStretch'],
     computed: {
         ...mapGetters(['activeElement', 'activeElementStyleCache']),
-        styles() {
-            const element = this.activeElement
-            return element ? (element.data ? element.data.style : {}) : {}
+        style() {
+            return this.activeElementStyleCache
         },
         filter() {
-            return (
-                this.styles.filter || 'drop-shadow(rgba(0,0,0,0) 0px 0px 0px)'
-            )
+            return this.style.filter || 'drop-shadow(rgba(0,0,0,0) 0 0 0)'
         },
         shadow() {
             const shadow = this.filter
@@ -23,7 +20,6 @@ export default {
     methods: {
         removeUnit(value) {
             if (!value) return 0
-
             const str = String(value)
             return +str.replace('px', '')
         },

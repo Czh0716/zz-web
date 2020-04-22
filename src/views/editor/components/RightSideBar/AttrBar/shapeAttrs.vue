@@ -19,7 +19,7 @@
                 <v-row>
                     <v-col>
                         <color-input
-                            :value="styles.fill"
+                            :value="style.fill"
                             @input="(val)=>updateStyle(val,'fill',false)"
                             label="填充颜色"
                         ></color-input>
@@ -28,14 +28,14 @@
                 <v-row>
                     <v-col cols="6">
                         <color-input
-                            :value="styles.stroke"
+                            :value="style.stroke"
                             @input="(val)=>updateStyle(val,'stroke',false)"
                             label="边框颜色"
                         ></color-input>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field
-                            :value="removeUnit(styles.strokeWidth)"
+                            :value="style.strokeWidth"
                             @input.native="(e)=>updateStyle(e,'strokeWidth')"
                             label="边框大小"
                             type="number"
