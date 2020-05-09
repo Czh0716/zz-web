@@ -32,18 +32,18 @@ const state = {
     currentPageIndex: 0,
     currentElementIndex: null,
     pages: [
-        {
-            name: '页面0',
-            id: uuidV4(),
-            type: 'page',
-            style: {
-                backgroundColor: 'rgba(255,255,255,1)',
-                width: '375px',
-                height: '667px'
-            },
-            children: [],
-            visible: true
-        }
+        // {
+        //     name: '页面0',
+        //     id: uuidV4(),
+        //     type: 'page',
+        //     style: {
+        //         backgroundColor: 'rgba(255,255,255,1)',
+        //         width: '375px',
+        //         height: '667px'
+        //     },
+        //     children: [],
+        //     visible: true
+        // }
     ],
     activeElement: null,
     activeElementStyleCache: {},
@@ -66,7 +66,7 @@ const state = {
 const mutations = {
     ADD_PAGE(state) {
         const length = state.pages.length
-        state.pages.push({
+        const page = {
             name: `页面${length}`,
             id: uuidV4(),
             type: 'page',
@@ -77,7 +77,9 @@ const mutations = {
             },
             children: [],
             visible: true
-        })
+        }
+        state.pages.push(page)
+        state.activeElement = page
         state.currentPageIndex = length
     },
     UPDATE_PAGE_ATTR(state, { key, value, isStyleAttr = true }) {
@@ -89,27 +91,34 @@ const mutations = {
         state.currentPageIndex = index
     },
     ADD_ELEMENT(state, element) {
-        const currentPage = state.pages[state.currentPageIndex]
-        const children = currentPage.children
-        const length = children.length
+        const activeElement = state.activeElement
+        const parent = ['page', 'group'].includes(activeElement.type)
+            ? activeElement
+            : getElementById(state.pages, activeElement.parentId)
+
+        // const currentPage = state.pages[state.currentPageIndex]
+        const children = parent.children
+        // const length = children.length
         // const key = `${state.currentPageIndex}-${length}`
 
         state.elementNameMap[element.tag].count++
 
         element.visible = true
         element.id = uuidV4()
+        element.parentId = parent.id
         // element.data.key = key
         // element.data.attrs['data-id'] = key
+
         children.push(element)
+        state.activeElement = element
         state.activeElementStyleCache = removeUnit({ ...element.data.style })
-        state.currentElementIndex = length
     },
     SET_ELEMENT_BY_ID(state, id) {
         const element = getElementById(state.pages, id)
         if (element) state.activeElement = element
     },
-    SET_CURRENT_ELEMENT(state, e) {
-        if (e) {
+    SET_CURRENT_ELEMENT(state, id) {
+        if (id) {
             const id = e.currentTarget.dataset.id
             const indexs = id.split('-')
             const element = indexs.reduce((acc, index) => {
@@ -142,8 +151,7 @@ const mutations = {
         })
     },
     UPDATE_ELEMENT_ATTR(state, { key, value, isStyleAttr = true }) {
-        const currentPage = state.pages[state.currentPageIndex]
-        const element = currentPage.children[state.currentElementIndex]
+        const element = state.activeElement
         if (!element) return
 
         Vue.set(isStyleAttr ? element.data.style : element, key, value)

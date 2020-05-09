@@ -44,14 +44,12 @@ export default {
             }
 
             this.$store.commit('config/ADD_ELEMENT', initOption)
-
             if (this.subAction === 'text') this.initOutlined(true)
         },
         stretchElement(e, isResize = false, forced = false) {
             if (Object.keys(this.startPosition).length === 0 && !forced) return
             const element = this.activeElement
             if (!element) return
-
             let { width = '0', height = '0' } = forced
                 ? element.data.style
                 : this.outlinedStyleCopy
@@ -142,15 +140,14 @@ export default {
                 }
                 element.subData = { attrs }
             }
-
-            this.$store.commit('config/UPDATE_CURRENT_ELEMENT', element)
         },
         completeCreation() {
             this.initOutlined()
             this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
                 key: 'opacity',
-                value: 1
+                value: '1'
             })
+
             const subAction = this.subAction
             if (subAction === 'text') {
             } else if (subAction === 'resize') {

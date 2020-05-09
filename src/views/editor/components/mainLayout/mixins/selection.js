@@ -3,7 +3,7 @@ export default {
         return {}
     },
     methods: {
-        onElementMouseDown(e) {
+        onElementMouseDown(e, id) {
             const MOUSE_KEY = e.button
 
             if (MOUSE_KEY === 0) {

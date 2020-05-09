@@ -51,6 +51,7 @@ export default {
         }
     },
     created() {
+        this.$store.commit('config/ADD_PAGE')
         this.$store.commit('config/SET_CONFIG_RECORD')
     }
 }

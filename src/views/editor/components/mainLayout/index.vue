@@ -38,7 +38,7 @@ export default {
 
                 if ([this.$refs.content, this.$refs.canvas].includes(e.target)) {
                     this.resizeOutlined()
-                    this.$store.commit('config/SET_CURRENT_ELEMENT')
+                    // this.$store.commit('config/SET_CURRENT_ELEMENT')
                 }
 
                 if (this.action.includes('create')) {
