@@ -147,7 +147,10 @@ export default {
         },
         completeCreation() {
             this.initOutlined()
-            this.outlinedStyle.opacity = '1'
+            this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
+                key: 'opacity',
+                value: 1
+            })
             const subAction = this.subAction
             if (subAction === 'text') {
             } else if (subAction === 'resize') {

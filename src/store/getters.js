@@ -6,9 +6,12 @@ const getters = {
     elementNameMap: state => state.config.elementNameMap,
     pages: state => state.config.pages,
     activePage: state => state.config.pages[state.config.currentPageIndex],
-    elements: (state, getters) => getters.activePage.elements,
-    activeElement: (state, getters) =>
-        getters.elements[state.config.currentElementIndex],
+    elements: (state, getters) => getters.activePage.children,
+    // activeElement: (state, getters) =>
+    //     getters.elements[state.config.currentElementIndex],
+    activeElement: state => state.config.activeElement || state.config.pages[0],
+    activeElementType: (state, getters) =>
+        getters.activeElement && getters.activeElement.type,
     activeElementStyleCache: state => state.config.activeElementStyleCache,
     configRecord: state => state.config.configRecord,
     currentRecordIndex: state => state.config.currentRecordIndex

@@ -18,11 +18,6 @@ export default {
         }
     },
     methods: {
-        removeUnit(value) {
-            if (!value) return 0
-            const str = String(value)
-            return +str.replace('px', '')
-        },
         updateAttr(e, key) {
             if (!this.activeElement) return
 

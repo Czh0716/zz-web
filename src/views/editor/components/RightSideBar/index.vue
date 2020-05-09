@@ -2,8 +2,8 @@
     <div class="right-side-bar">
         <div class="my-scrollbar">
             <div class="scroll-content">
-                <shape-attrs v-if="activeElement"></shape-attrs>
-                <page-attrs v-else></page-attrs>
+                <page-attrs v-if="activeElementType === 'page'"></page-attrs>
+                <shape-attrs v-else></shape-attrs>
             </div>
         </div>
     </div>
@@ -12,8 +12,11 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+    mounted() {
+        console.log(this.activeElement, this.activeElementType)
+    },
     computed: {
-        ...mapGetters(['activeElement'])
+        ...mapGetters(['activeElement', 'activeElementType'])
     },
     components: {
         ShapeAttrs: () => import('./AttrBar/shapeAttrs'),

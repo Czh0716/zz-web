@@ -1,75 +1,7 @@
-<template>
-    <div class="element-tree my-scrollbar">
-        <div class="scroll-content">
-            <div class="tab-bar">
-                <v-icon>mdi-tree</v-icon>对象树
-                <v-icon class="search">mdi-magnify</v-icon>
-            </div>
-            <div class="tab-content">
-                <div class="tree">
-                    <div class="page" v-for="(page,pageIndex) in pages" :key="page.id">
-                        <div
-                            @click="setActivePage(pageIndex)"
-                            :class="{active: activePage.id === page.id}"
-                            class="page-name"
-                        >
-                            <v-icon
-                                :class="{hidden:!page.visible}"
-                                @click.stop="$store.dispatch('config/togglePageVisble',pageIndex)"
-                                class="visibility"
-                            >mdi-eye-{{page.visible ? '':'off-'}}outline</v-icon>
-                            <v-icon
-                                @click.stop="$set(pagesExpand,pageIndex,!pagesExpand[pageIndex])"
-                            >mdi-menu-{{pagesExpand[pageIndex]?'down':'right'}}</v-icon>
-                            <span>
-                                <v-icon>{{iconMap['page']}}</v-icon>
-                                {{page.name}}
-                            </span>
-                        </div>
-                        <ul class="element-list" v-show="pagesExpand[pageIndex]">
-                            <li
-                                v-for="(el,elementIndex) in page.elements"
-                                :key="el.id"
-                                :data-id="el.id"
-                                :class="{active: activeElement && el.id === activeElement.id}"
-                                class="element"
-                                @click="setActiveElement"
-                            >
-                                <v-icon
-                                    :class="{hidden:!el.visible}"
-                                    @click.stop="$store.dispatch('config/toggleElementVisible',{pageIndex,elementIndex})"
-                                    class="visibility"
-                                >mdi-eye-{{el.visible ? '':'off-'}}outline</v-icon>
-                                <span>
-                                    <v-icon>{{iconMap[el.type]}}</v-icon>
-                                    {{el.name}}
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="bottom-bar">
-            <v-btn icon title="对象组">
-                <v-icon>mdi-folder-open-outline</v-icon>
-            </v-btn>
 
-            <v-btn icon title="固定">
-                <v-icon>mdi-lock-outline</v-icon>
-            </v-btn>
-            <v-btn icon title="事件">
-                <v-icon>mdi-information-outline</v-icon>
-            </v-btn>
-            <v-btn icon title="删除">
-                <v-icon>mdi-delete-outline</v-icon>
-            </v-btn>
-        </div>
-    </div>
-</template>
-
-<script>
+<script type="jsx">
 import { mapGetters } from 'vuex'
+import { VIcon, VBtn } from 'vuetify/lib'
 export default {
     computed: {
         ...mapGetters(['pages', 'activePage', 'activeElement'])
@@ -78,16 +10,75 @@ export default {
         setActiveElement(e) {
             this.$store.commit('config/SET_CURRENT_ELEMENT', e)
             this.$emit('initOutlined')
+            e.stopPropagation()
         },
-        setActivePage(index) {
-            this.pagesExpand[index] = true
+        setActivePage(e) {
+            const index = e.target.dataset.id.split('-')[1]
             this.$store.commit('config/SET_CURRENT_PAGE', index)
             this.$store.commit('config/SET_CURRENT_ELEMENT')
             this.$emit('resizeOutlined')
+        },
+        togglePageVisible(e) {
+            const index = e.target.parentNode.dataset.id.split('-')[1]
+            this.$store.dispatch('config/togglePageVisible', index)
+            e.stopPropagation()
+        },
+        toggleElementVisible(e) {
+            const [page, element] = e.target.parentNode.dataset.id.split('-')
+            this.$store.dispatch('config/toggleElementVisible', {
+                pageIndex: page,
+                elementIndex: element
+            })
+            e.stopPropagation()
+        },
+        genEleChildren(elements) {
+            return (
+                <ul class="child-list">
+                    {elements.map(element => {
+                        return (
+                            <li
+                                class="tree-node"
+                                data-id={element.id}
+                                on={{
+                                    click: this.setActiveElement
+                                }}
+                            >
+                                <div
+                                    key={element.id}
+                                    {...{
+                                        class: {
+                                            element: true,
+                                            active:
+                                                this.activeElement &&
+                                                element.id === this.activeElement.id
+                                        }
+                                    }}
+                                >
+                                    <VIcon
+                                        {...{
+                                            class: {
+                                                visibility: true,
+                                                hidden: !element.visible
+                                            },
+                                            on: {
+                                                click: this.toggleElementVisible
+                                            }
+                                        }}
+                                    >
+                                        mdi-eye-{element.visible ? '' : 'off-'}outline
+                                    </VIcon>
+                                    <span class="name">
+                                        <VIcon>{this.iconMap[element.type]}</VIcon>
+                                        {element.name}
+                                    </span>
+                                </div>
+                                {element.children && this.genEleChildren(element.children)}
+                            </li>
+                        )
+                    })}
+                </ul>
+            )
         }
-    },
-    created() {
-        this.pagesExpand = this.pages.map(() => true)
     },
     data() {
         return {
@@ -99,6 +90,98 @@ export default {
             },
             pagesExpand: []
         }
+    },
+    render() {
+        const pageList = this.pages.map((page, index) => {
+            return (
+                <div
+                    key={page.id}
+                    staticClass="tree-node page-node"
+                    class={{ active: this.activePage.id === page.id }}
+                >
+                    <div
+                        {...{
+                            class: {
+                                page: true,
+                                expand: true
+                            },
+                            on: {
+                                click: this.setActivePage
+                            },
+                            attrs: {
+                                'data-id': page.id
+                            }
+                        }}
+                    >
+                        <VIcon
+                            {...{
+                                class: {
+                                    visibility: true,
+                                    hidden: !page.visible
+                                },
+                                on: {
+                                    click: this.togglePageVisible
+                                }
+                            }}
+                        >
+                            mdi-eye-{page.visible ? '' : 'off-'}outline
+                        </VIcon>
+                        <VIcon
+                            class="expand-icon on"
+                            on={{
+                                click: e => {
+                                    e.target.parentNode.classList.toggle('expand')
+                                    e.stopPropagation()
+                                }
+                            }}
+                        >
+                            mdi-menu-down
+                        </VIcon>
+                        <VIcon
+                            class="expand-icon off"
+                            on={{
+                                click: e => {
+                                    e.target.parentNode.classList.toggle('expand')
+                                    e.stopPropagation()
+                                }
+                            }}
+                        >
+                            mdi-menu-right
+                        </VIcon>
+                        <span class="name">
+                            <VIcon>{this.iconMap['page']}</VIcon>
+                            {page.name}
+                        </span>
+                    </div>
+                    {this.genEleChildren(page.elements)}
+                </div>
+            )
+        })
+        return (
+            <div class="element-tree">
+                <div class="tab-bar">
+                    <VIcon>mdi-tree</VIcon>对象树
+                    <VIcon class="search">mdi-magnify</VIcon>
+                </div>
+                <div class="tab-content my-scrollbar">
+                    <div class="tree">{pageList}</div>
+                </div>
+                <div class="bottom-bar">
+                    <VBtn icon title="对象组">
+                        <VIcon>mdi-folder-open-outline</VIcon>
+                    </VBtn>
+                    <VBtn icon title="固定">
+                        <VIcon>mdi-lock-outline</VIcon>
+                    </VBtn>
+                    <VBtn icon title="事件">
+                        <VIcon>mdi-information-outline</VIcon>
+                    </VBtn>
+                    <VBtn icon title="删除">
+                        <VIcon>mdi-delete-outline</VIcon>
+                    </VBtn>
+                </div>
+            </div>
+        )
     }
 }
 </script>
@@ -111,14 +194,12 @@ export default {
     flex-shrink: 0;
     font-size: 14px;
     position: relative;
-    .scroll-content {
-        padding: 0 16px;
-    }
     .tab-bar {
         display: flex;
         align-items: center;
         border-bottom: 1px solid #e6e6e6;
         padding: 8px 0;
+        margin-bottom: 10px;
         .tab-item {
             cursor: pointer;
         }
@@ -130,29 +211,87 @@ export default {
         }
     }
 
-    .page-name,
+    .tab-content {
+        height: calc(100% - 90px);
+        font-size: 12px;
+        position: relative;
+        padding-left: 8px;
+        .v-icon {
+            font-size: 20px;
+        }
+    }
+
+    .tree {
+        padding-left: 50px;
+        width: 100%;
+
+        .tree-node {
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 8px;
+                height: 30px;
+                background-color: rgba(0, 0, 0, 0);
+                transition: 0.3s;
+                cursor: pointer;
+            }
+
+            &.active {
+                &::before {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+                .tree-node::before {
+                    background-color: rgba(0, 0, 0, 0.03);
+                }
+            }
+        }
+    }
+
+    .page,
     .element {
         display: flex;
         align-items: center;
-        padding-left: 10px;
         cursor: pointer;
         height: 30px;
         .visibility {
-            font-size: 20px;
+            position: absolute;
+            left: 5px;
             &.hidden {
                 color: rgba(0, 0, 0, 0.3);
             }
         }
-        &.active {
-            background-color: rgba(0, 0, 0, 0.05);
+        .expand-icon {
+            position: absolute;
+            transform: translateX(-20px);
+        }
+
+        .name {
+            display: flex;
+            align-items: center;
         }
     }
-    .element {
-        .visibility {
-            margin-right: 40px;
+
+    .on {
+        display: none;
+    }
+    .expand {
+        + .child-list {
+            display: block;
+        }
+        .on {
+            display: block;
+        }
+        .off {
+            display: none;
         }
     }
-    .element-list {
+
+    .child-list {
+        padding-left: 20px;
+        display: none;
+    }
+    ul {
         list-style-type: none;
         padding: 0;
     }
@@ -167,6 +306,7 @@ export default {
         align-items: center;
         justify-content: space-around;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
     }
 }
 </style>

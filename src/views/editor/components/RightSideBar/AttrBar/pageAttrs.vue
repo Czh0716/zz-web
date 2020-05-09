@@ -3,7 +3,7 @@
         <v-row>
             <v-col>
                 <v-text-field
-                    :value="activePage.name"
+                    :value="activeElement.name"
                     @input="(e)=>updateAttr(e,'name',false)"
                     label="名称"
                     hide-details
@@ -60,6 +60,7 @@
                 ></v-file-input>
             </v-col>
         </v-row>
+        <div class="test"></div>
     </div>
 </template>
 
@@ -67,9 +68,9 @@
 import { mapGetters } from 'vuex'
 export default {
     computed: {
-        ...mapGetters(['activePage']),
+        ...mapGetters(['activeElement']),
         style() {
-            return this.activePage.style
+            return this.activeElement.style
         }
     },
     methods: {
@@ -99,5 +100,13 @@ export default {
 <style lang="less" scoped>
 .page-attrs {
     position: relative;
+    .test {
+        margin: auto;
+        width: 50px;
+        height: 50px;
+        background-color: pink;
+        transform-origin: 25px 25px;
+        transform: scale(1);
+    }
 }
 </style>

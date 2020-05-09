@@ -1,11 +1,29 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
+import { v4 as uuidV4 } from 'uuid'
 
 function removeUnit(obj) {
     Object.keys(obj).forEach(key => {
         obj[key] = String(obj[key]).replace(/px/g, '')
     })
     return obj
+}
+
+function getElementById(arr, id) {
+    let length = arr.length
+    let i = 0
+    while (length > i) {
+        const element = arr[i]
+
+        if (element.id === id) return element
+
+        if (element.children) {
+            const target = getElementById(element.children, id)
+            if (target) return target
+        }
+
+        i++
+    }
 }
 
 const state = {
@@ -16,17 +34,18 @@ const state = {
     pages: [
         {
             name: '页面0',
-            id: 'page-0',
+            id: uuidV4(),
             type: 'page',
             style: {
                 backgroundColor: 'rgba(255,255,255,1)',
                 width: '375px',
                 height: '667px'
             },
-            elements: [],
+            children: [],
             visible: true
         }
     ],
+    activeElement: null,
     activeElementStyleCache: {},
     elementNameMap: {
         rect: {
@@ -49,14 +68,14 @@ const mutations = {
         const length = state.pages.length
         state.pages.push({
             name: `页面${length}`,
-            id: `page-${length}`,
+            id: uuidV4(),
             type: 'page',
             style: {
                 backgroundColor: 'rgba(255,255,255,1)',
                 width: '375px',
                 height: '667px'
             },
-            elements: [],
+            children: [],
             visible: true
         })
         state.currentPageIndex = length
@@ -71,45 +90,51 @@ const mutations = {
     },
     ADD_ELEMENT(state, element) {
         const currentPage = state.pages[state.currentPageIndex]
-        const elements = currentPage.elements
-        const length = elements.length
-        const key = `${state.currentPageIndex}-${length}`
+        const children = currentPage.children
+        const length = children.length
+        // const key = `${state.currentPageIndex}-${length}`
 
         state.elementNameMap[element.tag].count++
 
         element.visible = true
-        element.id = key
-        element.data.key = key
-        element.data.attrs['data-id'] = key
-        elements.push(element)
+        element.id = uuidV4()
+        // element.data.key = key
+        // element.data.attrs['data-id'] = key
+        children.push(element)
         state.activeElementStyleCache = removeUnit({ ...element.data.style })
         state.currentElementIndex = length
+    },
+    SET_ELEMENT_BY_ID(state, id) {
+        const element = getElementById(state.pages, id)
+        if (element) state.activeElement = element
     },
     SET_CURRENT_ELEMENT(state, e) {
         if (e) {
             const id = e.currentTarget.dataset.id
-            const [page, element] = id.split('-')
-            state.currentPageIndex = page
-            state.currentElementIndex = element
-
+            const indexs = id.split('-')
+            const element = indexs.reduce((acc, index) => {
+                return acc[index]
+            }, state.pages)
+            // state.currentPageIndex = page
+            // state.currentElementIndex = element
+            state.activeElement = element
             state.activeElementStyleCache = removeUnit({
-                ...state.pages[state.currentPageIndex].elements[
-                    state.currentElementIndex
-                ].data.style
+                ...activeElement.data.style
             })
         } else {
+            state.activeElement = null
             state.currentElementIndex = null
             state.activeElementStyleCache = {}
         }
     },
     UPDATE_CURRENT_ELEMENT(state, newVal) {
         const currentPage = state.pages[state.currentPageIndex]
-        const elements = currentPage.elements
-        elements.splice(state.currentElementIndex, 1, newVal)
+        const children = currentPage.children
+        children.splice(state.currentElementIndex, 1, newVal)
     },
     UPDATE_ELEMENT_CACHE() {
         const currentPage = state.pages[state.currentPageIndex]
-        const element = currentPage.elements[state.currentElementIndex]
+        const element = currentPage.children[state.currentElementIndex]
         if (!element) return
 
         state.activeElementStyleCache = removeUnit({
@@ -118,17 +143,20 @@ const mutations = {
     },
     UPDATE_ELEMENT_ATTR(state, { key, value, isStyleAttr = true }) {
         const currentPage = state.pages[state.currentPageIndex]
-        const element = currentPage.elements[state.currentElementIndex]
+        const element = currentPage.children[state.currentElementIndex]
         if (!element) return
 
         Vue.set(isStyleAttr ? element.data.style : element, key, value)
+        state.activeElementStyleCache = removeUnit({
+            ...element.data.style
+        })
     },
     TOGGLE_PAGE_VISIBLE(state, index) {
         const page = state.pages[index]
         page.visible = !page.visible
     },
     TOGGLE_ELEMENT_VISIBLE(state, { pageIndex, elementIndex }) {
-        const element = state.pages[pageIndex].elements[elementIndex]
+        const element = state.pages[pageIndex].children[elementIndex]
         element.visible = !element.visible
     },
     SET_CONFIG_RECORD(state) {

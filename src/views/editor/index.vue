@@ -5,7 +5,7 @@
             <!-- <left-side-bar v-show="compsVisible['left']"></left-side-bar> -->
             <side-bar v-on="layoutListeners"></side-bar>
             <main-layout ref="main"></main-layout>
-            <element-tree v-on="layoutListeners"></element-tree>
+            <!-- <element-tree v-on="layoutListeners"></element-tree> -->
             <right-side-bar v-show="compsVisible['right']"></right-side-bar>
         </div>
     </div>

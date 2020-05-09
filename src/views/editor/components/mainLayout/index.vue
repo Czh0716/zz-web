@@ -10,7 +10,11 @@ export default {
     mixins: [selection, outlined, createElement],
     data() {
         return {
-            startPosition: {}
+            startPosition: {},
+            contentStyle: {
+                transformOrigin: '50% 50%',
+                transform: 'translate(-50%,-50%) scale(1)'
+            }
         }
     },
     computed: {
@@ -47,7 +51,6 @@ export default {
         },
         onMouseMove(e) {
             e.preventDefault()
-
             if (this.action.includes('create')) {
                 this.stretchElement(e)
             } else if (this.action.includes('selection')) {
@@ -75,6 +78,21 @@ export default {
 
             this.startPosition = {}
         },
+        onMousewheel(e) {
+            console.log(e)
+            if (e.altKey) {
+                const deltaY = e.deltaY
+                const multiple = +this.contentStyle.transform.match(/scale\((.*)\)/)[1]
+
+                this.$set(
+                    this.contentStyle,
+                    'transform',
+                    `translate(-50%,-50%) scale(${multiple + (deltaY < 0 ? 0.15 : -0.15)})`
+                )
+
+                e.preventDefault()
+            }
+        },
         getStartPosition(e) {
             const { left, top } = this.$refs.content.getBoundingClientRect()
             const { left: canvasLeft, top: canvasTop } = this.$refs.canvas.getBoundingClientRect()
@@ -90,6 +108,16 @@ export default {
                 posLeft: canvasLeft,
                 posTop: canvasTop
             }
+        },
+        setTransformOrigin(e) {
+            const { top, left } = this.$refs.content.getBoundingClientRect()
+
+            const clientX = e.clientX
+            const clientY = e.clientY
+            const multiple = +this.contentStyle.transform.match(/scale\((.*)\)/)[1]
+            const originX = (-left + clientX) / multiple
+            const originY = (-top + clientY) / multiple
+            this.$set(this.contentStyle, 'transformOrigin', `${originX}px ${originY}px`)
         }
     },
     render(h) {
@@ -105,29 +133,42 @@ export default {
         return h(
             'div',
             {
-                staticClass: 'content',
-                class: {
-                    [this.action]: true
-                },
+                staticClass: 'work-area',
                 on: {
-                    mousedown: this.onMouseDown,
-                    mousemove: this.onMouseMove,
-                    mouseup: this.onMouseUp
+                    // mousewheel: this.onMousewheel
                 },
-                ref: 'content'
+                ref: 'workArea'
             },
             [
                 h(
                     'div',
                     {
-                        staticClass: 'main-layout',
-
-                        style: {
-                            ...this.activePage.style
+                        staticClass: 'content',
+                        class: {
+                            [this.action]: true
                         },
-                        ref: 'canvas'
+                        on: {
+                            mousedown: this.onMouseDown,
+                            mousemove: this.onMouseMove,
+                            mouseup: this.onMouseUp
+                        },
+                        ref: 'content'
                     },
-                    [...layoutEls, this.genOutlined()]
+                    [
+                        h(
+                            'div',
+                            {
+                                staticClass: 'main-layout',
+
+                                style: {
+                                    ...this.activePage.style
+                                },
+                                ref: 'canvas'
+                            },
+                            [...layoutEls, this.genOutlined()]
+                        ),
+                        h('div', { staticClass: 'center-point', ref: 'centerPoint' })
+                    ]
                 )
             ]
         )
@@ -136,9 +177,26 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.content {
+.work-area {
     width: 100%;
+    height: 100%;
+    position: relative;
     overflow: hidden;
+    .content {
+        // position: absolute;
+        // transition: 0.2s;
+        // width: 10000px;
+        // height: 10000px;
+        // .center-point {
+        //     position: absolute;
+        //     left: 50%;
+        //     top: 50%;
+        // }
+    }
+}
+
+[class*='create'] {
+    cursor: crosshair;
 }
 .main-layout {
     position: relative;
