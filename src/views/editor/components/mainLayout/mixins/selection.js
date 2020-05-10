@@ -16,8 +16,6 @@ export default {
             } else if (MOUSE_KEY === 2) {
             }
         },
-        onElementMouseUp() {
-            this.clutched = false
-        }
+        onElementMouseUp() {}
     }
 }

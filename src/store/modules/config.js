@@ -1,30 +1,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { v4 as uuidV4 } from 'uuid'
-
-function removeUnit(obj) {
-    Object.keys(obj).forEach(key => {
-        obj[key] = String(obj[key]).replace(/px/g, '')
-    })
-    return obj
-}
-
-function getElementById(arr, id) {
-    let length = arr.length
-    let i = 0
-    while (length > i) {
-        const element = arr[i]
-
-        if (element.id === id) return element
-
-        if (element.children) {
-            const target = getElementById(element.children, id)
-            if (target) return target
-        }
-
-        i++
-    }
-}
+import { getElementById, removeUnit } from '@/util/tool.js'
 
 const state = {
     configRecord: [],
@@ -32,6 +9,7 @@ const state = {
     currentPageIndex: 0,
     currentElementIndex: null,
     pages: [],
+    activePage: null,
     activeElement: null,
     activeElementStyleCache: {},
     elementNameMap: {
@@ -67,7 +45,7 @@ const mutations = {
         }
         state.pages.push(page)
         state.activeElement = page
-        state.currentPageIndex = length
+        state.activePage = page
     },
     UPDATE_PAGE_ATTR(state, { key, value, isStyleAttr = true }) {
         const currentPage = state.pages[state.currentPageIndex]
@@ -89,6 +67,7 @@ const mutations = {
 
         element.visible = true
         element.id = uuidV4()
+        element.pageId = state.activePage.id
         element.parentId = parent.id
 
         children.push(element)
@@ -103,11 +82,17 @@ const mutations = {
         if (id) {
             const element = getElementById(state.pages, id)
             state.activeElement = element
-            state.activeElementStyleCache = removeUnit({
-                ...element.data.style
-            })
+            state.activePage = getElementById(state.pages, element.pageId)
+
+            if (element.type === 'page') {
+                state.activePage = element
+            } else {
+                state.activeElementStyleCache = removeUnit({
+                    ...element.data.style
+                })
+            }
         } else {
-            state.activeElement = null
+            state.activeElement = state.activePage
             state.activeElementStyleCache = {}
         }
     },
@@ -116,9 +101,8 @@ const mutations = {
         const children = currentPage.children
         children.splice(state.currentElementIndex, 1, newVal)
     },
-    UPDATE_ELEMENT_CACHE() {
-        const currentPage = state.pages[state.currentPageIndex]
-        const element = currentPage.children[state.currentElementIndex]
+    UPDATE_ELEMENT_CACHE(state) {
+        const element = state.activeElement
         if (!element) return
 
         state.activeElementStyleCache = removeUnit({
@@ -134,13 +118,10 @@ const mutations = {
             ...element.data.style
         })
     },
-    TOGGLE_PAGE_VISIBLE(state, index) {
-        const page = state.pages[index]
-        page.visible = !page.visible
-    },
-    TOGGLE_ELEMENT_VISIBLE(state, { pageIndex, elementIndex }) {
-        const element = state.pages[pageIndex].children[elementIndex]
+    TOGGLE_ELEMENT_VISIBLE(state, id) {
+        const element = getElementById(state.pages, id)
         element.visible = !element.visible
+        console.log(element)
     },
     SET_CONFIG_RECORD(state) {
         const {
@@ -177,10 +158,6 @@ const mutations = {
 const actions = {
     addPage({ commit }) {
         commit('ADD_PAGE')
-        commit('SET_CONFIG_RECORD')
-    },
-    togglePageVisible({ commit }, index) {
-        commit('TOGGLE_PAGE_VISIBLE', index)
         commit('SET_CONFIG_RECORD')
     },
     toggleElementVisible({ commit }, value) {

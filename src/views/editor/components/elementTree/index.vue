@@ -7,28 +7,13 @@ export default {
         ...mapGetters(['pages', 'activePage', 'activeElement'])
     },
     methods: {
-        setActiveElement(e) {
-            this.$store.commit('config/SET_CURRENT_ELEMENT', e)
+        setActiveElement(e, id) {
+            this.$store.commit('config/SET_CURRENT_ELEMENT', id)
             this.$emit('initOutlined')
             e.stopPropagation()
         },
-        setActivePage(e) {
-            const index = e.target.dataset.id.split('-')[1]
-            this.$store.commit('config/SET_CURRENT_PAGE', index)
-            this.$store.commit('config/SET_CURRENT_ELEMENT')
-            this.$emit('resizeOutlined')
-        },
-        togglePageVisible(e) {
-            const index = e.target.parentNode.dataset.id.split('-')[1]
-            this.$store.dispatch('config/togglePageVisible', index)
-            e.stopPropagation()
-        },
-        toggleElementVisible(e) {
-            const [page, element] = e.target.parentNode.dataset.id.split('-')
-            this.$store.dispatch('config/toggleElementVisible', {
-                pageIndex: page,
-                elementIndex: element
-            })
+        toggleElementVisible(e, id) {
+            this.$store.dispatch('config/toggleElementVisible', id)
             e.stopPropagation()
         },
         genEleChildren(elements) {
@@ -38,9 +23,8 @@ export default {
                         return (
                             <li
                                 class="tree-node"
-                                data-id={element.id}
                                 on={{
-                                    click: this.setActiveElement
+                                    click: e => this.setActiveElement(e, element.id)
                                 }}
                             >
                                 <div
@@ -61,7 +45,7 @@ export default {
                                                 hidden: !element.visible
                                             },
                                             on: {
-                                                click: this.toggleElementVisible
+                                                click: e => this.toggleElementVisible(e, element.id)
                                             }
                                         }}
                                     >
@@ -98,18 +82,15 @@ export default {
                     key={page.id}
                     staticClass="tree-node page-node"
                     class={{ active: this.activePage.id === page.id }}
+                    on={{
+                        click: e => this.setActiveElement(e, page.id)
+                    }}
                 >
                     <div
                         {...{
                             class: {
                                 page: true,
                                 expand: true
-                            },
-                            on: {
-                                click: this.setActivePage
-                            },
-                            attrs: {
-                                'data-id': page.id
                             }
                         }}
                     >
@@ -120,7 +101,7 @@ export default {
                                     hidden: !page.visible
                                 },
                                 on: {
-                                    click: this.togglePageVisible
+                                    click: e => this.toggleElementVisible(e, page.id)
                                 }
                             }}
                         >
@@ -153,10 +134,11 @@ export default {
                             {page.name}
                         </span>
                     </div>
-                    {this.genEleChildren(page.elements)}
+                    {this.genEleChildren(page.children)}
                 </div>
             )
         })
+
         return (
             <div class="element-tree">
                 <div class="tab-bar">

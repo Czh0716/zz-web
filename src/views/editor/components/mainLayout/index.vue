@@ -37,8 +37,8 @@ export default {
                 this.getStartPosition(e)
 
                 if ([this.$refs.content, this.$refs.canvas].includes(e.target)) {
+                    this.$store.commit('config/SET_CURRENT_ELEMENT')
                     this.resizeOutlined()
-                    // this.$store.commit('config/SET_CURRENT_ELEMENT')
                 }
 
                 if (this.action.includes('create')) {
@@ -68,8 +68,8 @@ export default {
                 this.$store.commit('config/SET_CONFIG_RECORD')
                 this.changeAction('selection')
             } else if (action.includes('selection')) {
-                if (this.hadMove) {
-                    this.hadMove = false
+                if (this.clutched) {
+                    this.clutched = false
                     this.$store.commit('config/SET_CONFIG_RECORD')
                 }
             }
@@ -79,7 +79,6 @@ export default {
             this.startPosition = {}
         },
         onMousewheel(e) {
-            console.log(e)
             if (e.altKey) {
                 const deltaY = e.deltaY
                 const multiple = +this.contentStyle.transform.match(/scale\((.*)\)/)[1]
@@ -139,7 +138,6 @@ export default {
                 return h('div', { ...option.data, ...events }, option.subData)
             }
         })
-
         return h(
             'div',
             {

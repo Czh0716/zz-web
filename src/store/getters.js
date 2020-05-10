@@ -5,10 +5,8 @@ const getters = {
     isShape: state => state.app.shapes.includes(state.app.action.split('-')[1]),
     elementNameMap: state => state.config.elementNameMap,
     pages: state => state.config.pages,
-    activePage: state => state.config.pages[state.config.currentPageIndex],
+    activePage: state => state.config.activePage,
     elements: (state, getters) => getters.activePage.children,
-    // activeElement: (state, getters) =>
-    //     getters.elements[state.config.currentElementIndex],
     activeElement: state => state.config.activeElement || state.config.pages[0],
     activeElementType: (state, getters) =>
         getters.activeElement && getters.activeElement.type,
