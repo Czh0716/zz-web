@@ -28,11 +28,7 @@ export default {
                         transform: 'translate3d(0,0,0)',
                         ...(isShape ? { fill: 'rgba(255,192,203,1)' } : {})
                     },
-                    attrs: {},
-                    on: {
-                        mousedown: this.onElementMouseDown,
-                        mouseup: this.onElementMouseUp
-                    }
+                    attrs: {}
                 },
                 subData: this.subAction === 'text' ? 'Text Content' : {},
                 startPosition: {

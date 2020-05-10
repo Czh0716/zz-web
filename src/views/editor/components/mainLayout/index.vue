@@ -124,12 +124,22 @@ export default {
         const layoutEls = this.elements.map(option => {
             const { style } = option.data
             style.visibility = option.visible ? 'visible' : 'hidden'
+
+            const events = {
+                on: {
+                    mousedown: e => this.onElementMouseDown(e, option.id),
+                    mouseup: e => this.onElementMouseUp(e, option.id)
+                }
+            }
             if (option.isShape) {
-                return h('svg', { ...option.data, style }, [h(option.tag, { ...option.subData })])
+                return h('svg', { ...option.data, ...events }, [
+                    h(option.tag, { ...option.subData })
+                ])
             } else {
-                return h('div', { ...option.data, style }, option.subData)
+                return h('div', { ...option.data, ...events }, option.subData)
             }
         })
+
         return h(
             'div',
             {

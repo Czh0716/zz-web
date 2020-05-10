@@ -31,20 +31,7 @@ const state = {
     currentRecordIndex: -1,
     currentPageIndex: 0,
     currentElementIndex: null,
-    pages: [
-        // {
-        //     name: '页面0',
-        //     id: uuidV4(),
-        //     type: 'page',
-        //     style: {
-        //         backgroundColor: 'rgba(255,255,255,1)',
-        //         width: '375px',
-        //         height: '667px'
-        //     },
-        //     children: [],
-        //     visible: true
-        // }
-    ],
+    pages: [],
     activeElement: null,
     activeElementStyleCache: {},
     elementNameMap: {
@@ -96,18 +83,13 @@ const mutations = {
             ? activeElement
             : getElementById(state.pages, activeElement.parentId)
 
-        // const currentPage = state.pages[state.currentPageIndex]
         const children = parent.children
-        // const length = children.length
-        // const key = `${state.currentPageIndex}-${length}`
 
         state.elementNameMap[element.tag].count++
 
         element.visible = true
         element.id = uuidV4()
         element.parentId = parent.id
-        // element.data.key = key
-        // element.data.attrs['data-id'] = key
 
         children.push(element)
         state.activeElement = element
@@ -119,20 +101,13 @@ const mutations = {
     },
     SET_CURRENT_ELEMENT(state, id) {
         if (id) {
-            const id = e.currentTarget.dataset.id
-            const indexs = id.split('-')
-            const element = indexs.reduce((acc, index) => {
-                return acc[index]
-            }, state.pages)
-            // state.currentPageIndex = page
-            // state.currentElementIndex = element
+            const element = getElementById(state.pages, id)
             state.activeElement = element
             state.activeElementStyleCache = removeUnit({
-                ...activeElement.data.style
+                ...element.data.style
             })
         } else {
             state.activeElement = null
-            state.currentElementIndex = null
             state.activeElementStyleCache = {}
         }
     },
