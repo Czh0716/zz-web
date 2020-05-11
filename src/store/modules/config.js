@@ -120,22 +120,15 @@ const mutations = {
     },
     TOGGLE_ELEMENT_VISIBLE(state, id) {
         const element = getElementById(state.pages, id)
-        element.visible = !element.visible
-        console.log(element)
+        Vue.set(element, 'visible', !element.visible)
     },
     SET_CONFIG_RECORD(state) {
-        const {
-            currentPageIndex,
-            currentElementIndex,
-            pages,
-            activeElementStyleCache
-        } = state
+        const { pages, activePage, activeElementStyleCache } = state
         state.configRecord.splice(state.currentRecordIndex + 1)
         state.configRecord.push(
             cloneDeep({
-                currentPageIndex,
-                currentElementIndex,
                 pages,
+                activePage,
                 activeElementStyleCache
             })
         )

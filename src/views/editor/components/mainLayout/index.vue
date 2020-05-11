@@ -123,7 +123,6 @@ export default {
         const layoutEls = this.elements.map(option => {
             const { style } = option.data
             style.visibility = option.visible ? 'visible' : 'hidden'
-
             const events = {
                 on: {
                     mousedown: e => this.onElementMouseDown(e, option.id),

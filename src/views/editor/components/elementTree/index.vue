@@ -22,7 +22,11 @@ export default {
                     {elements.map(element => {
                         return (
                             <li
-                                class="tree-node"
+                                class={{
+                                    'tree-node': true,
+                                    active:
+                                        this.activeElement && element.id === this.activeElement.id
+                                }}
                                 on={{
                                     click: e => this.setActiveElement(e, element.id)
                                 }}
@@ -81,7 +85,7 @@ export default {
                 <div
                     key={page.id}
                     staticClass="tree-node page-node"
-                    class={{ active: this.activePage.id === page.id }}
+                    class={{ active: this.activeElement.id === page.id }}
                     on={{
                         click: e => this.setActiveElement(e, page.id)
                     }}
