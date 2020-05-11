@@ -32,8 +32,6 @@ function deleteElementById(elements, id) {
 const state = {
     configRecord: [],
     currentRecordIndex: -1,
-    currentPageIndex: 0,
-    currentElementIndex: null,
     pages: [],
     activePage: null,
     activeElement: null,
@@ -74,12 +72,13 @@ const mutations = {
         state.activePage = page
     },
     UPDATE_PAGE_ATTR(state, { key, value, isStyleAttr = true }) {
-        const currentPage = state.pages[state.currentPageIndex]
+        const element = state.activeElement
+        if (!element) return
 
-        Vue.set(isStyleAttr ? currentPage.style : currentPage, key, value)
-    },
-    SET_CURRENT_PAGE(state, index) {
-        state.currentPageIndex = index
+        Vue.set(isStyleAttr ? element.style : element, key, value)
+        state.activeElementStyleCache = removeUnit({
+            ...element.style
+        })
     },
     ADD_ELEMENT(state, element) {
         const activeElement = state.activeElement
@@ -130,11 +129,6 @@ const mutations = {
             state.activeElement = state.activePage
             state.activeElementStyleCache = {}
         }
-    },
-    UPDATE_CURRENT_ELEMENT(state, newVal) {
-        const currentPage = state.pages[state.currentPageIndex]
-        const children = currentPage.children
-        children.splice(state.currentElementIndex, 1, newVal)
     },
     UPDATE_ELEMENT_CACHE(state) {
         const element = state.activeElement
