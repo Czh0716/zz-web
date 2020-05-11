@@ -1,38 +1,39 @@
 <template>
     <div class="login__page">
         <div class="login__container">
-            <div class="bg">
-                <div class="cover">
+            <div :class="{isLogin}" class="form__container">
+                <div class="title">
                     <v-icon color="#80FF80">mdi-kodi</v-icon>
                     <img src="../../assets/icons/logo.png" alt />
                 </div>
-            </div>
-            <div :class="{isLogin}" class="form__container">
-                <div class="header"></div>
-                <div class="login__form">
-                    <div class="tit">登录</div>
-                    <div class="content">
-                        <v-text-field color="#baeaec" label="账号"></v-text-field>
-                        <v-text-field color="#baeaec" label="密码"></v-text-field>
-                        <v-btn class="confirm" dark color="#baeaec">确定</v-btn>
-                    </div>
-                </div>
-                <div class="register__form" @click="isLogin = false">
-                    <v-icon v-show="isLogin" class="icon" color="#fff">mdi-lead-pencil</v-icon>
-                    <div class="wrap">
-                        <div class="close-btn">
-                            <v-icon
-                                @click.stop="isLogin = true"
-                                class="icon"
-                                color="#baeaec"
-                            >mdi-close</v-icon>
-                        </div>
-                        <div class="tit">注册</div>
+                <div class="content">
+                    <div class="bg"></div>
+                    <div class="header"></div>
+                    <div class="login__form">
+                        <div class="tit">登录</div>
                         <div class="content">
-                            <v-text-field class="input" dark color="#fff" label="账号"></v-text-field>
-                            <v-text-field class="input" dark color="#fff" label="密码"></v-text-field>
-                            <v-text-field class="input" dark color="#fff" label="确认密码"></v-text-field>
-                            <v-btn class="confirm" color="#fff">确定</v-btn>
+                            <v-text-field color="#baeaec" label="账号"></v-text-field>
+                            <v-text-field color="#baeaec" label="密码"></v-text-field>
+                            <v-btn class="confirm" dark color="#baeaec">确定</v-btn>
+                        </div>
+                    </div>
+                    <div class="register__form" @click="isLogin = false">
+                        <v-icon v-show="isLogin" class="icon" color="#fff">mdi-lead-pencil</v-icon>
+                        <div class="wrap">
+                            <div class="close-btn">
+                                <v-icon
+                                    @click.stop="isLogin = true"
+                                    class="icon"
+                                    color="#baeaec"
+                                >mdi-close</v-icon>
+                            </div>
+                            <div class="tit">注册</div>
+                            <div class="content">
+                                <v-text-field class="input" dark color="#fff" label="账号"></v-text-field>
+                                <v-text-field class="input" dark color="#fff" label="密码"></v-text-field>
+                                <v-text-field class="input" dark color="#fff" label="确认密码"></v-text-field>
+                                <v-btn class="confirm" color="#fff">确定</v-btn>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -53,49 +54,48 @@ export default {
 
 <style lang="less" scoped>
 .login__page {
-    background: linear-gradient(135deg, #d6efff, #e5eeef);
+    background: url('../../assets/login_bg.png') no-repeat 16% center/650px;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .login__container {
-    position: relative;
-    width: 700px;
-    height: 500px;
+    position: absolute;
     display: flex;
     align-items: center;
+    right: 16%;
 }
-.bg {
-    position: absolute;
-    width: 100%;
-    height: 300px;
-    background-color: #bedfe291;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.12);
-    .cover {
-        width: 300px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        .v-icon {
-            color: #baeaec;
-            font-size: 60px;
-        }
-    }
-}
+
 .form__container {
     position: relative;
-    left: 50px;
     @width: 340px;
     width: @width;
     @color: #baeaec;
+    .title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+        .v-icon {
+            font-size: 40px;
+        }
+        img {
+            width: 200px;
+        }
+    }
+    .content {
+        position: relative;
+        .bg {
+            position: absolute;
+            left: -24px;
+            right: -14px;
+            top: 30px;
+            bottom: 30px;
+            background-color: #bedfe291;
+            border-radius: 4px;
+        }
+    }
     .card {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         background-color: #fff;
