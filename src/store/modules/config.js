@@ -13,8 +13,8 @@ function deleteElementById(elements, id) {
             const activeId =
                 element.type === 'page'
                     ? i === length - 1
-                        ? element[i - 1].id
-                        : element[i + 1].id
+                        ? elements[i - 1].id
+                        : elements[i + 1].id
                     : element.pageId
             elements.splice(i, 1)
             return activeId
