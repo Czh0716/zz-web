@@ -1,6 +1,7 @@
 <template>
-    <div ref="picker" class="color-input" @click.stop="togglePicker">
-        <div class="color-select" :label="label">
+    <div class="color-input" @click.stop="togglePicker">
+        <slot></slot>
+        <div v-if="!$scopedSlots.default" class="color-select" :label="label">
             <div class="bar" :style="{backgroundColor: value}"></div>
         </div>
         <div class="color-picker" ref="main">
@@ -67,6 +68,7 @@ export default {
         }
     },
     data() {
+        console.log(this.value)
         return {
             pickerVisible: false
         }

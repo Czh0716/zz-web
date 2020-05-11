@@ -27,7 +27,8 @@ export default {
             'elementNameMap',
             'elements',
             'activeElement',
-            'overflowHidden'
+            'overflowHidden',
+            'workAreaBGC'
         ])
     },
     methods: {
@@ -138,13 +139,15 @@ export default {
                 return h('div', { ...option.data, ...events }, option.subData)
             }
         })
-        console.log(this.overflowHidden)
         return h(
             'div',
             {
                 staticClass: 'work-area',
                 on: {
                     // mousewheel: this.onMousewheel
+                },
+                style: {
+                    backgroundColor: this.workAreaBGC
                 },
                 ref: 'workArea'
             },

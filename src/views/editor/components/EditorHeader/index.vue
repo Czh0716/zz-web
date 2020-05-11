@@ -53,6 +53,11 @@
             </button>
         </div>
         <div class="r">
+            <color-input title="工作区背景颜色" :value="workAreaBGC" @input="setWorkAreaBgc">
+                <div v-ripple class="work-color">
+                    <div class="color" :style="`backgroundColor: ${workAreaBGC}`"></div>
+                </div>
+            </color-input>
             <button v-ripple class="btn">
                 <v-icon>mdi-cellphone</v-icon>
             </button>
@@ -76,7 +81,7 @@
 import { mapGetters } from 'vuex'
 export default {
     computed: {
-        ...mapGetters(['configRecord', 'currentRecordIndex', 'overflowHidden']),
+        ...mapGetters(['configRecord', 'currentRecordIndex', 'overflowHidden', 'workAreaBGC']),
         backDisabled() {
             return this.configRecord.length === 0 || this.currentRecordIndex === 0
         },
@@ -101,7 +106,13 @@ export default {
         },
         togglePageOverflow() {
             this.$store.commit('config/TOGGLE_PAGE_OVERFLOW')
+        },
+        setWorkAreaBgc(color) {
+            this.$store.commit('config/SET_WORKAREA_BGC', color)
         }
+    },
+    components: {
+        colorInput: () => import('../RightSideBar/AttrBar/colorInput')
     }
 }
 </script>
@@ -176,6 +187,22 @@ export default {
         justify-content: flex-end;
         .v-icon {
             font-size: 20px;
+        }
+        .work-color {
+            width: 28px;
+            height: 28px;
+            padding: 5px;
+            display: flex;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+            border-radius: 4px;
+
+            cursor: pointer;
+            .color {
+                width: 100%;
+                border-radius: 4px;
+                box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+            }
         }
     }
 }

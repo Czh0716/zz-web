@@ -13,6 +13,7 @@ const getters = {
     activeElementStyleCache: state => state.config.activeElementStyleCache,
     configRecord: state => state.config.configRecord,
     currentRecordIndex: state => state.config.currentRecordIndex,
-    overflowHidden: state => state.config.overflowHidden
+    overflowHidden: state => state.config.overflowHidden,
+    workAreaBGC: state => state.config.workAreaBGC
 }
 export default getters

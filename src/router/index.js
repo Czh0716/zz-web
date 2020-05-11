@@ -6,7 +6,11 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
-        redirect: '/editor'
+        redirect: '/login'
+    },
+    {
+        path: '/login',
+        component: () => import('@/views/login')
     },
     {
         path: '/editor',

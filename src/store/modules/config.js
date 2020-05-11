@@ -50,7 +50,8 @@ const state = {
             count: 0
         }
     },
-    overflowHidden: false
+    overflowHidden: false,
+    workAreaBGC: 'rgba(250,250,250,1)'
 }
 
 const mutations = {
@@ -178,6 +179,9 @@ const mutations = {
     },
     TOGGLE_PAGE_OVERFLOW(state) {
         state.overflowHidden = !state.overflowHidden
+    },
+    SET_WORKAREA_BGC(state, color) {
+        state.workAreaBGC = color
     }
 }
 
