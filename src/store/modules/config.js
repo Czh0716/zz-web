@@ -3,6 +3,32 @@ import { cloneDeep } from 'lodash'
 import { v4 as uuidV4 } from 'uuid'
 import { getElementById, removeUnit } from '@/util/tool.js'
 
+function deleteElementById(elements, id) {
+    let length = elements.length
+    let i = 0
+    while (length > i) {
+        const element = elements[i]
+
+        if (element.id === id) {
+            const activeId =
+                element.type === 'page'
+                    ? i === length - 1
+                        ? element[i - 1].id
+                        : element[i + 1].id
+                    : element.pageId
+            elements.splice(i, 1)
+            return activeId
+        }
+        if (element.children) {
+            const activeId = deleteElementById(element.children, id)
+
+            if (activeId) return activeId
+        }
+
+        i++
+    }
+}
+
 const state = {
     configRecord: [],
     currentRecordIndex: -1,
@@ -73,6 +99,15 @@ const mutations = {
         children.push(element)
         state.activeElement = element
         state.activeElementStyleCache = removeUnit({ ...element.data.style })
+    },
+    DELETE_ELEMENT(state) {
+        //因为暂时没有多选功能，所以默认只删除激活元素
+        //删除完元素后返回该元素所在页面元素Id，将该页面元素设为激活
+
+        const id = deleteElementById(state.pages, state.activeElement.id)
+        state.activeElement = getElementById(state.pages, id)
+        if (state.activeElement.type === 'page')
+            state.activePage = state.activeElement
     },
     SET_ELEMENT_BY_ID(state, id) {
         const element = getElementById(state.pages, id)
@@ -151,6 +186,10 @@ const mutations = {
 const actions = {
     addPage({ commit }) {
         commit('ADD_PAGE')
+        commit('SET_CONFIG_RECORD')
+    },
+    deleteElement({ commit }) {
+        commit('DELETE_ELEMENT')
         commit('SET_CONFIG_RECORD')
     },
     toggleElementVisible({ commit }, value) {

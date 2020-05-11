@@ -4,7 +4,10 @@ import { mapGetters } from 'vuex'
 import { VIcon, VBtn } from 'vuetify/lib'
 export default {
     computed: {
-        ...mapGetters(['pages', 'activePage', 'activeElement'])
+        ...mapGetters(['pages', 'activePage', 'activeElement']),
+        deleteDisabled() {
+            return this.activeElement.type === 'page' && this.pages.length === 1
+        }
     },
     methods: {
         setActiveElement(e, id) {
@@ -15,6 +18,10 @@ export default {
         toggleElementVisible(e, id) {
             this.$store.dispatch('config/toggleElementVisible', id)
             e.stopPropagation()
+        },
+        deleteElement() {
+            this.$store.dispatch('config/deleteElement')
+            this.$emit('resizeOutlined')
         },
         genEleChildren(elements) {
             return (
@@ -162,7 +169,12 @@ export default {
                     <VBtn icon title="事件">
                         <VIcon>mdi-information-outline</VIcon>
                     </VBtn>
-                    <VBtn icon title="删除">
+                    <VBtn
+                        icon
+                        title="删除"
+                        disabled={this.deleteDisabled}
+                        on={{ click: this.deleteElement }}
+                    >
                         <VIcon>mdi-delete-outline</VIcon>
                     </VBtn>
                 </div>
