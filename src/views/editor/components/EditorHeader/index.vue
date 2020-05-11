@@ -36,7 +36,13 @@
             >
                 <img src="@/assets/icons/ot2.svg" alt />
             </button>
-            <button v-ripple class="btn">
+            <button
+                v-ripple
+                @click="togglePageOverflow"
+                title="显/隐 溢出"
+                :class="{disabled: overflowHidden}"
+                class="btn"
+            >
                 <img src="@/assets/icons/ot3.svg" alt />
             </button>
             <button v-ripple class="btn">
@@ -70,7 +76,7 @@
 import { mapGetters } from 'vuex'
 export default {
     computed: {
-        ...mapGetters(['configRecord', 'currentRecordIndex']),
+        ...mapGetters(['configRecord', 'currentRecordIndex', 'overflowHidden']),
         backDisabled() {
             return this.configRecord.length === 0 || this.currentRecordIndex === 0
         },
@@ -92,6 +98,9 @@ export default {
         forwardConfig() {
             this.$emit('resizeOutlined')
             this.$store.commit('config/FORWARD_CONFIG_RECORD')
+        },
+        togglePageOverflow() {
+            this.$store.commit('config/TOGGLE_PAGE_OVERFLOW')
         }
     }
 }

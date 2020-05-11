@@ -26,7 +26,8 @@ export default {
             'activePage',
             'elementNameMap',
             'elements',
-            'activeElement'
+            'activeElement',
+            'overflowHidden'
         ])
     },
     methods: {
@@ -137,6 +138,7 @@ export default {
                 return h('div', { ...option.data, ...events }, option.subData)
             }
         })
+        console.log(this.overflowHidden)
         return h(
             'div',
             {
@@ -165,15 +167,16 @@ export default {
                         h(
                             'div',
                             {
-                                staticClass: 'main-layout',
-
+                                staticClass: 'page__content',
                                 style: {
-                                    ...this.activePage.style
+                                    ...this.activePage.style,
+                                    overflow: this.overflowHidden ? 'hidden' : ''
                                 },
                                 ref: 'canvas'
                             },
                             [...layoutEls, this.genOutlined()]
                         ),
+
                         h('div', { staticClass: 'center-point', ref: 'centerPoint' })
                     ]
                 )
@@ -199,13 +202,15 @@ export default {
         //     left: 50%;
         //     top: 50%;
         // }
+        display: flex;
+        justify-content: center;
     }
 }
 
 [class*='create'] {
     cursor: crosshair;
 }
-.main-layout {
+.page__content {
     position: relative;
     width: 100%;
     margin: 0 auto;

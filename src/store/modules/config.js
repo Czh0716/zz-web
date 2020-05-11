@@ -49,7 +49,8 @@ const state = {
             text: '直线',
             count: 0
         }
-    }
+    },
+    overflowHidden: false
 }
 
 const mutations = {
@@ -174,6 +175,9 @@ const mutations = {
         state.currentRecordIndex++
         const config = cloneDeep(state.configRecord[state.currentRecordIndex])
         Object.keys(config).forEach(key => (state[key] = config[key]))
+    },
+    TOGGLE_PAGE_OVERFLOW(state) {
+        state.overflowHidden = !state.overflowHidden
     }
 }
 

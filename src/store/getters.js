@@ -12,6 +12,7 @@ const getters = {
         getters.activeElement && getters.activeElement.type,
     activeElementStyleCache: state => state.config.activeElementStyleCache,
     configRecord: state => state.config.configRecord,
-    currentRecordIndex: state => state.config.currentRecordIndex
+    currentRecordIndex: state => state.config.currentRecordIndex,
+    overflowHidden: state => state.config.overflowHidden
 }
 export default getters
