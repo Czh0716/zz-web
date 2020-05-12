@@ -224,7 +224,8 @@ const actions = {
         copiedElement.name = elementName
             ? `${elementName.text}${elementName.count}`
             : `${copiedElement.name} 2`
-        commit('ADD_ELEMENT', state.copiedElement)
+
+        commit('ADD_ELEMENT', copiedElement)
     }
 }
 

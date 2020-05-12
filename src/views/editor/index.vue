@@ -56,7 +56,7 @@ export default {
         },
         handleKeyDown({ key, ctrlKey, shiftKey, altKey }) {
             switch (key.toLowerCase()) {
-                case 'Delete':
+                case 'delete':
                     if (!this.deleteDisabled) this.$store.commit('config/DELETE_ELEMENT')
                     this.resizeOutlined()
                     break
