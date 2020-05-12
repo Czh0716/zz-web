@@ -57,7 +57,9 @@
                     </v-btn>
                 </div>
             </div>
-            <router-view></router-view>
+            <div class="router">
+                <router-view></router-view>
+            </div>
         </div>
     </div>
 </template>
@@ -82,6 +84,9 @@ export default {
     padding-left: 256px;
     .content {
         padding: 16px;
+        position: relative;
+        height: 100vh;
+        overflow-y: scroll;
     }
     .admin-title {
         display: block;
@@ -103,6 +108,8 @@ export default {
         .search-btn {
             margin-right: 50px;
         }
+    }
+    .router {
     }
 }
 </style>
