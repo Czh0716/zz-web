@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     provide() {
         return {
@@ -27,6 +28,7 @@ export default {
         ElementTree: () => import('./components/elementTree')
     },
     computed: {
+        ...mapGetters(['pages', 'activeElement']),
         compsVisible() {
             return this.$store.state.app.windowCompsVisible
         },
@@ -37,6 +39,9 @@ export default {
                 initOutlined,
                 resizeOutlined
             }
+        },
+        deleteDisabled() {
+            return this.activeElement.type === 'page' && this.pages.length === 1
         }
     },
     methods: {
@@ -48,11 +53,35 @@ export default {
         },
         resizeOutlined() {
             this.$refs.main.resizeOutlined()
+        },
+        handleKeyDown({ key, ctrlKey, shiftKey, altKey }) {
+            switch (key.toLowerCase()) {
+                case 'Delete':
+                    if (!this.deleteDisabled) this.$store.commit('config/DELETE_ELEMENT')
+                    this.resizeOutlined()
+                    break
+                case 'z':
+                    if (ctrlKey) {
+                        shiftKey
+                            ? this.$store.commit('config/FORWARD_CONFIG_RECORD')
+                            : this.$store.commit('config/BACK_CONFIG_RECORD')
+
+                        this.resizeOutlined()
+                    }
+                    break
+                case 'c':
+                    if (ctrlKey) this.$store.commit('config/COPY_ELEMENT')
+                    break
+                case 'v':
+                    if (ctrlKey) this.$store.dispatch('config/pasteElement')
+                    break
+            }
         }
     },
-    created() {
+    mounted() {
         this.$store.commit('config/ADD_PAGE')
         this.$store.commit('config/SET_CONFIG_RECORD')
+        window.addEventListener('keydown', this.handleKeyDown)
     }
 }
 </script>

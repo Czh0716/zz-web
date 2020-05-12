@@ -1,6 +1,6 @@
 <template>
-    <div class="admin">
-        <v-navigation-drawer color="#fff" absolute permanent>
+    <div :class="{drawer}" class="admin">
+        <v-navigation-drawer v-model="drawer" color="#fff" absolute>
             <v-list dense rounded class="py-0">
                 <v-list-item>
                     <span class="admin-title">zZ WEB管理系统</span>
@@ -37,7 +37,14 @@
         </v-navigation-drawer>
         <div class="content">
             <div class="header">
-                <v-btn fab small color="#fff" class="mr-4" style="color:grey;">
+                <v-btn
+                    @click="drawer = !drawer"
+                    fab
+                    small
+                    color="#fff"
+                    class="mr-4"
+                    style="color:grey;"
+                >
                     <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
                 <span>个人项目</span>
@@ -68,6 +75,7 @@
 export default {
     data() {
         return {
+            drawer: true,
             items: [
                 { icon: 'mdi-view-dashboard', title: '个人项目', link: '/admin/product' },
                 { icon: 'mdi-account-circle-outline', title: '账号', link: '/admin/account' },
@@ -81,7 +89,10 @@ export default {
 <style lang="less" scoped>
 .admin {
     height: 100%;
-    padding-left: 256px;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    &.drawer {
+        padding-left: 256px;
+    }
     .content {
         padding: 16px;
         position: relative;

@@ -36,6 +36,7 @@ const state = {
     activePage: null,
     activeElement: null,
     activeElementStyleCache: {},
+    copiedElement: null,
     elementNameMap: {
         rect: {
             text: '矩形',
@@ -110,6 +111,18 @@ const mutations = {
         if (state.activeElement.type === 'page')
             state.activePage = state.activeElement
     },
+    COPY_ELEMENT(state) {
+        state.copiedElement = state.activeElement
+    },
+    PASTE_ELEMENT(state) {
+        const copiedElement = state.copiedElement
+        if (!copiedElement) return
+        const shape = copiedElement.tag
+        const elementName = state.elementNameMap[shape]
+        copiedElement.name = elementName
+            ? `${elementName.text}${elementName.count}`
+            : `${copiedElement.name} 2`
+    },
     SET_ELEMENT_BY_ID(state, id) {
         const element = getElementById(state.pages, id)
         if (element) state.activeElement = element
@@ -167,13 +180,18 @@ const mutations = {
         state.currentRecordIndex++
     },
     BACK_CONFIG_RECORD(state) {
-        state.currentRecordIndex--
+        if (state.currentRecordIndex <= 0) return
 
+        state.currentRecordIndex--
+        state.activeElement = state.activePage
         const config = cloneDeep(state.configRecord[state.currentRecordIndex])
         Object.keys(config).forEach(key => (state[key] = config[key]))
     },
     FORWARD_CONFIG_RECORD(state) {
+        if (state.currentRecordIndex >= state.configRecord.length - 1) return
+
         state.currentRecordIndex++
+        state.activeElement = state.activePage
         const config = cloneDeep(state.configRecord[state.currentRecordIndex])
         Object.keys(config).forEach(key => (state[key] = config[key]))
     },
@@ -197,6 +215,16 @@ const actions = {
     toggleElementVisible({ commit }, value) {
         commit('TOGGLE_ELEMENT_VISIBLE', value)
         commit('SET_CONFIG_RECORD')
+    },
+    pasteElement({ commit, state }) {
+        const copiedElement = cloneDeep(state.copiedElement)
+        if (!copiedElement) return
+        const shape = copiedElement.tag
+        const elementName = state.elementNameMap[shape]
+        copiedElement.name = elementName
+            ? `${elementName.text}${elementName.count}`
+            : `${copiedElement.name} 2`
+        commit('ADD_ELEMENT', state.copiedElement)
     }
 }
 

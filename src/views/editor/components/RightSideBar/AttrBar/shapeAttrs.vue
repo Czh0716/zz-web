@@ -46,6 +46,23 @@
                         ></v-text-field>
                     </v-col>
                 </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field
+                            :value="style.rx || 0"
+                            @input.native="(e)=>{
+                                updateStyle(e,'rx')
+                                updateStyle(e,'ry')
+                            }"
+                            label="圆角"
+                            type="number"
+                            hide-details
+                            dense
+                            outlined
+                            suffix="px"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
             </template>
         </common>
     </div>
