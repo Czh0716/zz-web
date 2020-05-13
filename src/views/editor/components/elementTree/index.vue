@@ -1,7 +1,7 @@
 
 <script type="jsx">
 import { mapGetters } from 'vuex'
-import { VIcon, VBtn } from 'vuetify/lib'
+import { VIcon, VBtn, VList, VListItem, VCard, VDivider } from 'vuetify/lib'
 export default {
     computed: {
         ...mapGetters(['pages', 'activePage', 'activeElement']),
@@ -35,7 +35,8 @@ export default {
                                         this.activeElement && element.id === this.activeElement.id
                                 }}
                                 on={{
-                                    click: e => this.setActiveElement(e, element.id)
+                                    click: e => this.setActiveElement(e, element.id),
+                                    mousedown: this.onMouseDown
                                 }}
                             >
                                 <div
@@ -73,6 +74,18 @@ export default {
                     })}
                 </ul>
             )
+        },
+        onMouseDown(e) {
+            e.stopPropagation()
+            const btn = e.button
+            if (btn !== 2) return
+            this.optsVisible = false
+            setTimeout(() => {
+                this.optsVisible = true
+            }, 0)
+        },
+        onContextMenu(e) {
+            e.preventDefault()
         }
     },
     data() {
@@ -83,8 +96,15 @@ export default {
                 ellipse: 'mdi-checkbox-blank-circle-outline',
                 line: 'mdi-vector-line'
             },
-            pagesExpand: []
+            pagesExpand: [],
+            optsVisible: false
         }
+    },
+    components: {
+        TrackWindow: () => import('@/components/TrackWindow')
+    },
+    mounted() {
+        this.$refs.tree.addEventListener('contextmenu', this.onContextMenu)
     },
     render() {
         const pageList = this.pages.map((page, index) => {
@@ -94,7 +114,8 @@ export default {
                     staticClass="tree-node page-node"
                     class={{ active: this.activeElement.id === page.id }}
                     on={{
-                        click: e => this.setActiveElement(e, page.id)
+                        click: e => this.setActiveElement(e, page.id),
+                        mousedown: this.onMouseDown
                     }}
                 >
                     <div
@@ -151,7 +172,45 @@ export default {
         })
 
         return (
-            <div class="element-tree">
+            <div class="element-tree" ref="tree">
+                <track-window v-model={this.optsVisible}>
+                    <VCard class="subtitle-2 element-menu">
+                        <VList dense width="200">
+                            <VListItem link>
+                                前移一层<span class="short-key">Ctrl+[</span>
+                            </VListItem>
+                            <VListItem link>
+                                移至顶层<span class="short-key">Shift+Ctrl+[</span>
+                            </VListItem>
+                            <VListItem link>
+                                后移一层<span class="short-key">Ctrl+]</span>
+                            </VListItem>
+                            <VListItem link>
+                                移至底层<span class="short-key">Shift+Ctrl+]</span>
+                            </VListItem>
+                            <VDivider></VDivider>
+                            <VListItem link>
+                                锁定 <span class="short-key">Ctrl+L</span>
+                            </VListItem>
+                            <VListItem link>
+                                显示/隐藏<span class="short-key">Ctrl+H</span>
+                            </VListItem>
+                            <VDivider></VDivider>
+                            <VListItem link>
+                                复制<span class="short-key">Ctrl+C</span>
+                            </VListItem>
+                            <VListItem link>
+                                粘贴<span class="short-key">Ctrl+V</span>
+                            </VListItem>
+                            <VListItem link>
+                                剪切<span class="short-key">Ctrl+X</span>
+                            </VListItem>
+                            <VListItem link>
+                                删除<span class="short-key">Delete</span>
+                            </VListItem>
+                        </VList>
+                    </VCard>
+                </track-window>
                 <div class="tab-bar">
                     <VIcon>mdi-tree</VIcon>对象树
                     <VIcon class="search">mdi-magnify</VIcon>
@@ -184,6 +243,16 @@ export default {
 }
 </script>
 
+<style lang="less">
+.element-menu {
+    .short-key {
+        margin-left: auto;
+        color: #ddd;
+        font-weight: 400;
+    }
+}
+</style>
+
 <style lang="less" scoped>
 .element-tree {
     width: 260px;
@@ -192,6 +261,7 @@ export default {
     flex-shrink: 0;
     font-size: 14px;
     position: relative;
+
     .tab-bar {
         display: flex;
         align-items: center;
