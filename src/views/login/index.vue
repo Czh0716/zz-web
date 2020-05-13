@@ -54,7 +54,7 @@ export default {
 
 <style lang="less" scoped>
 .login__page {
-    background: url('../../assets/login_bg.png') no-repeat 18% center/750px;
+    background: url('../../assets/login_bg.png') no-repeat 18% center/600px;
     height: 100%;
     display: flex;
     justify-content: center;
@@ -69,7 +69,7 @@ export default {
 
 .form__container {
     position: relative;
-    @width: 340px;
+    @width: 320px;
     width: @width;
     @color: #baeaec;
     .title {
