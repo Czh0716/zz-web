@@ -188,14 +188,14 @@ export default {
                             <VListItem link>
                                 移至底层<span class="short-key">Shift+Ctrl+]</span>
                             </VListItem>
-                            <VDivider></VDivider>
+                            <VDivider class="mx-2"></VDivider>
                             <VListItem link>
                                 锁定 <span class="short-key">Ctrl+L</span>
                             </VListItem>
                             <VListItem link>
                                 显示/隐藏<span class="short-key">Ctrl+H</span>
                             </VListItem>
-                            <VDivider></VDivider>
+                            <VDivider class="mx-2"></VDivider>
                             <VListItem link>
                                 复制<span class="short-key">Ctrl+C</span>
                             </VListItem>

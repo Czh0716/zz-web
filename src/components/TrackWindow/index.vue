@@ -66,6 +66,6 @@ export default {
 }
 .window-enter-active,
 .window-leave-active {
-    transition: 0.3s cubic-bezier(0.2, 0.77, 0.3, 1.3);
+    transition: 0.3s;
 }
 </style>
