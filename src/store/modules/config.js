@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { v4 as uuidV4 } from 'uuid'
-import { getElementById, removeUnit } from '@/util/tool.js'
+import { getElementById, removeUnit, resizeChildrenId } from '@/util/tool.js'
 
 function deleteElementById(elements, id) {
     let length = elements.length
@@ -56,20 +56,25 @@ const state = {
 }
 
 const mutations = {
-    ADD_PAGE(state) {
+    ADD_PAGE(state, page) {
         const length = state.pages.length
-        const page = {
-            name: `页面${length}`,
-            id: uuidV4(),
-            type: 'page',
-            style: {
-                backgroundColor: 'rgba(255,255,255,1)',
-                width: '375px',
-                height: '667px'
-            },
-            children: [],
-            visible: true
+        if (!page) {
+            page = {
+                type: 'page',
+                style: {
+                    backgroundColor: 'rgba(255,255,255,1)',
+                    width: '375px',
+                    height: '667px'
+                },
+                children: [],
+                visible: true
+            }
         }
+
+        page.name = `页面${length}`
+        page.id = uuidV4()
+        resizeChildrenId(page.children, page.id)
+
         state.pages.push(page)
         state.activeElement = page
         state.activePage = page
@@ -113,15 +118,6 @@ const mutations = {
     },
     COPY_ELEMENT(state) {
         state.copiedElement = state.activeElement
-    },
-    PASTE_ELEMENT(state) {
-        const copiedElement = state.copiedElement
-        if (!copiedElement) return
-        const shape = copiedElement.tag
-        const elementName = state.elementNameMap[shape]
-        copiedElement.name = elementName
-            ? `${elementName.text}${elementName.count}`
-            : `${copiedElement.name} 2`
     },
     SET_ELEMENT_BY_ID(state, id) {
         const element = getElementById(state.pages, id)
@@ -221,11 +217,15 @@ const actions = {
         if (!copiedElement) return
         const shape = copiedElement.tag
         const elementName = state.elementNameMap[shape]
+        const children = copiedElement.children
         copiedElement.name = elementName
             ? `${elementName.text}${elementName.count}`
             : `${copiedElement.name} 2`
 
-        commit('ADD_ELEMENT', copiedElement)
+        commit(
+            copiedElement.type === 'page' ? 'ADD_PAGE' : 'ADD_ELEMENT',
+            copiedElement
+        )
     }
 }
 

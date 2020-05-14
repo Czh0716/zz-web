@@ -35,8 +35,7 @@ export default {
                                         this.activeElement && element.id === this.activeElement.id
                                 }}
                                 on={{
-                                    click: e => this.setActiveElement(e, element.id),
-                                    mousedown: this.onMouseDown
+                                    mousedown: e => this.onMouseDown(e, element.id)
                                 }}
                             >
                                 <div
@@ -75,8 +74,8 @@ export default {
                 </ul>
             )
         },
-        onMouseDown(e) {
-            e.stopPropagation()
+        onMouseDown(e, id) {
+            this.setActiveElement(e, id)
             const btn = e.button
             if (btn !== 2) return
             this.menuVisible = false
@@ -114,8 +113,7 @@ export default {
                     staticClass="tree-node page-node"
                     class={{ active: this.activeElement.id === page.id }}
                     on={{
-                        click: e => this.setActiveElement(e, page.id),
-                        mousedown: this.onMouseDown
+                        mousedown: e => this.onMouseDown(e, page.id)
                     }}
                 >
                     <div

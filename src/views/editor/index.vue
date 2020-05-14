@@ -16,7 +16,8 @@ import { mapGetters } from 'vuex'
 export default {
     provide() {
         return {
-            triggerElementStretch: this.triggerElementStretch
+            triggerElementStretch: this.triggerElementStretch,
+            ...this.layoutListeners
         }
     },
     components: {
