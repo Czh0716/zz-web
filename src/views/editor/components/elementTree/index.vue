@@ -79,9 +79,9 @@ export default {
             e.stopPropagation()
             const btn = e.button
             if (btn !== 2) return
-            this.optsVisible = false
+            this.menuVisible = false
             setTimeout(() => {
-                this.optsVisible = true
+                this.menuVisible = true
             }, 0)
         },
         onContextMenu(e) {
@@ -97,11 +97,11 @@ export default {
                 line: 'mdi-vector-line'
             },
             pagesExpand: [],
-            optsVisible: false
+            menuVisible: false
         }
     },
     components: {
-        TrackWindow: () => import('@/components/TrackWindow')
+        ElementMenu: () => import('../ElementMenu')
     },
     mounted() {
         this.$refs.tree.addEventListener('contextmenu', this.onContextMenu)
@@ -173,44 +173,7 @@ export default {
 
         return (
             <div class="element-tree" ref="tree">
-                <track-window v-model={this.optsVisible}>
-                    <VCard class="subtitle-2 element-menu">
-                        <VList dense width="200">
-                            <VListItem link>
-                                前移一层<span class="short-key">Ctrl+[</span>
-                            </VListItem>
-                            <VListItem link>
-                                移至顶层<span class="short-key">Shift+Ctrl+[</span>
-                            </VListItem>
-                            <VListItem link>
-                                后移一层<span class="short-key">Ctrl+]</span>
-                            </VListItem>
-                            <VListItem link>
-                                移至底层<span class="short-key">Shift+Ctrl+]</span>
-                            </VListItem>
-                            <VDivider class="mx-2"></VDivider>
-                            <VListItem link>
-                                锁定 <span class="short-key">Ctrl+L</span>
-                            </VListItem>
-                            <VListItem link>
-                                显示/隐藏<span class="short-key">Ctrl+H</span>
-                            </VListItem>
-                            <VDivider class="mx-2"></VDivider>
-                            <VListItem link>
-                                复制<span class="short-key">Ctrl+C</span>
-                            </VListItem>
-                            <VListItem link>
-                                粘贴<span class="short-key">Ctrl+V</span>
-                            </VListItem>
-                            <VListItem link>
-                                剪切<span class="short-key">Ctrl+X</span>
-                            </VListItem>
-                            <VListItem link>
-                                删除<span class="short-key">Delete</span>
-                            </VListItem>
-                        </VList>
-                    </VCard>
-                </track-window>
+                <element-menu v-model={this.menuVisible}></element-menu>
                 <div class="tab-bar">
                     <VIcon>mdi-tree</VIcon>对象树
                     <VIcon class="search">mdi-magnify</VIcon>
