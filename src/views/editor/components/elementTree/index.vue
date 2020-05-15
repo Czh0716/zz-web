@@ -24,62 +24,60 @@ export default {
             this.$emit('resizeOutlined')
         },
         genEleChildren(elements) {
-            return (
-                <ul class="child-list">
-                    {elements.map((element, index, arr) => {
-                        return (
-                            <li
-                                class={{
-                                    'tree-node': true,
+            const list = []
+            for (let i = elements.length - 1; i >= 0; i--) {
+                const element = elements[i]
+
+                const node = (
+                    <li
+                        class={{
+                            'tree-node': true,
+                            active: this.activeElement && element.id === this.activeElement.id
+                        }}
+                        on={{
+                            mousedown: e =>
+                                this.onMouseDown(e, element.id, {
+                                    forwardDisabled: i === 0,
+                                    backDisabled: i === elements.length - 1
+                                })
+                        }}
+                    >
+                        <div class="divider divider-top"></div>
+                        <div class="divider divider-bottom"></div>
+                        <div
+                            key={element.id}
+                            {...{
+                                class: {
+                                    element: true,
                                     active:
                                         this.activeElement && element.id === this.activeElement.id
-                                }}
-                                on={{
-                                    mousedown: e =>
-                                        this.onMouseDown(e, element.id, {
-                                            forwardDisabled: index === 0,
-                                            backDisabled: index === arr.length - 1
-                                        })
+                                }
+                            }}
+                        >
+                            <VIcon
+                                {...{
+                                    class: {
+                                        visibility: true,
+                                        hidden: !element.visible
+                                    },
+                                    on: {
+                                        mousedown: e => this.toggleElementVisible(e, element.id)
+                                    }
                                 }}
                             >
-                                <div class="divider divider-top"></div>
-                                <div class="divider divider-bottom"></div>
-                                <div
-                                    key={element.id}
-                                    {...{
-                                        class: {
-                                            element: true,
-                                            active:
-                                                this.activeElement &&
-                                                element.id === this.activeElement.id
-                                        }
-                                    }}
-                                >
-                                    <VIcon
-                                        {...{
-                                            class: {
-                                                visibility: true,
-                                                hidden: !element.visible
-                                            },
-                                            on: {
-                                                mousedown: e =>
-                                                    this.toggleElementVisible(e, element.id)
-                                            }
-                                        }}
-                                    >
-                                        mdi-eye-{element.visible ? '' : 'off-'}outline
-                                    </VIcon>
-                                    <span class="name">
-                                        <VIcon>{this.iconMap[element.type]}</VIcon>
-                                        {element.name}
-                                    </span>
-                                </div>
-                                {element.children && this.genEleChildren(element.children)}
-                            </li>
-                        )
-                    })}
-                </ul>
-            )
+                                mdi-eye-{element.visible ? '' : 'off-'}outline
+                            </VIcon>
+                            <span class="name">
+                                <VIcon>{this.iconMap[element.type]}</VIcon>
+                                {element.name}
+                            </span>
+                        </div>
+                        {element.children && this.genEleChildren(element.children)}
+                    </li>
+                )
+                list.push(node)
+            }
+            return <ul class="child-list">{list}</ul>
         },
         onMouseDown(e, id, { forwardDisabled = false, backDisabled = false }) {
             this.setActiveElement(e, id)
@@ -117,17 +115,20 @@ export default {
         this.$refs.tree.addEventListener('contextmenu', this.onContextMenu)
     },
     render() {
-        const pageList = this.pages.map((page, index, arr) => {
-            return (
+        const pageList = []
+        const elements = this.pages
+        for (let i = elements.length - 1; i >= 0; i--) {
+            const element = elements[i]
+            const node = (
                 <div
-                    key={page.id}
+                    key={element.id}
                     staticClass="tree-node page-node"
-                    class={{ active: this.activeElement.id === page.id }}
+                    class={{ active: this.activeElement.id === element.id }}
                     on={{
                         mousedown: e =>
-                            this.onMouseDown(e, page.id, {
-                                forwardDisabled: index === 0,
-                                backDisabled: index === arr.length - 1
+                            this.onMouseDown(e, element.id, {
+                                forwardDisabled: i === 0,
+                                backDisabled: i === elements.length - 1
                             }),
                         mousemove: e => {
                             const target = e.currentTarget
@@ -160,14 +161,14 @@ export default {
                             {...{
                                 class: {
                                     visibility: true,
-                                    hidden: !page.visible
+                                    hidden: !element.visible
                                 },
                                 on: {
-                                    click: e => this.toggleElementVisible(e, page.id)
+                                    click: e => this.toggleElementVisible(e, element.id)
                                 }
                             }}
                         >
-                            mdi-eye-{page.visible ? '' : 'off-'}outline
+                            mdi-eye-{element.visible ? '' : 'off-'}outline
                         </VIcon>
                         <VIcon
                             class="expand-icon on"
@@ -193,13 +194,14 @@ export default {
                         </VIcon>
                         <span class="name">
                             <VIcon>{this.iconMap['page']}</VIcon>
-                            {page.name}
+                            {element.name}
                         </span>
                     </div>
-                    {this.genEleChildren(page.children)}
+                    {this.genEleChildren(element.children)}
                 </div>
             )
-        })
+            pageList.push(node)
+        }
 
         return (
             <div class="element-tree" ref="tree">

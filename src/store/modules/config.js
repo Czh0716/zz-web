@@ -120,7 +120,6 @@ const mutations = {
         state.copiedElement = state.activeElement
     },
     MOVE_ELEMENT(state, status) {
-        console.log(status)
         //status代表移动的操作，0：前移1，1：前移顶，2：后移1，3：后移底
         const { arr, i } = getElementById(
             state.pages,
