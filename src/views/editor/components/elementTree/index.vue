@@ -26,7 +26,7 @@ export default {
         genEleChildren(elements) {
             return (
                 <ul class="child-list">
-                    {elements.map(element => {
+                    {elements.map((element, index, arr) => {
                         return (
                             <li
                                 class={{
@@ -35,9 +35,15 @@ export default {
                                         this.activeElement && element.id === this.activeElement.id
                                 }}
                                 on={{
-                                    mousedown: e => this.onMouseDown(e, element.id)
+                                    mousedown: e =>
+                                        this.onMouseDown(e, element.id, {
+                                            forwardDisabled: index === 0,
+                                            backDisabled: index === arr.length - 1
+                                        })
                                 }}
                             >
+                                <div class="divider divider-top"></div>
+                                <div class="divider divider-bottom"></div>
                                 <div
                                     key={element.id}
                                     {...{
@@ -56,7 +62,8 @@ export default {
                                                 hidden: !element.visible
                                             },
                                             on: {
-                                                click: e => this.toggleElementVisible(e, element.id)
+                                                mousedown: e =>
+                                                    this.toggleElementVisible(e, element.id)
                                             }
                                         }}
                                     >
@@ -74,11 +81,13 @@ export default {
                 </ul>
             )
         },
-        onMouseDown(e, id) {
+        onMouseDown(e, id, { forwardDisabled = false, backDisabled = false }) {
             this.setActiveElement(e, id)
             const btn = e.button
             if (btn !== 2) return
             this.menuVisible = false
+            this.forwardDisabled = forwardDisabled
+            this.backDisabled = backDisabled
             setTimeout(() => {
                 this.menuVisible = true
             }, 0)
@@ -96,7 +105,9 @@ export default {
                 line: 'mdi-vector-line'
             },
             pagesExpand: [],
-            menuVisible: false
+            menuVisible: false,
+            forwardDisabled: false,
+            backDisabled: false
         }
     },
     components: {
@@ -106,16 +117,37 @@ export default {
         this.$refs.tree.addEventListener('contextmenu', this.onContextMenu)
     },
     render() {
-        const pageList = this.pages.map((page, index) => {
+        const pageList = this.pages.map((page, index, arr) => {
             return (
                 <div
                     key={page.id}
                     staticClass="tree-node page-node"
                     class={{ active: this.activeElement.id === page.id }}
                     on={{
-                        mousedown: e => this.onMouseDown(e, page.id)
+                        mousedown: e =>
+                            this.onMouseDown(e, page.id, {
+                                forwardDisabled: index === 0,
+                                backDisabled: index === arr.length - 1
+                            }),
+                        mousemove: e => {
+                            const target = e.currentTarget
+                            const { y } = target.getBoundingClientRect()
+                            const height = 30
+                            const clientY = e.clientY
+                            const localY = clientY - y
+                            const proportion = localY / height
+                            // if (proportion < 0.25) {
+                            //     target.dataset.insertPos = 'top'
+                            // } else if (proportion > 0.75) {
+                            //     target.dataset.insertPos = 'bottom'
+                            // } else {
+                            //     target.dataset.insertPos = 'middle'
+                            // }
+                        }
                     }}
                 >
+                    <div class="divider divider-top"></div>
+                    <div class="divider divider-bottom"></div>
                     <div
                         {...{
                             class: {
@@ -171,7 +203,11 @@ export default {
 
         return (
             <div class="element-tree" ref="tree">
-                <element-menu v-model={this.menuVisible}></element-menu>
+                <element-menu
+                    v-model={this.menuVisible}
+                    forwardDisabled={this.forwardDisabled}
+                    backDisabled={this.backDisabled}
+                ></element-menu>
                 <div class="tab-bar">
                     <VIcon>mdi-tree</VIcon>对象树
                     <VIcon class="search">mdi-magnify</VIcon>
@@ -255,6 +291,44 @@ export default {
         width: 100%;
 
         .tree-node {
+            .divider {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                height: 2px;
+                left: 0;
+                right: 8px;
+                z-index: 100;
+                background-color: black;
+                visibility: hidden;
+                &::before,
+                &::after {
+                    content: '';
+                    position: absolute;
+                    border: solid 5px transparent;
+                }
+                &::before {
+                    border-left-color: black;
+                }
+                &::after {
+                    border-right-color: black;
+                    right: 0;
+                }
+            }
+            .divider-bottom {
+                top: 30px;
+            }
+            &[data-insert-pos='top'] {
+                .divider-top {
+                    visibility: visible;
+                }
+            }
+            &[data-insert-pos='bottom'] {
+                .divider-bottom {
+                    visibility: visible;
+                }
+            }
+
             &::before {
                 content: '';
                 position: absolute;
@@ -263,7 +337,6 @@ export default {
                 height: 30px;
                 background-color: rgba(0, 0, 0, 0);
                 transition: 0.3s;
-                cursor: pointer;
             }
 
             &.active {
@@ -281,7 +354,6 @@ export default {
     .element {
         display: flex;
         align-items: center;
-        cursor: pointer;
         height: 30px;
         .visibility {
             position: absolute;

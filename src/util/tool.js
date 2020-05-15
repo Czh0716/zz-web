@@ -1,15 +1,20 @@
 import { v4 as uuidV4 } from 'uuid'
-export function getElementById(arr, id) {
+export function getElementById(arr, id, forMove = false) {
     let length = arr.length
     let i = 0
     while (length > i) {
         const element = arr[i]
+        const obj = {
+            el: element,
+            i,
+            arr
+        }
 
-        if (element.id === id) return element
+        if (element.id === id) return forMove ? obj : element
 
         if (element.children) {
-            const target = getElementById(element.children, id)
-            if (target) return target
+            const res = getElementById(element.children, id, forMove)
+            if (res) return res
         }
 
         i++

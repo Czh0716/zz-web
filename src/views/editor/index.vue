@@ -74,7 +74,21 @@ export default {
                     if (ctrlKey) this.$store.commit('config/COPY_ELEMENT')
                     break
                 case 'v':
-                    if (ctrlKey) this.$store.dispatch('config/pasteElement')
+                    if (ctrlKey) {
+                        this.$store.dispatch('config/pasteElement')
+                    } else {
+                        this.$store.dispatch('app/changeAction', 'selection')
+                    }
+                    break
+                case 'x':
+                    this.$store.dispatch('config/cutElement')
+                    this.resizeOutlined()
+                    break
+                case 'r':
+                    this.$store.dispatch('app/changeAction', 'create-rect')
+                    break
+                case 'o':
+                    this.$store.dispatch('app/changeAction', 'create-ellipse')
                     break
             }
         }

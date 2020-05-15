@@ -119,6 +119,34 @@ const mutations = {
     COPY_ELEMENT(state) {
         state.copiedElement = state.activeElement
     },
+    MOVE_ELEMENT(state, status) {
+        console.log(status)
+        //status代表移动的操作，0：前移1，1：前移顶，2：后移1，3：后移底
+        const { arr, i } = getElementById(
+            state.pages,
+            state.activeElement.id,
+            true
+        )
+
+        switch (status) {
+            case 0:
+                if (i === 0) return
+                ;[arr[i], arr[i - 1]] = [arr[i - 1], arr[i]]
+                break
+            case 1:
+                if (i === 0) return
+                ;[arr[i], arr[0]] = [arr[0], arr[i]]
+                break
+            case 2:
+                if (i === arr.length - 1) return
+                ;[arr[i], arr[i + 1]] = [arr[i + 1], arr[i]]
+                break
+            case 3:
+                if (i === arr.length - 1) return
+                ;[arr[i], arr[arr.length - 1]] = [arr[arr.length - 1], arr[i]]
+                break
+        }
+    },
     SET_ELEMENT_BY_ID(state, id) {
         const element = getElementById(state.pages, id)
         if (element) state.activeElement = element
@@ -217,7 +245,6 @@ const actions = {
         if (!copiedElement) return
         const shape = copiedElement.tag
         const elementName = state.elementNameMap[shape]
-        const children = copiedElement.children
         copiedElement.name = elementName
             ? `${elementName.text}${elementName.count}`
             : `${copiedElement.name} 2`
@@ -226,6 +253,12 @@ const actions = {
             copiedElement.type === 'page' ? 'ADD_PAGE' : 'ADD_ELEMENT',
             copiedElement
         )
+        commit('SET_CONFIG_RECORD')
+    },
+    cutElement({ commit, dispatch }) {
+        commit('COPY_ELEMENT')
+        dispatch('deleteElement')
+        commit('SET_CONFIG_RECORD')
     }
 }
 

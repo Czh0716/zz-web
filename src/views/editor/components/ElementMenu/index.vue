@@ -3,35 +3,63 @@
         <track-window :value="value" @input="(val)=>$emit('input',val)">
             <v-card class="subtitle-2 element-menu">
                 <v-list dense width="200">
-                    <v-list-item link>
+                    <v-list-item
+                        link
+                        :disabled="!activeElement || forwardDisabled"
+                        @click="handleOperate('moveElement',0)"
+                    >
                         前移一层
                         <span class="short-key">Ctrl+[</span>
                     </v-list-item>
-                    <v-list-item link>
+                    <v-list-item
+                        link
+                        :disabled="!activeElement || forwardDisabled"
+                        @click="handleOperate('moveElement',1)"
+                    >
                         移至顶层
                         <span class="short-key">Shift+Ctrl+[</span>
                     </v-list-item>
-                    <v-list-item link>
+                    <v-list-item
+                        link
+                        :disabled="!activeElement || backDisabled"
+                        @click="handleOperate('moveElement',2)"
+                    >
                         后移一层
                         <span class="short-key">Ctrl+]</span>
                     </v-list-item>
-                    <v-list-item link>
+                    <v-list-item
+                        link
+                        :disabled="!activeElement || backDisabled"
+                        @click="handleOperate('moveElement',3)"
+                    >
                         移至底层
                         <span class="short-key">Shift+Ctrl+]</span>
                     </v-list-item>
                     <VDivider class="mx-2"></VDivider>
-                    <v-list-item link>
+                    <v-list-item link :disabled="!activeElement">
                         锁定
                         <span class="short-key">Ctrl+L</span>
                     </v-list-item>
-                    <v-list-item link>
+                    <v-list-item link :disabled="!activeElement">
                         显示/隐藏
                         <span class="short-key">Ctrl+H</span>
                     </v-list-item>
                     <VDivider class="mx-2"></VDivider>
-                    <v-list-item link @click="handleOperate('copyElement')">
+                    <v-list-item
+                        link
+                        :disabled="!activeElement"
+                        @click="handleOperate('copyElement')"
+                    >
                         复制
                         <span class="short-key">Ctrl+C</span>
+                    </v-list-item>
+                    <v-list-item
+                        link
+                        :disabled="!activeElement"
+                        @click="handleOperate('cutElement')"
+                    >
+                        剪切
+                        <span class="short-key">Ctrl+X</span>
                     </v-list-item>
                     <v-list-item
                         link
@@ -41,11 +69,12 @@
                         粘贴
                         <span class="short-key">Ctrl+V</span>
                     </v-list-item>
-                    <v-list-item link>
-                        剪切
-                        <span class="short-key">Ctrl+X</span>
-                    </v-list-item>
-                    <v-list-item link @click="handleOperate('deleteElement')">
+
+                    <v-list-item
+                        link
+                        :disabled="!activeElement"
+                        @click="handleOperate('deleteElement')"
+                    >
                         删除
                         <span class="short-key">Delete</span>
                     </v-list-item>
@@ -61,7 +90,7 @@ export default {
     inject: ['resizeOutlined'],
     methods: {
         deleteElement() {
-            this.$store.commit('config/DELETE_ELEMENT')
+            this.$store.dispatch('config/deleteElement')
             this.resizeOutlined()
         },
         copyElement() {
@@ -70,12 +99,19 @@ export default {
         pasteElement() {
             this.$store.dispatch('config/pasteElement')
         },
+        cutElement() {
+            this.$store.dispatch('config/cutElement')
+            this.resizeOutlined()
+        },
+        moveElement(status) {
+            this.$store.commit('config/MOVE_ELEMENT', status)
+        },
         changVisibility(visible = false) {
             this.$emit('input', visible)
         },
-        handleOperate(name) {
+        handleOperate(name, ...arg) {
             const f = this[name]
-            f && f()
+            f && f(...arg)
             this.changVisibility()
         }
     },
@@ -84,6 +120,14 @@ export default {
     },
     props: {
         value: {
+            type: Boolean,
+            default: false
+        },
+        forwardDisabled: {
+            type: Boolean,
+            default: false
+        },
+        backDisabled: {
             type: Boolean,
             default: false
         }
