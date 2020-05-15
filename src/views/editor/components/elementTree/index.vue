@@ -37,8 +37,8 @@ export default {
                         on={{
                             mousedown: e =>
                                 this.onMouseDown(e, element.id, {
-                                    forwardDisabled: i === 0,
-                                    backDisabled: i === elements.length - 1
+                                    forwardDisabled: i === elements.length - 1,
+                                    backDisabled: i === 0
                                 })
                         }}
                     >
@@ -127,8 +127,8 @@ export default {
                     on={{
                         mousedown: e =>
                             this.onMouseDown(e, element.id, {
-                                forwardDisabled: i === 0,
-                                backDisabled: i === elements.length - 1
+                                forwardDisabled: i === elements.length - 1,
+                                backDisabled: i === 0
                             }),
                         mousemove: e => {
                             const target = e.currentTarget
