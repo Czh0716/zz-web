@@ -68,7 +68,6 @@ export default {
         }
     },
     data() {
-        console.log(this.value)
         return {
             pickerVisible: false
         }

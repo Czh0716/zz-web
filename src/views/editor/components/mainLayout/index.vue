@@ -8,13 +8,17 @@ const type = {
 }
 export default {
     mixins: [selection, outlined, createElement],
+    components: {
+        ElementMenu: () => import('../ElementMenu')
+    },
     data() {
         return {
             startPosition: {},
             contentStyle: {
                 transformOrigin: '50% 50%',
                 transform: 'translate(-50%,-50%) scale(1)'
-            }
+            },
+            menuVisibility: false
         }
     },
     computed: {
@@ -47,7 +51,7 @@ export default {
                     this.resizeOutlined()
                     this.createElement(e)
                 }
-            } else if ((MOUSE_KEY = 1)) {
+            } else if (MOUSE_KEY === 1) {
             } else {
             }
         },
@@ -182,7 +186,8 @@ export default {
 
                         h('div', { staticClass: 'center-point', ref: 'centerPoint' })
                     ]
-                )
+                ),
+                <ElementMenu v-model={this.menuVisibility}></ElementMenu>
             ]
         )
     }

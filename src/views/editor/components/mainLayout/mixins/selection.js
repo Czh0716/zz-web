@@ -14,6 +14,12 @@ export default {
                     this.initOutlined()
                 }
             } else if (MOUSE_KEY === 2) {
+                if (this.action.includes('selection')) {
+                    this.$store.commit('config/SET_CURRENT_ELEMENT', id)
+                    this.initOutlined()
+                    this.menuVisibility = true
+                    e.stopPropagation()
+                }
             }
         },
         onElementMouseUp() {}

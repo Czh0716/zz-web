@@ -143,7 +143,7 @@ const mutations = {
     },
     UPDATE_ELEMENT_CACHE(state) {
         const element = state.activeElement
-        if (!element) return
+        if (!element || element.type === 'page') return
 
         state.activeElementStyleCache = removeUnit({
             ...element.data.style

@@ -88,6 +88,9 @@ export default {
             default: false
         }
     },
+    watch: {
+        value(newValue, oldValue) {}
+    },
     components: {
         TrackWindow: () => import('@/components/TrackWindow')
     }

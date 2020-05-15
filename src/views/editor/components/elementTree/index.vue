@@ -268,7 +268,7 @@ export default {
 
             &.active {
                 &::before {
-                    background-color: rgba(0, 0, 0, 0.1);
+                    background-color: rgba(0, 0, 0, 0.08);
                 }
                 .tree-node::before {
                     background-color: rgba(0, 0, 0, 0.03);

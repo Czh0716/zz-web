@@ -103,10 +103,20 @@ export default {
             this.outlinedStyle = {}
             this.outlinedStyleCopy = {}
         },
-        onOutlinedMouseDown() {
-            if (this.action.includes('selection') && this.hideTextEditor) {
-                this.clutched = true
-                this.initOutlined()
+        onOutlinedMouseDown(e) {
+            const MOUSE_KEY = e.button
+            if (MOUSE_KEY === 2) {
+                if (this.action.includes('selection')) {
+                    this.menuVisibility = false
+                    setTimeout(() => {
+                        this.menuVisibility = true
+                    }, 0)
+                    e.stopPropagation()
+                }
+            } else {
+                if (this.action.includes('selection') && this.hideTextEditor) {
+                    this.clutched = true
+                }
             }
         },
         onOutlinedMouseUp() {},
