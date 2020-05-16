@@ -17,7 +17,10 @@ export default {
                 if (this.action.includes('selection')) {
                     this.$store.commit('config/SET_CURRENT_ELEMENT', id)
                     this.initOutlined()
-                    this.menuVisibility = true
+                    this.menuVisibility = false
+                    setTimeout(() => {
+                        this.menuVisibility = true
+                    }, 0)
                     e.stopPropagation()
                 }
             }
