@@ -14,9 +14,14 @@ export default {
             this.y = clientY
         },
         setWindowPos() {
-            const style = this.$refs.window.style
-            style.left = `${this.x}px`
-            style.top = `${this.y}px`
+            const window = this.$refs.window
+            const style = window.style
+            this.$nextTick(() => {
+                const fullHeight = document.body.clientHeight
+                const height = window.offsetHeight
+                style.left = `${this.x}px`
+                style.top = `${this.y + height > fullHeight ? this.y - height : this.y}px`
+            })
         },
         insertApp() {
             const app = document.getElementById('app') || document.body
