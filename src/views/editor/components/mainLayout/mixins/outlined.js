@@ -94,7 +94,6 @@ export default {
             this.hideOutlined = false
             this.hideTextEditor = true
             this.hideOutlinedResize = hideResize
-
             this.outlinedStyle = this.activeElement.data.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
@@ -105,6 +104,7 @@ export default {
         },
         onOutlinedMouseDown(e) {
             const MOUSE_KEY = e.button
+            this.initOutlined()
             if (MOUSE_KEY === 2) {
                 if (this.action.includes('selection')) {
                     this.menuVisibility = false

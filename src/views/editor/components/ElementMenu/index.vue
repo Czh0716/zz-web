@@ -40,8 +40,12 @@
                         锁定
                         <span class="short-key">Ctrl+L</span>
                     </v-list-item>
-                    <v-list-item link :disabled="!activeElement">
-                        显示/隐藏
+                    <v-list-item
+                        link
+                        :disabled="!activeElement"
+                        @click="handleOperate('toggleElementVisibility')"
+                    >
+                        {{activeElement.visible ? '隐藏':'显示'}}
                         <span class="short-key">Ctrl+H</span>
                     </v-list-item>
                     <VDivider class="mx-2"></VDivider>
@@ -105,6 +109,9 @@ export default {
         },
         moveElement(status) {
             this.$store.commit('config/MOVE_ELEMENT', status)
+        },
+        toggleElementVisibility() {
+            this.$store.dispatch('config/toggleElementVisible', this.activeElement.id)
         },
         changVisibility(visible = false) {
             this.$emit('input', visible)
