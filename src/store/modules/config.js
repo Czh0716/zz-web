@@ -126,25 +126,28 @@ const mutations = {
             state.activeElement.id,
             true
         )
+        const tmp = arr[i]
 
         switch (status) {
             case 0:
                 if (i === arr.length - 1) return
-                ;[arr[i], arr[i + 1]] = [arr[i + 1], arr[i]]
-
+                Vue.set(arr, i, arr[i + 1])
+                Vue.set(arr, i + 1, tmp)
                 break
             case 1:
                 if (i === arr.length - 1) return
-                ;[arr[i], arr[arr.length - 1]] = [arr[arr.length - 1], arr[i]]
+                Vue.set(arr, i, arr[arr.length - 1])
+                Vue.set(arr, arr.length - 1, tmp)
                 break
             case 2:
                 if (i === 0) return
-                ;[arr[i], arr[i - 1]] = [arr[i - 1], arr[i]]
+                Vue.set(arr, i, arr[i - 1])
+                Vue.set(arr, i - 1, tmp)
                 break
             case 3:
                 if (i === 0) return
-                ;[arr[i], arr[0]] = [arr[0], arr[i]]
-
+                Vue.set(arr, i, arr[0])
+                Vue.set(arr, 0, tmp)
                 break
         }
     },
