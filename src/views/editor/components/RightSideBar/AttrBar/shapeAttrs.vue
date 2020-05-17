@@ -36,7 +36,7 @@
                     <v-col cols="6">
                         <v-text-field
                             :value="style.strokeWidth || 0"
-                            @input.native="(e)=>updateStyle(e,'strokeWidth')"
+                            @input.native="(e)=>updateStyle(e,'strokeWidth',false)"
                             label="边框大小"
                             type="number"
                             hide-details

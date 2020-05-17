@@ -30,7 +30,8 @@ export default {
                     },
                     attrs: {}
                 },
-                subData: this.subAction === 'text' ? 'Text Content' : {},
+                subData:
+                    this.subAction === 'text' ? 'Text Content' : { attrs: {} },
                 startPosition: {
                     clientX,
                     clientY,
@@ -53,6 +54,7 @@ export default {
             let cacheHeight = height
             const tag = element.tag
             const style = element.data.style
+            const strokeWidth = style.strokeWidth
             let attrs = {}
 
             width = +width.replace('px', '')
@@ -111,19 +113,24 @@ export default {
             style.width = `${width}px`
             style.height = `${height}px`
             if (this.isShape || this.shapes.includes(tag)) {
+                const elAttrs = element.subData.attrs
                 if (tag === 'rect') {
                     attrs = {
-                        x: 0,
-                        y: 0,
-                        width,
-                        height
+                        x: elAttrs.x ?? 0,
+                        y: elAttrs.y ?? 0,
+                        width: strokeWidth ? width - strokeWidth : width,
+                        height: strokeWidth ? height - strokeWidth : height
                     }
                 } else if (tag === 'ellipse') {
                     attrs = {
                         cx: width / 2,
                         cy: height / 2,
-                        rx: width / 2,
-                        ry: height / 2
+                        rx: strokeWidth
+                            ? width / 2 - strokeWidth / 2
+                            : width / 2,
+                        ry: strokeWidth
+                            ? height / 2 - strokeWidth / 2
+                            : height / 2
                     }
                 } else if (tag === 'line') {
                     attrs = {
@@ -134,7 +141,7 @@ export default {
                         stroke: 'pink'
                     }
                 }
-                element.subData = { attrs }
+                this.$set(element.subData, 'attrs', attrs)
             }
         },
         completeCreation() {

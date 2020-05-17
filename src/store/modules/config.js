@@ -183,9 +183,31 @@ const mutations = {
     },
     UPDATE_ELEMENT_ATTR(state, { key, value, isStyleAttr = true }) {
         const element = state.activeElement
+
         if (!element) return
 
+        if (key === 'strokeWidth') {
+            const style = element.data.style
+            const subAttrs = element.subData.attrs
+            const width = +style.width.replace('px', '')
+            const height = +style.height.replace('px', '')
+
+            switch (element.type) {
+                case 'rect':
+                    Vue.set(subAttrs, 'x', value / 2)
+                    Vue.set(subAttrs, 'y', value / 2)
+                    Vue.set(subAttrs, 'width', width - value)
+                    Vue.set(subAttrs, 'height', height - value)
+                    break
+                case 'ellipse':
+                    Vue.set(subAttrs, 'rx', width / 2 - value / 2)
+                    Vue.set(subAttrs, 'ry', height / 2 - value / 2)
+                    break
+            }
+        }
+
         Vue.set(isStyleAttr ? element.data.style : element, key, value)
+
         state.activeElementStyleCache = removeUnit({
             ...element.data.style
         })

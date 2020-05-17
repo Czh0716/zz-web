@@ -60,7 +60,9 @@
                 ></v-file-input>
             </v-col>
         </v-row>
-        <div class="test"></div>
+        <svg width="40" height="40" fill="pink" stroke="blue" stroke-width="5">
+            <rect x="5" y="5" width="30" height="30" />
+        </svg>
     </div>
 </template>
 

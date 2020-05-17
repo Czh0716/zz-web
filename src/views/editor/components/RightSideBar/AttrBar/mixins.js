@@ -39,7 +39,8 @@ export default {
                 key,
                 value: hasUnit ? value + unit : value
             })
-            if (key !== 'opacity') this.triggerElementStretch()
+
+            if (['width', 'height'].includes(key)) this.triggerElementStretch()
         }
     }
 }
