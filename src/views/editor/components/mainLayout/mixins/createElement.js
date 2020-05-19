@@ -61,20 +61,14 @@ export default {
             height = +height.replace('px', '')
 
             if (e) {
-                let {
-                    clientX,
-                    clientY,
-                    localX,
-                    localY,
-                    posLeft,
-                    posTop
-                } = this.startPosition
+                let { clientX, clientY, localX, localY } = this.startPosition
                 let offsetX = e.clientX - clientX
                 let offsetY = e.clientY - clientY
                 localX += offsetX
                 localY += offsetY
                 if (isResize) {
                     const [left, top] = this.resizeOrigin
+
                     //判断是否resize左侧的点
                     if (left === '0') {
                         if (offsetX < width) style.left = `${localX}px`
@@ -110,8 +104,11 @@ export default {
                     width > height ? (height = width) : (width = height)
             }
 
-            style.width = `${width}px`
-            style.height = `${height}px`
+            if (element.type === 'line') height = height < 3 ? 3 : height
+
+            this.$set(style, 'width', `${width}px`)
+            this.$set(style, 'height', `${height}px`)
+
             if (this.isShape || this.shapes.includes(tag)) {
                 const elAttrs = element.subData.attrs
                 if (tag === 'rect') {

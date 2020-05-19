@@ -234,14 +234,27 @@ export default {
     }
 
     .auxiliary-outlined {
+        @size: 6px;
         position: absolute;
         border: 1px solid #4f80ff;
         opacity: 1 !important;
         filter: none !important;
+        .line--resize,
         .outlined--resize {
             position: absolute;
+            width: @size;
+            height: @size;
             background-color: #4f80ff;
+            margin-left: -@size / 2;
+            margin-top: -@size / 2;
         }
+
+        .line--resize {
+            position: absolute;
+            border-radius: 50%;
+            cursor: default;
+        }
+
         .text-editor {
             position: absolute;
             width: 100%;
@@ -253,6 +266,10 @@ export default {
             resize: none;
             outline: none;
             color: inherit;
+        }
+
+        &.line-active {
+            border: none;
         }
     }
 }

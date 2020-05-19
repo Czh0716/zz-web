@@ -13,70 +13,101 @@ export default {
     methods: {
         genOutlined() {
             if (this.hideOutlined || !this.activeElement) return
+
             const h = this.$createElement
-            const resizeOrigins = [
-                { origin: '0 0', cursor: 'nwse' },
-                { origin: '50% 0', cursor: 'ns' },
-                { origin: '100% 0', cursor: 'nesw' },
-                { origin: '0 50%', cursor: 'ew' },
-                { origin: '100% 50%', cursor: 'ew' },
-                { origin: '0 100%', cursor: 'nesw' },
-                { origin: '50% 100%', cursor: 'ns' },
-                { origin: '100% 100%', cursor: 'nwse' }
-            ]
+            let children = []
 
-            const resizeEls = this.hideOutlinedResize
-                ? []
-                : resizeOrigins.map(({ origin, cursor }) => {
-                      const [left, top] = origin.split(' ')
-                      const size = 6
+            if (this.activeElement.type === 'line') {
+                const { x1, x2, y1, y2 } = this.activeElement.subData.attrs
+                const maxX = x1 > x2 ? 0 : 1
+                const maxY = y1 > y2 ? 0 : 1
 
-                      return h('div', {
-                          staticClass: 'outlined--resize',
-                          style: {
-                              width: `${size}px`,
-                              height: `${size}px`,
-                              marginLeft: `${-size / 2}px`,
-                              marginTop: `${-size / 2}px`,
-                              cursor: `${cursor}-resize`,
-                              left,
-                              top
+                const resizeELs = [0, 1].map(i => {
+                    const left = i === maxX ? '100%' : '0'
+                    const top = i === maxY ? '100%' : '0'
+                    return h('div', {
+                        staticClass: 'line--resize',
+                        style: {
+                            left,
+                            top
+                        },
+                        on: {
+                            mousedown: e => {
+                                this.changeAction('line-resize')
+                                this.getStartPosition(e)
+                                this.resizeOrigin = [left, top]
+                                this.initOutlined()
+                                e.stopPropagation()
+                            }
+                        }
+                    })
+                })
+                children.push(resizeELs)
+            } else {
+                const resizeOrigins = [
+                    { origin: '0 0', cursor: 'nwse' },
+                    { origin: '50% 0', cursor: 'ns' },
+                    { origin: '100% 0', cursor: 'nesw' },
+                    { origin: '0 50%', cursor: 'ew' },
+                    { origin: '100% 50%', cursor: 'ew' },
+                    { origin: '0 100%', cursor: 'nesw' },
+                    { origin: '50% 100%', cursor: 'ns' },
+                    { origin: '100% 100%', cursor: 'nwse' }
+                ]
+
+                const resizeEls = this.hideOutlinedResize
+                    ? []
+                    : resizeOrigins.map(({ origin, cursor }) => {
+                          const [left, top] = origin.split(' ')
+
+                          return h('div', {
+                              staticClass: 'outlined--resize',
+                              style: {
+                                  cursor: `${cursor}-resize`,
+                                  left,
+                                  top
+                              },
+                              on: {
+                                  mousedown: e => {
+                                      this.changeAction(`${cursor}-resize`)
+                                      this.resizeOrigin = [left, top]
+                                      this.getStartPosition(e)
+                                      this.initOutlined()
+                                      e.stopPropagation()
+                                  }
+                              }
+                          })
+                      })
+
+                const activeEl = this.activeElement
+
+                const textEditor = this.hideTextEditor
+                    ? []
+                    : h('textarea', {
+                          staticClass: 'text-editor',
+                          attrs: {
+                              autoFocus: true
+                          },
+                          domProps: {
+                              value: activeEl.subData
                           },
                           on: {
-                              mousedown: e => {
-                                  this.changeAction(`${cursor}-resize`)
-                                  this.resizeOrigin = [left, top]
-                                  this.getStartPosition(e)
-                                  this.initOutlined()
-                                  e.stopPropagation()
+                              input(e) {
+                                  activeEl.subData = e.target.value
                               }
                           }
                       })
-                  })
 
-            const activeEl = this.activeElement
-
-            const textEditor = this.hideTextEditor
-                ? []
-                : h('textarea', {
-                      staticClass: 'text-editor',
-                      attrs: {
-                          autoFocus: true
-                      },
-                      domProps: {
-                          value: activeEl.subData
-                      },
-                      on: {
-                          input(e) {
-                              activeEl.subData = e.target.value
-                          }
-                      }
-                  })
+                children.push(...resizeEls, textEditor)
+            }
 
             return h(
                 'div',
                 {
                     staticClass: 'auxiliary-outlined',
+                    class: {
+                        'line-active': this.activeElement.type === 'line'
+                    },
                     style: this.outlinedStyle,
                     on: {
                         mousedown: this.onOutlinedMouseDown,
@@ -84,7 +115,7 @@ export default {
                         dblclick: this.onOutlinedDblclick
                     }
                 },
-                [...resizeEls, textEditor]
+                children
             )
         },
         initOutlined(hideResize = false) {
