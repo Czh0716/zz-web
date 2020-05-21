@@ -53,6 +53,11 @@
             </button>
         </div>
         <div class="r">
+            <color-input title="工作区背景颜色" :value="primaryElBGC" @input="setPrimaryElBGC">
+                <div v-ripple class="work-color">
+                    <div class="color" :style="`backgroundColor: ${primaryElBGC}`"></div>
+                </div>
+            </color-input>
             <color-input title="工作区背景颜色" :value="workAreaBGC" @input="setWorkAreaBgc">
                 <div v-ripple class="work-color">
                     <div class="color" :style="`backgroundColor: ${workAreaBGC}`"></div>
@@ -81,7 +86,13 @@
 import { mapGetters } from 'vuex'
 export default {
     computed: {
-        ...mapGetters(['configRecord', 'currentRecordIndex', 'overflowHidden', 'workAreaBGC']),
+        ...mapGetters([
+            'configRecord',
+            'currentRecordIndex',
+            'overflowHidden',
+            'workAreaBGC',
+            'primaryElBGC'
+        ]),
         backDisabled() {
             return this.configRecord.length === 0 || this.currentRecordIndex === 0
         },
@@ -109,6 +120,9 @@ export default {
         },
         setWorkAreaBgc(color) {
             this.$store.commit('config/SET_WORKAREA_BGC', color)
+        },
+        setPrimaryElBGC(color) {
+            this.$store.commit('config/SET_PRIMARYEL_BGC', color)
         }
     },
     components: {

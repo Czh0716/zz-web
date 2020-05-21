@@ -52,7 +52,8 @@ const state = {
         }
     },
     overflowHidden: false,
-    workAreaBGC: 'rgba(250,250,250,1)'
+    workAreaBGC: 'rgba(250,250,250,1)',
+    primaryElBGC: 'rgba(212,152,164,1)'
 }
 
 const mutations = {
@@ -250,6 +251,9 @@ const mutations = {
     },
     SET_WORKAREA_BGC(state, color) {
         state.workAreaBGC = color
+    },
+    SET_PRIMARYEL_BGC(state, color) {
+        state.primaryElBGC = color
     }
 }
 

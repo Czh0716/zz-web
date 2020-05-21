@@ -15,6 +15,7 @@ const getters = {
     configRecord: state => state.config.configRecord,
     currentRecordIndex: state => state.config.currentRecordIndex,
     overflowHidden: state => state.config.overflowHidden,
-    workAreaBGC: state => state.config.workAreaBGC
+    workAreaBGC: state => state.config.workAreaBGC,
+    primaryElBGC: state => state.config.primaryElBGC
 }
 export default getters

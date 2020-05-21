@@ -32,7 +32,8 @@ export default {
             'elements',
             'activeElement',
             'overflowHidden',
-            'workAreaBGC'
+            'workAreaBGC',
+            'primaryElBGC'
         ])
     },
     methods: {
