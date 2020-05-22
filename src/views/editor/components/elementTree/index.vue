@@ -19,47 +19,56 @@ export default {
             this.$store.dispatch('config/toggleElementVisible', id)
             e.stopPropagation()
         },
+        toggleElementExpand(e, id) {
+            this.$store.commit('config/TOGGLE_ELEMENT_EXPAND', id)
+            e.stopPropagation()
+        },
         deleteElement() {
             this.$store.dispatch('config/deleteElement')
             this.$emit('resizeOutlined')
         },
-        genEleChildren(elements) {
+        genTreeNodes(elements, level = 0) {
             const list = []
             for (let i = elements.length - 1; i >= 0; i--) {
                 const element = elements[i]
-
+                const canExpand = ['page', 'group'].includes(element.type)
                 const node = (
                     <li
                         class={{
-                            'tree-node': true,
+                            'node-item': true,
+                            expand: element.expand,
                             active: this.activeElement && element.id === this.activeElement.id
                         }}
-                        on={{
-                            mousedown: e =>
-                                this.onMouseDown(e, element.id, {
-                                    forwardDisabled: i === elements.length - 1,
-                                    backDisabled: i === 0
-                                })
-                        }}
                     >
-                        <div class="divider divider-top"></div>
-                        <div class="divider divider-bottom"></div>
                         <div
                             key={element.id}
                             {...{
                                 class: {
-                                    element: true,
+                                    'node-title': true,
                                     active:
                                         this.activeElement && element.id === this.activeElement.id
+                                },
+                                style: {
+                                    paddingLeft: `${50 + 10 * level}px`
+                                },
+                                on: {
+                                    mousedown: e =>
+                                        this.onMouseDown(e, element.id, {
+                                            forwardDisabled: i === elements.length - 1,
+                                            backDisabled: i === 0
+                                        })
                                 }
                             }}
                         >
+                            <div class="divider divider-top"></div>
+                            <div class="divider divider-bottom"></div>
                             <VIcon
                                 {...{
                                     class: {
                                         visibility: true,
                                         hidden: !element.visible
                                     },
+
                                     on: {
                                         mousedown: e => this.toggleElementVisible(e, element.id)
                                     }
@@ -67,17 +76,27 @@ export default {
                             >
                                 mdi-eye-{element.visible ? '' : 'off-'}outline
                             </VIcon>
+                            {canExpand && (
+                                <VIcon
+                                    class="expand-icon"
+                                    on={{
+                                        mousedown: e => this.toggleElementExpand(e, element.id)
+                                    }}
+                                >
+                                    mdi-menu-{element.expand ? 'down' : 'right'}
+                                </VIcon>
+                            )}
                             <span class="name">
                                 <VIcon>{this.iconMap[element.type]}</VIcon>
                                 {element.name}
                             </span>
                         </div>
-                        {element.children && this.genEleChildren(element.children)}
+                        {element.children && this.genTreeNodes(element.children, level + 1)}
                     </li>
                 )
                 list.push(node)
             }
-            return <ul class="child-list">{list}</ul>
+            return <ul class="node-list">{list}</ul>
         },
         onMouseDown(e, id, { forwardDisabled = false, backDisabled = false }) {
             this.setActiveElement(e, id)
@@ -115,94 +134,6 @@ export default {
         this.$refs.tree.addEventListener('contextmenu', this.onContextMenu)
     },
     render() {
-        const pageList = []
-        const elements = this.pages
-        for (let i = elements.length - 1; i >= 0; i--) {
-            const element = elements[i]
-            const node = (
-                <div
-                    key={element.id}
-                    staticClass="tree-node page-node"
-                    class={{ active: this.activeElement.id === element.id }}
-                    on={{
-                        mousedown: e =>
-                            this.onMouseDown(e, element.id, {
-                                forwardDisabled: i === elements.length - 1,
-                                backDisabled: i === 0
-                            }),
-                        mousemove: e => {
-                            const target = e.currentTarget
-                            const { y } = target.getBoundingClientRect()
-                            const height = 30
-                            const clientY = e.clientY
-                            const localY = clientY - y
-                            const proportion = localY / height
-                            // if (proportion < 0.25) {
-                            //     target.dataset.insertPos = 'top'
-                            // } else if (proportion > 0.75) {
-                            //     target.dataset.insertPos = 'bottom'
-                            // } else {
-                            //     target.dataset.insertPos = 'middle'
-                            // }
-                        }
-                    }}
-                >
-                    <div class="divider divider-top"></div>
-                    <div class="divider divider-bottom"></div>
-                    <div
-                        {...{
-                            class: {
-                                page: true,
-                                expand: true
-                            }
-                        }}
-                    >
-                        <VIcon
-                            {...{
-                                class: {
-                                    visibility: true,
-                                    hidden: !element.visible
-                                },
-                                on: {
-                                    click: e => this.toggleElementVisible(e, element.id)
-                                }
-                            }}
-                        >
-                            mdi-eye-{element.visible ? '' : 'off-'}outline
-                        </VIcon>
-                        <VIcon
-                            class="expand-icon on"
-                            on={{
-                                click: e => {
-                                    e.target.parentNode.classList.toggle('expand')
-                                    e.stopPropagation()
-                                }
-                            }}
-                        >
-                            mdi-menu-down
-                        </VIcon>
-                        <VIcon
-                            class="expand-icon off"
-                            on={{
-                                click: e => {
-                                    e.target.parentNode.classList.toggle('expand')
-                                    e.stopPropagation()
-                                }
-                            }}
-                        >
-                            mdi-menu-right
-                        </VIcon>
-                        <span class="name">
-                            <VIcon>{this.iconMap['page']}</VIcon>
-                            {element.name}
-                        </span>
-                    </div>
-                    {this.genEleChildren(element.children)}
-                </div>
-            )
-            pageList.push(node)
-        }
-
         return (
             <div class="element-tree" ref="tree">
                 <element-menu
@@ -215,7 +146,7 @@ export default {
                     <VIcon class="search">mdi-magnify</VIcon>
                 </div>
                 <div class="tab-content my-scrollbar">
-                    <div class="tree">{pageList}</div>
+                    <div class="tree">{this.genTreeNodes(this.pages)}</div>
                 </div>
                 <div class="bottom-bar">
                     <VBtn icon title="对象组">
@@ -253,6 +184,10 @@ export default {
 </style>
 
 <style lang="less" scoped>
+ul {
+    list-style-type: none;
+    padding: 0;
+}
 .element-tree {
     width: 260px;
     background: #fff;
@@ -266,7 +201,6 @@ export default {
         align-items: center;
         border-bottom: 1px solid #e6e6e6;
         padding: 8px 0;
-        margin-bottom: 10px;
         .tab-item {
             cursor: pointer;
         }
@@ -289,16 +223,63 @@ export default {
     }
 
     .tree {
-        padding-left: 50px;
         width: 100%;
+        margin-top: 10px;
+        .node-item {
+            > .node-list {
+                display: none;
+            }
+            &.expand {
+                > .node-list {
+                    display: block;
+                }
+            }
+        }
+        .node-title {
+            display: flex;
+            align-items: center;
+            height: 30px;
+            position: relative;
+            .visibility {
+                position: absolute;
+                left: 5px;
+                cursor: pointer;
 
-        .tree-node {
+                &.hidden {
+                    color: rgba(0, 0, 0, 0.3);
+                }
+            }
+            .name {
+                display: flex;
+                align-items: center;
+            }
+            .expand-icon {
+                position: absolute;
+                transform: translateX(-20px);
+                cursor: pointer;
+            }
+            &::before {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0);
+                transition: 0.3s;
+            }
+            &.active {
+                background-color: rgba(0, 0, 0, 0.08);
+                + .node-list {
+                    background-color: rgba(0, 0, 0, 0.03);
+                }
+            }
             .divider {
                 position: absolute;
                 display: flex;
                 align-items: center;
                 height: 2px;
                 left: 0;
+                top: 0;
                 right: 8px;
                 z-index: 100;
                 background-color: black;
@@ -318,7 +299,7 @@ export default {
                 }
             }
             .divider-bottom {
-                top: 30px;
+                top: 100%;
             }
             &[data-insert-pos='top'] {
                 .divider-top {
@@ -330,73 +311,7 @@ export default {
                     visibility: visible;
                 }
             }
-
-            &::before {
-                content: '';
-                position: absolute;
-                left: 0;
-                right: 8px;
-                height: 30px;
-                background-color: rgba(0, 0, 0, 0);
-                transition: 0.3s;
-            }
-
-            &.active {
-                &::before {
-                    background-color: rgba(0, 0, 0, 0.08);
-                }
-                .tree-node::before {
-                    background-color: rgba(0, 0, 0, 0.03);
-                }
-            }
         }
-    }
-
-    .page,
-    .element {
-        display: flex;
-        align-items: center;
-        height: 30px;
-        .visibility {
-            position: absolute;
-            left: 5px;
-            &.hidden {
-                color: rgba(0, 0, 0, 0.3);
-            }
-        }
-        .expand-icon {
-            position: absolute;
-            transform: translateX(-20px);
-        }
-
-        .name {
-            display: flex;
-            align-items: center;
-        }
-    }
-
-    .on {
-        display: none;
-    }
-    .expand {
-        + .child-list {
-            display: block;
-        }
-        .on {
-            display: block;
-        }
-        .off {
-            display: none;
-        }
-    }
-
-    .child-list {
-        padding-left: 20px;
-        display: none;
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
     }
 
     .bottom-bar {

@@ -68,7 +68,8 @@ const mutations = {
                     height: '667px'
                 },
                 children: [],
-                visible: true
+                visible: true,
+                expand: true
             }
         }
 
@@ -216,6 +217,10 @@ const mutations = {
     TOGGLE_ELEMENT_VISIBLE(state, id) {
         const element = getElementById(state.pages, id)
         Vue.set(element, 'visible', !element.visible)
+    },
+    TOGGLE_ELEMENT_EXPAND(state, id) {
+        const element = getElementById(state.pages, id)
+        Vue.set(element, 'expand', !element.expand)
     },
     SET_CONFIG_RECORD(state) {
         const { pages, activePage, activeElementStyleCache } = state

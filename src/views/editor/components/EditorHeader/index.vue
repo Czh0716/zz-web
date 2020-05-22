@@ -72,6 +72,9 @@
             <button v-ripple class="btn">
                 <v-icon>mdi-television</v-icon>
             </button>
+            <v-btn title="运行" class="ml-6" color="red lighten-1" fab x-small dark>
+                <v-icon>mdi-play</v-icon>
+            </v-btn>
             <v-btn class="ml-6" dark color="blue lighten-4">
                 <v-icon left>mdi-content-save-outline</v-icon>保存
             </v-btn>
