@@ -7,12 +7,13 @@ export default {
             const { clientX, clientY, localX, localY } = this.startPosition
             const isShape = this.isShape
             const tag = isShape ? this.subAction : 'div'
+            const type = this.subAction
             const nameMap = this.elementNameMap[this.subAction]
             const initOption = {
                 name: nameMap ? `${nameMap.text}${nameMap.count}` : '未命名',
                 tag,
                 isShape,
-                type: this.subAction,
+                type,
                 data: {
                     staticClass: 'layout__element',
                     class: {
@@ -26,7 +27,10 @@ export default {
                         opacity: 0.4,
                         filter: '',
                         transform: 'translate3d(0,0,0)',
-                        ...(isShape ? { fill: this.primaryElBGC } : {})
+                        ...(isShape ? { fill: this.primaryElBGC } : {}),
+                        ...(type === 'container'
+                            ? { border: '1px dashed grey' }
+                            : {})
                     },
                     attrs: {}
                 },
@@ -52,7 +56,7 @@ export default {
                 : this.outlinedStyleCopy
             let cacheWidth = width
             let cacheHeight = height
-            const tag = element.tag
+            const type = element.type
             const style = element.data.style
             const strokeWidth = style.strokeWidth
             let attrs = {}
@@ -109,16 +113,16 @@ export default {
             this.$set(style, 'width', `${width}px`)
             this.$set(style, 'height', `${height}px`)
 
-            if (this.isShape || this.shapes.includes(tag)) {
+            if (this.isShape || this.shapes.includes(type)) {
                 const elAttrs = element.subData.attrs
-                if (tag === 'rect') {
+                if (type === 'rect') {
                     attrs = {
                         x: elAttrs.x ?? 0,
                         y: elAttrs.y ?? 0,
                         width: strokeWidth ? width - strokeWidth : width,
                         height: strokeWidth ? height - strokeWidth : height
                     }
-                } else if (tag === 'ellipse') {
+                } else if (type === 'ellipse') {
                     attrs = {
                         cx: width / 2,
                         cy: height / 2,
@@ -129,7 +133,7 @@ export default {
                             ? height / 2 - strokeWidth / 2
                             : height / 2
                     }
-                } else if (tag === 'line') {
+                } else if (type === 'line') {
                     attrs = {
                         x1: cacheWidth > 0 ? 0 : width,
                         y1: cacheHeight > 0 ? 0 : height,

@@ -121,7 +121,7 @@ export default {
                                 </VIcon>
                             )}
                             <span class="name">
-                                <VIcon>{this.iconMap[element.type]}</VIcon>
+                                <VIcon class="shape-icon">{this.iconMap[element.type]}</VIcon>
                                 {element.name}
                             </span>
                         </div>
@@ -179,7 +179,8 @@ export default {
                 page: 'mdi-file-alert-outline',
                 rect: 'mdi-rectangle-outline',
                 ellipse: 'mdi-checkbox-blank-circle-outline',
-                line: 'mdi-vector-line'
+                line: 'mdi-vector-line',
+                container: 'mdi-package-variant'
             },
             pagesExpand: [],
             menuVisible: false,
@@ -319,6 +320,9 @@ ul {
                 position: absolute;
                 transform: translateX(-20px);
                 cursor: pointer;
+            }
+            .shape-icon {
+                margin-right: 4px;
             }
             &::before {
                 content: '';

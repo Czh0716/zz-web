@@ -55,6 +55,7 @@ const state = {
             count: 0
         }
     },
+    hasChildrenTypes: ['page', 'group', 'container'],
     overflowHidden: false,
     workAreaBGC: 'rgba(250,250,250,1)',
     primaryElBGC: 'rgba(212,152,164,1)'
@@ -96,13 +97,13 @@ const mutations = {
     },
     ADD_ELEMENT(state, element) {
         const activeElement = state.activeElement
-        const parent = ['page', 'group'].includes(activeElement.type)
+        const parent = state.hasChildrenTypes.includes(activeElement.type)
             ? activeElement
             : getElementById(state.pages, activeElement.parentId)
 
         const children = parent.children
 
-        state.elementNameMap[element.tag].count++
+        state.elementNameMap[element.type].count++
 
         element.visible = true
         element.id = uuidV4()
