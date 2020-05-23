@@ -6,7 +6,7 @@
                     <v-list-item
                         link
                         :disabled="!activeElement || forwardDisabled"
-                        @click="handleOperate('moveElement',0)"
+                        @click="handleOperate('setElementZIndex',0)"
                     >
                         前移一层
                         <span class="short-key">Ctrl+[</span>
@@ -14,7 +14,7 @@
                     <v-list-item
                         link
                         :disabled="!activeElement || forwardDisabled"
-                        @click="handleOperate('moveElement',1)"
+                        @click="handleOperate('setElementZIndex',1)"
                     >
                         移至顶层
                         <span class="short-key">Shift+Ctrl+[</span>
@@ -22,7 +22,7 @@
                     <v-list-item
                         link
                         :disabled="!activeElement || backDisabled"
-                        @click="handleOperate('moveElement',2)"
+                        @click="handleOperate('setElementZIndex',2)"
                     >
                         后移一层
                         <span class="short-key">Ctrl+]</span>
@@ -30,7 +30,7 @@
                     <v-list-item
                         link
                         :disabled="!activeElement || backDisabled"
-                        @click="handleOperate('moveElement',3)"
+                        @click="handleOperate('setElementZIndex',3)"
                     >
                         移至底层
                         <span class="short-key">Shift+Ctrl+]</span>
@@ -107,8 +107,8 @@ export default {
             this.$store.dispatch('config/cutElement')
             this.resizeOutlined()
         },
-        moveElement(status) {
-            this.$store.commit('config/MOVE_ELEMENT', status)
+        setElementZIndex(status) {
+            this.$store.commit('config/SET_ELEMENT_ZINDEX', status)
         },
         toggleElementVisibility() {
             this.$store.dispatch('config/toggleElementVisible', this.activeElement.id)

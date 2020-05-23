@@ -31,32 +31,66 @@ export default {
             const list = []
             for (let i = elements.length - 1; i >= 0; i--) {
                 const element = elements[i]
+                const id = element.id
                 const canExpand = ['page', 'group'].includes(element.type)
                 const node = (
                     <li
                         class={{
                             'node-item': true,
                             expand: element.expand,
-                            active: this.activeElement && element.id === this.activeElement.id
+                            active: this.activeElement && id === this.activeElement.id
                         }}
                     >
                         <div
-                            key={element.id}
+                            key={id}
                             {...{
                                 class: {
                                     'node-title': true,
-                                    active:
-                                        this.activeElement && element.id === this.activeElement.id
+                                    active: this.activeElement && id === this.activeElement.id
                                 },
                                 style: {
                                     paddingLeft: `${50 + 10 * level}px`
                                 },
                                 on: {
                                     mousedown: e =>
-                                        this.onMouseDown(e, element.id, {
+                                        this.onMouseDown(e, id, {
                                             forwardDisabled: i === elements.length - 1,
                                             backDisabled: i === 0
-                                        })
+                                        }),
+                                    mouseup: e => this.onMouseUp(e, id),
+                                    mouseenter: e => {
+                                        if (!this.isDown) return
+                                        this.setNodePos(e)
+                                    },
+                                    mousemove: ({ currentTarget, clientY }) => {
+                                        if (!this.isDown) return
+
+                                        const { top, height } = currentTarget.dataset
+                                        const localY = clientY - top
+                                        const ratio = localY / height
+                                        let pos = ''
+
+                                        currentTarget.style.cursor = 'cell'
+
+                                        if (ratio <= 0.25) {
+                                            pos = 'top'
+                                        } else if (ratio >= 0.75) {
+                                            pos = 'bottom'
+                                        } else {
+                                            pos = 'middle'
+                                            if (
+                                                this.activeElement.id === id ||
+                                                !['page', 'group'].includes(element.type)
+                                            )
+                                                currentTarget.style.cursor = 'no-drop'
+                                        }
+                                        currentTarget.dataset.insertPos = pos
+                                    },
+                                    mouseleave: ({ currentTarget }) => {
+                                        if (!this.isDown) return
+
+                                        this.resizeNodeMark(currentTarget)
+                                    }
                                 }
                             }}
                         >
@@ -99,7 +133,9 @@ export default {
             return <ul class="node-list">{list}</ul>
         },
         onMouseDown(e, id, { forwardDisabled = false, backDisabled = false }) {
+            this.isDown = true
             this.setActiveElement(e, id)
+            this.setNodePos(e)
             const btn = e.button
             if (btn !== 2) return
             this.menuVisible = false
@@ -108,6 +144,30 @@ export default {
             setTimeout(() => {
                 this.menuVisible = true
             }, 0)
+        },
+        onMouseUp(e, id) {
+            const target = e.currentTarget
+            const cursor = target.style.cursor
+            const pos = target.dataset.insertPos
+            this.isDown = false
+            if (!cursor || cursor === 'no-drop') {
+                this.resizeNodeMark(target)
+                return
+            }
+
+            this.$store.commit('config/MOVE_ELEMENT', { target: id, pos: target.dataset.insertPos })
+            this.resizeNodeMark(target)
+        },
+        setNodePos({ currentTarget }) {
+            const { top, height } = currentTarget.getBoundingClientRect()
+            currentTarget.dataset.top = top
+            currentTarget.dataset.height = height
+        },
+        resizeNodeMark(el) {
+            delete el.dataset.top
+            delete el.dataset.height
+            delete el.dataset.insertPos
+            el.style.cursor = ''
         },
         onContextMenu(e) {
             e.preventDefault()
@@ -124,7 +184,8 @@ export default {
             pagesExpand: [],
             menuVisible: false,
             forwardDisabled: false,
-            backDisabled: false
+            backDisabled: false,
+            isDown: false
         }
     },
     components: {
@@ -252,6 +313,7 @@ ul {
             .name {
                 display: flex;
                 align-items: center;
+                user-select: none;
             }
             .expand-icon {
                 position: absolute;
@@ -280,6 +342,7 @@ ul {
                 height: 2px;
                 left: 0;
                 top: 0;
+                margin-top: -1px;
                 right: 8px;
                 z-index: 100;
                 background-color: black;

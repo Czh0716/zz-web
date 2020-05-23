@@ -13,8 +13,13 @@
             </div>
         </div>
         <div class="operation--group">
-            <div class="group-item" title="对象组">
-                <v-icon>mdi-folder-open-outline</v-icon>
+            <div
+                class="group-item"
+                title="容器"
+                :class="{active: 'create-container' === $store.getters.action}"
+                @click="$store.dispatch('app/changeAction','create-container')"
+            >
+                <v-icon>mdi-package-variant</v-icon>
             </div>
         </div>
         <div class="operation--group">

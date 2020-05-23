@@ -49,6 +49,10 @@ const state = {
         line: {
             text: '直线',
             count: 0
+        },
+        container: {
+            text: '容器',
+            count: 0
         }
     },
     overflowHidden: false,
@@ -121,7 +125,7 @@ const mutations = {
     COPY_ELEMENT(state) {
         state.copiedElement = state.activeElement
     },
-    MOVE_ELEMENT(state, status) {
+    SET_ELEMENT_ZINDEX(state, status) {
         //status代表移动的操作，0：前移1，1：前移顶，2：后移1，3：后移底
         const { arr, i } = getElementById(
             state.pages,
@@ -150,6 +154,44 @@ const mutations = {
                 if (i === 0) return
                 Vue.set(arr, i, arr[0])
                 Vue.set(arr, 0, tmp)
+                break
+            default:
+                break
+        }
+    },
+    MOVE_ELEMENT(state, { target, pos }) {
+        const activeElement = state.activeElement
+        if (target === activeElement.id) return
+
+        deleteElementById(state.pages, activeElement.id)
+
+        const { arr: targetPosArr, i: targetIndex } = getElementById(
+            state.pages,
+            target,
+            true
+        )
+        const targetElement = targetPosArr[targetIndex]
+        switch (pos) {
+            case 'top':
+                targetPosArr.splice(
+                    targetIndex,
+                    1,
+                    targetElement,
+                    activeElement
+                )
+                break
+            case 'bottom':
+                targetPosArr.splice(
+                    targetIndex,
+                    1,
+                    activeElement,
+                    targetElement
+                )
+                break
+            case 'middle':
+                targetElement.children.push(activeElement)
+                break
+            default:
                 break
         }
     },
