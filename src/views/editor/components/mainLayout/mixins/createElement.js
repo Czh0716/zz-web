@@ -41,7 +41,10 @@ export default {
                     clientY,
                     localX,
                     localY
-                }
+                },
+                children: [],
+                visible: true,
+                expand: true
             }
 
             this.$store.commit('config/ADD_ELEMENT', initOption)

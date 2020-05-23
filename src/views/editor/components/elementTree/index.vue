@@ -4,7 +4,7 @@ import { mapGetters } from 'vuex'
 import { VIcon, VBtn, VList, VListItem, VCard, VDivider } from 'vuetify/lib'
 export default {
     computed: {
-        ...mapGetters(['pages', 'activePage', 'activeElement']),
+        ...mapGetters(['pages', 'activePage', 'activeElement', 'hasChildrenTypes']),
         deleteDisabled() {
             return this.activeElement.type === 'page' && this.pages.length === 1
         }
@@ -32,7 +32,7 @@ export default {
             for (let i = elements.length - 1; i >= 0; i--) {
                 const element = elements[i]
                 const id = element.id
-                const canExpand = ['page', 'group'].includes(element.type)
+                const canExpand = this.hasChildrenTypes.includes(element.type)
                 const node = (
                     <li
                         class={{

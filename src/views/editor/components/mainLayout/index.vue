@@ -40,15 +40,16 @@ export default {
         ...mapActions({ changeAction: 'app/changeAction' }),
         onMouseDown(e) {
             const MOUSE_KEY = e.button //0=>左键 1=>中键 2=>右键
+            const action = this.action
             if (MOUSE_KEY === 0) {
                 this.getStartPosition(e)
 
-                if ([this.$refs.content, this.$refs.canvas].includes(e.target)) {
-                    this.$store.commit('config/SET_CURRENT_ELEMENT')
-                    this.resizeOutlined()
-                }
-
-                if (this.action.includes('create')) {
+                if (action === 'selection') {
+                    if ([this.$refs.content, this.$refs.canvas].includes(e.target)) {
+                        this.$store.commit('config/SET_CURRENT_ELEMENT')
+                        this.resizeOutlined()
+                    }
+                } else if (action.includes('create')) {
                     this.resizeOutlined()
                     this.createElement(e)
                 }
@@ -124,26 +125,35 @@ export default {
             const originX = (-left + clientX) / multiple
             const originY = (-top + clientY) / multiple
             this.$set(this.contentStyle, 'transformOrigin', `${originX}px ${originY}px`)
+        },
+        genLayoutElements(elements) {
+            const h = this.$createElement
+            return elements.map(element => {
+                const { style } = element.data
+                style.visibility = element.visible ? 'visible' : 'hidden'
+                const events = {
+                    on: {
+                        mousedown: e => this.onElementMouseDown(e, element.id),
+                        mouseup: e => this.onElementMouseUp(e, element.id)
+                    }
+                }
+                if (element.isShape) {
+                    return h('svg', { ...element.data, ...events }, [
+                        h(element.tag, { ...element.subData })
+                    ])
+                } else if (element.type === 'text') {
+                    return h('div', { ...element.data, ...events }, element.subData)
+                } else if (element.type === 'container') {
+                    return h(
+                        'div',
+                        { ...element.data, ...events },
+                        this.genLayoutElements(element.children)
+                    )
+                }
+            })
         }
     },
     render(h) {
-        const layoutEls = this.elements.map(option => {
-            const { style } = option.data
-            style.visibility = option.visible ? 'visible' : 'hidden'
-            const events = {
-                on: {
-                    mousedown: e => this.onElementMouseDown(e, option.id),
-                    mouseup: e => this.onElementMouseUp(e, option.id)
-                }
-            }
-            if (option.isShape) {
-                return h('svg', { ...option.data, ...events }, [
-                    h(option.tag, { ...option.subData })
-                ])
-            } else {
-                return h('div', { ...option.data, ...events }, option.subData)
-            }
-        })
         return h(
             'div',
             {
@@ -182,7 +192,7 @@ export default {
                                 },
                                 ref: 'canvas'
                             },
-                            [...layoutEls, this.genOutlined()]
+                            [this.genLayoutElements(this.activePage.children), this.genOutlined()]
                         ),
 
                         h('div', { staticClass: 'center-point', ref: 'centerPoint' })
@@ -228,7 +238,6 @@ export default {
         position: absolute;
         width: 0;
         height: 0;
-        overflow: hidden;
     }
     .layout__element--text {
         line-height: 24px;

@@ -100,16 +100,19 @@ const mutations = {
         const parent = state.hasChildrenTypes.includes(activeElement.type)
             ? activeElement
             : getElementById(state.pages, activeElement.parentId)
-
         const children = parent.children
 
         state.elementNameMap[element.type].count++
-
-        element.visible = true
         element.id = uuidV4()
         element.pageId = state.activePage.id
         element.parentId = parent.id
 
+        if (parent.type === 'container') {
+            const { top, left } = removeUnit(parent.data.style)
+            const { top: elTop, left: elLeft } = removeUnit(element.data.style)
+            element.data.style.top = `${elTop - top}px`
+            element.data.style.left = `${elLeft - left}px`
+        }
         children.push(element)
         state.activeElement = element
         state.activeElementStyleCache = removeUnit({ ...element.data.style })

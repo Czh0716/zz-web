@@ -12,6 +12,7 @@ const getters = {
         getters.activeElement && getters.activeElement.type,
     activeElementStyleCache: state => state.config.activeElementStyleCache,
     copiedElement: state => state.config.copiedElement,
+    hasChildrenTypes: state => state.config.hasChildrenTypes,
     configRecord: state => state.config.configRecord,
     currentRecordIndex: state => state.config.currentRecordIndex,
     overflowHidden: state => state.config.overflowHidden,
