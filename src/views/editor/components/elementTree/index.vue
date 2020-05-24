@@ -1,7 +1,20 @@
 
 <script type="jsx">
 import { mapGetters } from 'vuex'
-import { VIcon, VBtn, VList, VListItem, VCard, VDivider } from 'vuetify/lib'
+import {
+    VIcon,
+    VBtn,
+    VList,
+    VListItem,
+    VCard,
+    VCardTitle,
+    VCardText,
+    VCardActions,
+    VDivider,
+    VDialog,
+    VSelect,
+    VSpacer
+} from 'vuetify/lib'
 export default {
     computed: {
         ...mapGetters(['pages', 'activePage', 'activeElement', 'hasChildrenTypes']),
@@ -186,7 +199,9 @@ export default {
             menuVisible: false,
             forwardDisabled: false,
             backDisabled: false,
-            isDown: false
+            isDown: false,
+            eventDialogVisible: false,
+            eventOpts: ['单机', '双击']
         }
     },
     components: {
@@ -198,6 +213,28 @@ export default {
     render() {
         return (
             <div class="element-tree" ref="tree">
+                <VDialog v-model={this.eventDialogVisible} maxWidth="400">
+                    <VCard>
+                        <VCardTitle>添加元素事件</VCardTitle>
+                        <VCardText>
+                            <VSelect
+                                items={this.eventOpts}
+                                label="事件类型"
+                                outlined
+                                dense
+                            ></VSelect>
+                        </VCardText>
+                        <VCardActions>
+                            <VSpacer></VSpacer>
+                            <VBtn color="primary" text>
+                                确定
+                            </VBtn>
+                            <VBtn on={{ click: () => (this.eventDialogVisible = false) }} text>
+                                取消
+                            </VBtn>
+                        </VCardActions>
+                    </VCard>
+                </VDialog>
                 <element-menu
                     v-model={this.menuVisible}
                     forwardDisabled={this.forwardDisabled}
@@ -217,7 +254,13 @@ export default {
                     <VBtn icon title="固定">
                         <VIcon>mdi-lock-outline</VIcon>
                     </VBtn>
-                    <VBtn icon title="事件">
+                    <VBtn
+                        icon
+                        title="事件"
+                        on={{
+                            click: () => (this.eventDialogVisible = true)
+                        }}
+                    >
                         <VIcon>mdi-information-outline</VIcon>
                     </VBtn>
                     <VBtn
