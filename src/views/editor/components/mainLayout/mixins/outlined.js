@@ -100,6 +100,18 @@ export default {
 
                 children.push(...resizeEls, textEditor)
             }
+            const expandStyle = {}
+            if (this.activeElement.onContainer) {
+                const parent = document.querySelector(
+                    `[data-id="${this.activeElement.id}"]`
+                ).parentNode
+                expandStyle.top = `${+this.outlinedStyle.top.replace('px', '') +
+                    +parent.style.top.replace('px', '')}px`
+                expandStyle.left = `${+this.outlinedStyle.left.replace(
+                    'px',
+                    ''
+                ) + +parent.style.left.replace('px', '')}px`
+            }
 
             return h(
                 'div',
@@ -108,7 +120,7 @@ export default {
                     class: {
                         'line-active': this.activeElement.type === 'line'
                     },
-                    style: this.outlinedStyle,
+                    style: { ...this.outlinedStyle, ...expandStyle },
                     on: {
                         mousedown: this.onOutlinedMouseDown,
                         mouseup: this.onOutlinedMouseUp,
@@ -121,7 +133,7 @@ export default {
         initOutlined(hideResize = false) {
             if (!this.activeElement) return
             if (this.activeElement.type === 'page') return this.resizeOutlined()
-            console.log(this.activeElement)
+
             this.hideOutlined = false
             this.hideTextEditor = true
             this.hideOutlinedResize = hideResize

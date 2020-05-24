@@ -104,6 +104,7 @@ const mutations = {
 
         state.elementNameMap[element.type].count++
         element.id = uuidV4()
+        element.data.attrs['data-id'] = element.id
         element.pageId = state.activePage.id
         element.parentId = parent.id
 
@@ -112,6 +113,7 @@ const mutations = {
             const { top: elTop, left: elLeft } = removeUnit(element.data.style)
             element.data.style.top = `${elTop - top}px`
             element.data.style.left = `${elLeft - left}px`
+            element.onContainer = true
         }
         children.push(element)
         state.activeElement = element
