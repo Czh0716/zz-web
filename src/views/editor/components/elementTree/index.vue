@@ -80,7 +80,7 @@ export default {
                                             pos = 'middle'
                                             if (
                                                 this.activeElement.id === id ||
-                                                !['page', 'group'].includes(element.type)
+                                                !this.hasChildrenTypes.includes(element.type)
                                             )
                                                 currentTarget.style.cursor = 'no-drop'
                                         }

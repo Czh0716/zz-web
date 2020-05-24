@@ -121,7 +121,7 @@ export default {
         initOutlined(hideResize = false) {
             if (!this.activeElement) return
             if (this.activeElement.type === 'page') return this.resizeOutlined()
-
+            console.log(this.activeElement)
             this.hideOutlined = false
             this.hideTextEditor = true
             this.hideOutlinedResize = hideResize

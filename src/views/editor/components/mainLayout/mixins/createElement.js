@@ -32,7 +32,9 @@ export default {
                             ? { border: '1px dashed grey' }
                             : {})
                     },
-                    attrs: {}
+                    attrs: {
+                        'data-type': type
+                    }
                 },
                 subData:
                     this.subAction === 'text' ? 'Text Content' : { attrs: {} },

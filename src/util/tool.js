@@ -21,9 +21,10 @@ export function getElementById(arr, id, forMove = false) {
     }
 }
 
-export function removeUnit(obj) {
-    Object.keys(obj).forEach(key => {
-        obj[key] = String(obj[key]).replace(/px/g, '')
+export function removeUnit(target) {
+    const obj = {}
+    Object.keys(target).forEach(key => {
+        obj[key] = String(target[key]).replace(/px/g, '')
     })
     return obj
 }
