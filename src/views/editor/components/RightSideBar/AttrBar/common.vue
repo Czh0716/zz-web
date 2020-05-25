@@ -31,7 +31,7 @@
             </v-col>
         </v-row>
         <slot name="beforeShadow"></slot>
-        <v-row>
+        <v-row v-if="!removeShadow">
             <v-col cols="6">
                 <v-text-field
                     :value="shadow[1]"
@@ -92,6 +92,12 @@ export default {
                     `drop-shadow(${shadow.join(' ')})`
                 )
             })
+        }
+    },
+    props: {
+        removeShadow: {
+            type: Boolean,
+            default: false
         }
     },
     data() {

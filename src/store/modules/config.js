@@ -62,6 +62,10 @@ const state = {
         container: {
             text: '容器',
             count: 0
+        },
+        text: {
+            text: '文本',
+            count: 0
         }
     },
     hasChildrenTypes: ['page', 'group', 'container'],

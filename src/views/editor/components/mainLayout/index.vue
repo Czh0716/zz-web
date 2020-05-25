@@ -239,14 +239,10 @@ export default {
         width: 0;
         height: 0;
     }
-    .layout__element--text {
-        line-height: 24px;
-    }
-
     .auxiliary-outlined {
         @size: 6px;
         position: absolute;
-        border: 1px solid #4f80ff;
+        border: 1px solid #4f80ff !important;
         opacity: 1 !important;
         filter: none !important;
         .line--resize,

@@ -16,6 +16,18 @@ export default {
 
             const h = this.$createElement
             let children = []
+            const expandStyle = {}
+            if (this.activeElement.onContainer) {
+                const parent = document.querySelector(
+                    `[data-id="${this.activeElement.id}"]`
+                ).parentNode
+                expandStyle.top = `${+this.outlinedStyle.top.replace('px', '') +
+                    +parent.style.top.replace('px', '')}px`
+                expandStyle.left = `${+this.outlinedStyle.left.replace(
+                    'px',
+                    ''
+                ) + +parent.style.left.replace('px', '')}px`
+            }
 
             if (this.activeElement.type === 'line') {
                 const { x1, x2, y1, y2 } = this.activeElement.subData.attrs
@@ -88,6 +100,12 @@ export default {
                           attrs: {
                               autoFocus: true
                           },
+                          style: {
+                              borderWidth: this.outlinedStyle.borderWidth,
+                              borderColor: this.outlinedStyle.borderColor,
+                              borderRadius: this.outlinedStyle.borderRadius,
+                              borderStyle: this.outlinedStyle.borderStyle
+                          },
                           domProps: {
                               value: activeEl.subData
                           },
@@ -100,18 +118,6 @@ export default {
 
                 children.push(...resizeEls, textEditor)
             }
-            const expandStyle = {}
-            if (this.activeElement.onContainer) {
-                const parent = document.querySelector(
-                    `[data-id="${this.activeElement.id}"]`
-                ).parentNode
-                expandStyle.top = `${+this.outlinedStyle.top.replace('px', '') +
-                    +parent.style.top.replace('px', '')}px`
-                expandStyle.left = `${+this.outlinedStyle.left.replace(
-                    'px',
-                    ''
-                ) + +parent.style.left.replace('px', '')}px`
-            }
 
             return h(
                 'div',
@@ -123,8 +129,7 @@ export default {
                     style: { ...this.outlinedStyle, ...expandStyle },
                     on: {
                         mousedown: this.onOutlinedMouseDown,
-                        mouseup: this.onOutlinedMouseUp,
-                        dblclick: this.onOutlinedDblclick
+                        mouseup: this.onOutlinedMouseUp
                     }
                 },
                 children
@@ -133,15 +138,15 @@ export default {
         initOutlined(hideResize = false) {
             if (!this.activeElement) return
             if (this.activeElement.type === 'page') return this.resizeOutlined()
-
+            if (this.activeElement.type === 'text') this.hideTextEditor = false
             this.hideOutlined = false
-            this.hideTextEditor = true
             this.hideOutlinedResize = hideResize
             this.outlinedStyle = this.activeElement.data.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
         resizeOutlined() {
             this.hideOutlined = true
+            this.hideTextEditor = true
             this.outlinedStyle = {}
             this.outlinedStyleCopy = {}
         },
@@ -157,17 +162,12 @@ export default {
                     e.stopPropagation()
                 }
             } else {
-                if (this.action.includes('selection') && this.hideTextEditor) {
+                if (this.action.includes('selection')) {
                     this.clutched = true
                 }
             }
         },
         onOutlinedMouseUp() {},
-        onOutlinedDblclick() {
-            if (this.activeElement && this.activeElement.type === 'text') {
-                this.hideTextEditor = false
-            }
-        },
         dragElement(e) {
             const { clientX, clientY } = this.startPosition
             const startLeft = +this.outlinedStyleCopy.left.replace('px', '')

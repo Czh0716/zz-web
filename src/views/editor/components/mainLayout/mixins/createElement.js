@@ -30,14 +30,14 @@ export default {
                         ...(isShape ? { fill: this.primaryElBGC } : {}),
                         ...(type === 'container'
                             ? { border: '1px dashed grey' }
-                            : {})
+                            : {}),
+                        backgroundColor: 'rgba(255,255,255,0)'
                     },
                     attrs: {
                         'data-type': type
                     }
                 },
-                subData:
-                    this.subAction === 'text' ? 'Text Content' : { attrs: {} },
+                subData: { attrs: {} },
                 startPosition: {
                     clientX,
                     clientY,
@@ -47,6 +47,13 @@ export default {
                 children: [],
                 visible: true,
                 expand: true
+            }
+            if (this.subAction === 'text') {
+                initOption.subData = 'Text Content'
+                initOption.data.style.color = 'rgba(0,0,0,1)'
+                initOption.data.style.fontSize = '16px'
+                initOption.data.style.borderStyle = 'solid'
+                initOption.data.style.borderWidth = '0px'
             }
 
             this.$store.commit('config/ADD_ELEMENT', initOption)

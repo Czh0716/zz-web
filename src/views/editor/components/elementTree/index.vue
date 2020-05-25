@@ -193,7 +193,8 @@ export default {
                 rect: 'mdi-rectangle-outline',
                 ellipse: 'mdi-checkbox-blank-circle-outline',
                 line: 'mdi-vector-line',
-                container: 'mdi-package-variant'
+                container: 'mdi-package-variant',
+                text: 'mdi-format-text'
             },
             pagesExpand: [],
             menuVisible: false,
