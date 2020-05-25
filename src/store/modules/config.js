@@ -29,6 +29,15 @@ function deleteElementById(elements, id) {
     }
 }
 
+function resetAllId(arr) {
+    arr.forEach(item => {
+        const id = uuidV4()
+        item.id = id
+        item.data.attrs['data-id'] = id
+        if (item.children) resetAllId(item.children)
+    })
+}
+
 const state = {
     configRecord: [],
     currentRecordIndex: -1,
@@ -331,6 +340,8 @@ const actions = {
         copiedElement.name = elementName
             ? `${elementName.text}${elementName.count}`
             : `${copiedElement.name} 2`
+
+        resetAllId(copiedElement.children)
 
         commit(
             copiedElement.type === 'page' ? 'ADD_PAGE' : 'ADD_ELEMENT',
