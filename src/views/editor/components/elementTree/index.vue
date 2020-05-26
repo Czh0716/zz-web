@@ -20,6 +20,9 @@ export default {
         ...mapGetters(['pages', 'activePage', 'activeElement', 'hasChildrenTypes']),
         deleteDisabled() {
             return this.activeElement.type === 'page' && this.pages.length === 1
+        },
+        pagesMap() {
+            return this.pages.map(item => item.name)
         }
     },
     methods: {
@@ -236,6 +239,12 @@ export default {
                             <VSelect
                                 items={this.eventOpts}
                                 label="事件类型"
+                                outlined
+                                dense
+                            ></VSelect>
+                            <VSelect
+                                items={this.pagesMap}
+                                label="目标页面"
                                 outlined
                                 dense
                             ></VSelect>
