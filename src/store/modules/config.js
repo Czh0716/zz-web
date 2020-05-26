@@ -283,6 +283,10 @@ const mutations = {
         const element = getElementById(state.pages, id)
         Vue.set(element, 'expand', !element.expand)
     },
+    TOGGLE_ELEMENT_LOCK(state, id) {
+        const element = getElementById(state.pages, id)
+        Vue.set(element, 'lock', !element.lock)
+    },
     SET_CONFIG_RECORD(state) {
         const { pages, activePage, activeElementStyleCache } = state
         state.configRecord.splice(state.currentRecordIndex + 1)

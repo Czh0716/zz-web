@@ -1,5 +1,5 @@
 <template>
-    <div class="right-side-bar">
+    <div class="right-side-bar" :class="{disabled: activeElement.lock}">
         <div class="my-scrollbar">
             <div class="scroll-content">
                 <template v-if="activeElement">
@@ -45,6 +45,18 @@ export default {
     font-size: 13px;
     .scroll-content {
         padding: 16px;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        &::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
     }
 }
 </style>

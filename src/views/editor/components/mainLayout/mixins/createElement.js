@@ -46,7 +46,8 @@ export default {
                 },
                 children: [],
                 visible: true,
-                expand: true
+                expand: true,
+                lock: false
             }
             if (this.subAction === 'text') {
                 initOption.subData = 'Text Content'

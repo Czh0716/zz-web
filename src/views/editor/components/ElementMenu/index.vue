@@ -36,8 +36,12 @@
                         <span class="short-key">Shift+Ctrl+]</span>
                     </v-list-item>
                     <VDivider class="mx-2"></VDivider>
-                    <v-list-item link :disabled="!activeElement">
-                        锁定
+                    <v-list-item
+                        link
+                        :disabled="!activeElement"
+                        @click="handleOperate('toggleElementLock')"
+                    >
+                        {{activeElement.lock ? '解锁': '锁定'}}
                         <span class="short-key">Ctrl+L</span>
                     </v-list-item>
                     <v-list-item
@@ -112,6 +116,9 @@ export default {
         },
         toggleElementVisibility() {
             this.$store.dispatch('config/toggleElementVisible', this.activeElement.id)
+        },
+        toggleElementLock() {
+            this.$store.commit('config/TOGGLE_ELEMENT_LOCK', this.activeElement.id)
         },
         changVisibility(visible = false) {
             this.$emit('input', visible)

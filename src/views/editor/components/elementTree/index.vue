@@ -36,6 +36,11 @@ export default {
             this.$store.commit('config/TOGGLE_ELEMENT_EXPAND', id)
             e.stopPropagation()
         },
+        toggleElementLock(e, id) {
+            this.$store.commit('config/TOGGLE_ELEMENT_LOCK', id)
+            this.$emit('initOutlined')
+            e.stopPropagation()
+        },
         deleteElement() {
             this.$store.dispatch('config/deleteElement')
             this.$emit('resizeOutlined')
@@ -117,7 +122,7 @@ export default {
                                     },
 
                                     on: {
-                                        mousedown: e => this.toggleElementVisible(e, element.id)
+                                        mousedown: e => this.toggleElementVisible(e, id)
                                     }
                                 }}
                             >
@@ -127,7 +132,7 @@ export default {
                                 <VIcon
                                     class="expand-icon"
                                     on={{
-                                        mousedown: e => this.toggleElementExpand(e, element.id)
+                                        mousedown: e => this.toggleElementExpand(e, id)
                                     }}
                                 >
                                     mdi-menu-{element.expand ? 'down' : 'right'}
@@ -137,6 +142,14 @@ export default {
                                 <VIcon class="shape-icon">{this.iconMap[element.type]}</VIcon>
                                 {element.name}
                             </span>
+                            <VIcon
+                                class="lock-icon"
+                                on={{
+                                    mousedown: e => this.toggleElementLock(e, id)
+                                }}
+                            >
+                                mdi-lock{element.lock ? '' : '-open'}-outline
+                            </VIcon>
                         </div>
                         {element.children && this.genTreeNodes(element.children, level + 1)}
                     </li>
@@ -329,7 +342,7 @@ ul {
     }
 
     .tree {
-        width: 100%;
+        width: calc(100% - 8px);
         margin-top: 10px;
         .node-item {
             > .node-list {
@@ -363,6 +376,11 @@ ul {
             .expand-icon {
                 position: absolute;
                 transform: translateX(-20px);
+                cursor: pointer;
+            }
+            .lock-icon {
+                position: relative;
+                margin-left: auto;
                 cursor: pointer;
             }
             .shape-icon {

@@ -136,12 +136,13 @@ export default {
             )
         },
         initOutlined(hideResize = false) {
-            if (!this.activeElement) return
-            if (this.activeElement.type === 'page') return this.resizeOutlined()
-            if (this.activeElement.type === 'text') this.hideTextEditor = false
+            const active = this.activeElement
+            if (!active) return
+            if (active.type === 'page') return this.resizeOutlined()
+            if (active.type === 'text') this.hideTextEditor = false
             this.hideOutlined = false
-            this.hideOutlinedResize = hideResize
-            this.outlinedStyle = this.activeElement.data.style
+            this.hideOutlinedResize = hideResize || active.lock
+            this.outlinedStyle = active.data.style
             this.outlinedStyleCopy = { ...this.outlinedStyle }
         },
         resizeOutlined() {
@@ -169,6 +170,8 @@ export default {
         },
         onOutlinedMouseUp() {},
         dragElement(e) {
+            if (this.activeElement.lock) return
+
             const { clientX, clientY } = this.startPosition
             const startLeft = +this.outlinedStyleCopy.left.replace('px', '')
             const startTop = +this.outlinedStyleCopy.top.replace('px', '')
