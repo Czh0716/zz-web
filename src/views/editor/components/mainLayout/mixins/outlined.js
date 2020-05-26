@@ -1,3 +1,5 @@
+import { VIcon } from 'vuetify/lib'
+
 export default {
     data() {
         return {
@@ -7,7 +9,8 @@ export default {
             hideTextEditor: true,
             resizeOrigin: [],
             outlinedStyle: {},
-            outlinedStyleCopy: {} //缓存一开始的数据 并不是实时的，用于计算拖拽
+            outlinedStyleCopy: {}, //缓存一开始的数据 并不是实时的，用于计算拖拽,
+            elementOrigin: []
         }
     },
     methods: {
@@ -91,6 +94,29 @@ export default {
                           })
                       })
 
+                const rotationEl = h(
+                    VIcon,
+                    {
+                        staticClass: 'rotation-btn',
+                        on: {
+                            mousedown: e => {
+                                const {
+                                    left,
+                                    top,
+                                    width,
+                                    height
+                                } = this.$refs.outlined.getBoundingClientRect()
+                                this.elementOrigin = [
+                                    left + width / 2,
+                                    top + height / 2
+                                ]
+                                this.changeAction(`rotation`)
+                            }
+                        }
+                    },
+                    'mdi-rotate-3d-variant'
+                )
+
                 const activeEl = this.activeElement
 
                 const textEditor = this.hideTextEditor
@@ -116,12 +142,13 @@ export default {
                           }
                       })
 
-                children.push(...resizeEls, textEditor)
+                children.push(...resizeEls, textEditor, rotationEl)
             }
 
             return h(
                 'div',
                 {
+                    ref: 'outlined',
                     staticClass: 'auxiliary-outlined',
                     class: {
                         'line-active': this.activeElement.type === 'line'
@@ -180,6 +207,19 @@ export default {
 
             this.outlinedStyle.left = `${startLeft + offsetX}px`
             this.outlinedStyle.top = `${startTop + offsetY}px`
+        },
+        rotationElement(e) {
+            const [centerX, centerY] = this.elementOrigin
+            let end =
+                Math.atan2(e.clientX - centerX, centerY - e.clientY) /
+                (Math.PI / 180)
+
+            if (Math.abs(end % 90) <= 3) end = Math.round(end / 90) * 90
+
+            this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
+                key: 'transform',
+                value: `rotate(${end}deg) translate3d(0,0,0)`
+            })
         }
     }
 }

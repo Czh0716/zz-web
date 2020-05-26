@@ -60,9 +60,9 @@
                 ></v-file-input>
             </v-col>
         </v-row>
-        <svg width="40" height="40" fill="pink" stroke="blue" stroke-width="5">
-            <rect x="5" y="5" width="30" height="30" />
-        </svg>
+        <div class="test">
+            <div class="con"></div>
+        </div>
     </div>
 </template>
 
@@ -103,12 +103,18 @@ export default {
 .page-attrs {
     position: relative;
     .test {
-        margin: auto;
-        width: 50px;
-        height: 50px;
+        position: relative;
+        width: 100px;
+        height: 100px;
         background-color: pink;
-        transform-origin: 25px 25px;
-        transform: scale(1);
+        .con {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: yellow;
+            right: -20px;
+            cursor: pointer;
+        }
     }
 }
 </style>

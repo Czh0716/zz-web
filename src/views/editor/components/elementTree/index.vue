@@ -175,7 +175,6 @@ export default {
             const target = e.currentTarget
             const cursor = target.style.cursor
             const pos = target.dataset.insertPos
-            this.isDown = false
             if (!cursor || cursor === 'no-drop') {
                 this.resizeNodeMark(target)
                 return
@@ -223,6 +222,9 @@ export default {
     },
     mounted() {
         this.$refs.tree.addEventListener('contextmenu', this.onContextMenu)
+        window.addEventListener('mouseup', () => {
+            this.isDown = false
+        })
     },
     render() {
         return (

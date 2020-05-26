@@ -58,14 +58,17 @@ export default {
             }
         },
         onMouseMove(e) {
-            e.preventDefault()
-            if (this.action.includes('create')) {
+            const action = this.action
+            if (action.includes('create')) {
                 this.stretchElement(e)
-            } else if (this.action.includes('selection')) {
+            } else if (action.includes('selection')) {
                 this.clutched && this.dragElement(e)
-            } else if (this.action.includes('resize')) {
+            } else if (action.includes('resize')) {
                 this.stretchElement(e, true)
+            } else if (action.includes('rotation')) {
+                this.rotationElement(e)
             }
+            e.preventDefault()
         },
         onMouseUp() {
             const action = this.action
@@ -80,6 +83,8 @@ export default {
                     this.clutched = false
                     this.$store.commit('config/SET_CONFIG_RECORD')
                 }
+            } else if (action.includes('rotation')) {
+                this.changeAction('selection')
             }
 
             this.$store.commit('config/UPDATE_ELEMENT_CACHE')
@@ -272,6 +277,14 @@ export default {
             resize: none;
             outline: none;
             color: inherit;
+        }
+
+        .rotation-btn {
+            position: absolute;
+            color: #4f80ff;
+            left: 50%;
+            transform: translate(-50%, -40px);
+            cursor: pointer;
         }
 
         &.line-active {
