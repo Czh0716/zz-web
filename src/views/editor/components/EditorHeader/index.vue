@@ -45,8 +45,8 @@
             >
                 <img src="@/assets/icons/ot3.svg" alt />
             </button>
-            <button v-ripple class="btn">
-                <img src="@/assets/icons/ot4.svg" alt />
+            <button v-ripple class="btn" @click="setFullScreen">
+                <v-icon>mdi-fullscreen{{fullScreenStatus ? '-exit':''}}</v-icon>
             </button>
             <button v-ripple class="btn">
                 <img src="@/assets/icons/ot5.svg" alt />
@@ -126,10 +126,37 @@ export default {
         },
         setPrimaryElBGC(color) {
             this.$store.commit('config/SET_PRIMARYEL_BGC', color)
+        },
+        setFullScreen() {
+            if (this.fullScreenStatus) {
+                const exitFullscreen =
+                    document.exitFullscreen ||
+                    document.webkitExitFullscreen ||
+                    document.mozCancelFullScreen ||
+                    document.msExitFullscreen
+
+                exitFullscreen.call(document)
+            } else {
+                const element = document.documentElement
+                const requestFullScreen =
+                    element.requestFullScreen ||
+                    element.webkitRequestFullScreen ||
+                    element.mozRequestFullScreen ||
+                    element.msRequestFullScreen
+
+                requestFullScreen.call(element)
+            }
+
+            this.fullScreenStatus = !this.fullScreenStatus
         }
     },
     components: {
         colorInput: () => import('../RightSideBar/AttrBar/colorInput')
+    },
+    data() {
+        return {
+            fullScreenStatus: false
+        }
     }
 }
 </script>

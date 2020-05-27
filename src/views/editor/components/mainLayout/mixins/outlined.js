@@ -94,28 +94,30 @@ export default {
                           })
                       })
 
-                const rotationEl = h(
-                    VIcon,
-                    {
-                        staticClass: 'rotation-btn',
-                        on: {
-                            mousedown: e => {
-                                const {
-                                    left,
-                                    top,
-                                    width,
-                                    height
-                                } = this.$refs.outlined.getBoundingClientRect()
-                                this.elementOrigin = [
-                                    left + width / 2,
-                                    top + height / 2
-                                ]
-                                this.changeAction(`rotation`)
-                            }
-                        }
-                    },
-                    'mdi-rotate-3d-variant'
-                )
+                const rotationEl = this.hideOutlinedResize
+                    ? []
+                    : h(
+                          VIcon,
+                          {
+                              staticClass: 'rotation-btn',
+                              on: {
+                                  mousedown: e => {
+                                      const {
+                                          left,
+                                          top,
+                                          width,
+                                          height
+                                      } = this.$refs.outlined.getBoundingClientRect()
+                                      this.elementOrigin = [
+                                          left + width / 2,
+                                          top + height / 2
+                                      ]
+                                      this.changeAction(`rotation`)
+                                  }
+                              }
+                          },
+                          'mdi-rotate-3d-variant'
+                      )
 
                 const activeEl = this.activeElement
 
