@@ -15,15 +15,17 @@ export default {
     },
     methods: {
         genOutlined() {
-            if (this.hideOutlined || !this.activeElement) return
+            const activeEl = this.activeElement
+            if (this.hideOutlined || !activeEl) return
 
             const h = this.$createElement
             let children = []
             const expandStyle = {}
-            if (this.activeElement.onContainer) {
+            if (activeEl.onContainer) {
                 const parent = document.querySelector(
-                    `[data-id="${this.activeElement.id}"]`
-                ).parentNode
+                    `[data-id="${activeEl.parentId}"]`
+                )
+
                 expandStyle.top = `${+this.outlinedStyle.top.replace('px', '') +
                     +parent.style.top.replace('px', '')}px`
                 expandStyle.left = `${+this.outlinedStyle.left.replace(
@@ -32,8 +34,8 @@ export default {
                 ) + +parent.style.left.replace('px', '')}px`
             }
 
-            if (this.activeElement.type === 'line') {
-                const { x1, x2, y1, y2 } = this.activeElement.subData.attrs
+            if (activeEl.type === 'line') {
+                const { x1, x2, y1, y2 } = activeEl.subData.attrs
                 const maxX = x1 > x2 ? 0 : 1
                 const maxY = y1 > y2 ? 0 : 1
 
@@ -119,8 +121,6 @@ export default {
                           'mdi-rotate-3d-variant'
                       )
 
-                const activeEl = this.activeElement
-
                 const textEditor = this.hideTextEditor
                     ? []
                     : h('textarea', {
@@ -153,7 +153,7 @@ export default {
                     ref: 'outlined',
                     staticClass: 'auxiliary-outlined',
                     class: {
-                        'line-active': this.activeElement.type === 'line'
+                        'line-active': activeEl.type === 'line'
                     },
                     style: { ...this.outlinedStyle, ...expandStyle },
                     on: {
