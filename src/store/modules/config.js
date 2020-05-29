@@ -66,6 +66,10 @@ const state = {
         text: {
             text: '文本',
             count: 0
+        },
+        image: {
+            text: '图片',
+            count: 0
         }
     },
     hasChildrenTypes: ['page', 'group', 'container'],
@@ -269,7 +273,11 @@ const mutations = {
             }
         }
 
-        Vue.set(isStyleAttr ? element.data.style : element, key, value)
+        Vue.set(
+            isStyleAttr ? element.data.style : element.data.attrs,
+            key,
+            value
+        )
 
         state.activeElementStyleCache = removeUnit({
             ...element.data.style

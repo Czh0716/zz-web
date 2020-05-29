@@ -21,6 +21,14 @@
             >
                 <v-icon>mdi-package-variant</v-icon>
             </div>
+            <div
+                class="group-item"
+                title="图片"
+                :class="{active: 'create-image' === $store.getters.action}"
+                @click="$store.dispatch('app/changeAction','create-image')"
+            >
+                <v-icon>mdi-image</v-icon>
+            </div>
         </div>
         <div class="operation--group">
             <div @click="addPage" class="group-item" title="页面">

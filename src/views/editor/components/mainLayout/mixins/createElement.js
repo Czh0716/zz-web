@@ -169,6 +169,9 @@ export default {
             if (subAction === 'text') {
             } else if (subAction === 'resize') {
             } else if (this.shapes.includes(subAction)) {
+            } else if (subAction === 'image') {
+                this.$refs.upload.value = null
+                this.$refs.upload.click()
             }
         }
     }

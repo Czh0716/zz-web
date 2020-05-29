@@ -154,6 +154,8 @@ export default {
                         { ...element.data, ...events },
                         this.genLayoutElements(element.children)
                     )
+                } else if (element.type === 'image') {
+                    return h('img', { ...element.data, ...events })
                 }
             })
         }
@@ -203,7 +205,25 @@ export default {
                         h('div', { staticClass: 'center-point', ref: 'centerPoint' })
                     ]
                 ),
-                <ElementMenu v-model={this.menuVisibility}></ElementMenu>
+                <ElementMenu v-model={this.menuVisibility}></ElementMenu>,
+                <input
+                    ref="upload"
+                    type="file"
+                    accept="image/*"
+                    class="global-upload"
+                    on={{
+                        input: () => {
+                            if (this.subAction === 'image') {
+                                const url = URL.createObjectURL(this.$refs.upload.files[0])
+                                this.$store.commit('config/UPDATE_ELEMENT_ATTR', {
+                                    key: 'src',
+                                    value: url,
+                                    isStyleAttr: false
+                                })
+                            }
+                        }
+                    }}
+                />
             ]
         )
     }
@@ -229,6 +249,10 @@ export default {
         display: flex;
         justify-content: center;
     }
+}
+
+.global-upload {
+    display: none;
 }
 
 [class*='create'] {
