@@ -156,6 +156,8 @@ export default {
                     )
                 } else if (element.type === 'image') {
                     return h('img', { ...element.data, ...events })
+                } else if (element.type === 'input') {
+                    return h('input', { ...element.data, ...events })
                 }
             })
         }

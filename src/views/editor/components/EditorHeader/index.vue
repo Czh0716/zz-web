@@ -88,6 +88,7 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+    name: 'hah',
     computed: {
         ...mapGetters([
             'configRecord',

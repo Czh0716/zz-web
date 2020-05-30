@@ -70,6 +70,10 @@ const state = {
         image: {
             text: '图片',
             count: 0
+        },
+        input: {
+            text: '输入框',
+            count: 0
         }
     },
     hasChildrenTypes: ['page', 'group', 'container'],
