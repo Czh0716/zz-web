@@ -1,10 +1,15 @@
-
-
 <script lang="jsx">
 import { mapGetters } from 'vuex'
 export default {
     computed: {
-        ...mapGetters(['activePage'])
+        ...mapGetters(['pages']),
+        activePage() {
+            if(!this.activePageId) return this.pages[0]
+
+            return this.pages.find((item) => {
+                return item.id === this.activePageId 
+            })
+        }
     },
     methods: {
         genLayoutElements(elements) {
@@ -13,11 +18,11 @@ export default {
                 const { style } = element.data
                 style.visibility = element.visible ? 'visible' : 'hidden'
                 const events = {
-                    on: {
-                        mousedown: e => this.onElementMouseDown(e, element.id),
-                        mouseup: e => this.onElementMouseUp(e, element.id)
-                    }
+                    on: {}
                 }
+                Object.keys(element.events).forEach((key) => {
+                    events.on[key] = () => this.activePageId = element.events[key] 
+                })
                 if (element.isShape) {
                     return h('svg', { ...element.data, ...events }, [
                         h(element.tag, { ...element.subData })
@@ -38,8 +43,13 @@ export default {
             })
         }
     },
+    data() {
+        return {
+            activePageId: null
+        }
+    },
     render() {
-        const page =this.activePage
+        const page = this.activePage
         return   <div class="run-window" style={page.style}>{this.genLayoutElements(page.children)}</div>
     }
 }

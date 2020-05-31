@@ -287,6 +287,9 @@ const mutations = {
             ...element.data.style
         })
     },
+    ADD_ELEMENT_EVENT(state, opts) {
+        Vue.set(state.activeElement.events, opts.type, opts.target)
+    },
     TOGGLE_ELEMENT_VISIBLE(state, id) {
         const element = getElementById(state.pages, id)
         Vue.set(element, 'visible', !element.visible)

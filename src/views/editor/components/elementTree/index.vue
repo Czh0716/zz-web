@@ -22,7 +22,16 @@ export default {
             return this.activeElement.type === 'page' && this.pages.length === 1
         },
         pagesMap() {
-            return this.pages.map(item => item.name)
+            return this.pages
+                .filter(item => {
+                    return item.id !== this.activePage.id
+                })
+                .map(item => {
+                    return {
+                        text: item.name,
+                        value: item.id
+                    }
+                })
         }
     },
     methods: {
@@ -199,6 +208,14 @@ export default {
         },
         onContextMenu(e) {
             e.preventDefault()
+        },
+        addElementEvent() {
+            this.$store.commit('config/ADD_ELEMENT_EVENT', {
+                type: this.eventType,
+                target: this.eventTarget
+            })
+            this.eventDialogVisible = false
+            ;(this.eventType = 'click'), (this.eventTarget = null)
         }
     },
     data() {
@@ -217,7 +234,12 @@ export default {
             backDisabled: false,
             isDown: false,
             eventDialogVisible: false,
-            eventOpts: ['单机', '双击']
+            eventOpts: [
+                { text: '单击', value: 'click' },
+                { text: '双击', value: 'dbclick' }
+            ],
+            eventType: 'click',
+            eventTarget: null
         }
     },
     components: {
@@ -237,21 +259,25 @@ export default {
                         <VCardTitle>添加元素事件</VCardTitle>
                         <VCardText>
                             <VSelect
+                                v-model={this.eventType}
                                 items={this.eventOpts}
                                 label="事件类型"
                                 outlined
                                 dense
                             ></VSelect>
                             <VSelect
+                                v-model={this.eventTarget}
                                 items={this.pagesMap}
                                 label="目标页面"
+                                no-data-text="无可选页面"
                                 outlined
                                 dense
+                                hide-details
                             ></VSelect>
                         </VCardText>
                         <VCardActions>
                             <VSpacer></VSpacer>
-                            <VBtn color="primary" text>
+                            <VBtn color="primary" text onClick={this.addElementEvent}>
                                 确定
                             </VBtn>
                             <VBtn on={{ click: () => (this.eventDialogVisible = false) }} text>
@@ -280,6 +306,7 @@ export default {
                         <VIcon>mdi-lock-outline</VIcon>
                     </VBtn>
                     <VBtn
+                        disabled={this.activeElement.type === 'page'}
                         icon
                         title="事件"
                         on={{

@@ -1,7 +1,9 @@
 <template>
     <div class="header px-6">
         <v-dialog v-model="running" max-width="391" overlay-opacity="0.7">
-            <Run-window></Run-window>
+            <transition name="runWindow">
+                <Run-window v-if="running"></Run-window>
+            </transition>
         </v-dialog>
         <div class="l">
             <div class="logo">
@@ -175,6 +177,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.runWindow-leave-active {
+    transition: 1s;
+}
 .header {
     display: flex;
     height: @header-height;

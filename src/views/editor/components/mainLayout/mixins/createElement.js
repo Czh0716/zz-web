@@ -46,6 +46,7 @@ export default {
                     localY
                 },
                 children: [],
+                events: {},
                 visible: true,
                 expand: true,
                 lock: false
