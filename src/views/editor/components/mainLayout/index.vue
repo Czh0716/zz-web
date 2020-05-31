@@ -265,11 +265,7 @@ export default {
     width: 100%;
     margin: 0 auto;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
-    .layout__element {
-        position: absolute;
-        width: 0;
-        height: 0;
-    }
+
     .auxiliary-outlined {
         @size: 6px;
         position: absolute;

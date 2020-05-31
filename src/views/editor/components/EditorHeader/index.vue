@@ -1,5 +1,8 @@
 <template>
     <div class="header px-6">
+        <v-dialog v-model="running" max-width="391" overlay-opacity="0.7">
+            <Run-window></Run-window>
+        </v-dialog>
         <div class="l">
             <div class="logo">
                 <v-icon>mdi-kodi</v-icon>
@@ -72,7 +75,15 @@
             <button v-ripple class="btn">
                 <v-icon>mdi-television</v-icon>
             </button>
-            <v-btn title="运行" class="ml-6" color="red lighten-1" fab x-small dark>
+            <v-btn
+                title="运行"
+                class="ml-6"
+                color="red lighten-1"
+                fab
+                x-small
+                dark
+                @click="running = true"
+            >
                 <v-icon>mdi-play</v-icon>
             </v-btn>
             <v-btn class="ml-6" dark color="blue lighten-4">
@@ -88,7 +99,6 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
-    name: 'hah',
     computed: {
         ...mapGetters([
             'configRecord',
@@ -152,11 +162,13 @@ export default {
         }
     },
     components: {
-        colorInput: () => import('../RightSideBar/AttrBar/colorInput')
+        colorInput: () => import('../RightSideBar/AttrBar/colorInput'),
+        RunWindow: () => import('../RunWindow')
     },
     data() {
         return {
-            fullScreenStatus: false
+            fullScreenStatus: false,
+            running: false
         }
     }
 }

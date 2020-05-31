@@ -20,6 +20,7 @@ export default {
                         'layout__element--text': this.subAction === 'text'
                     },
                     style: {
+                        position: 'absolute',
                         left: `${localX}px`,
                         top: `${localY}px`,
                         width: '0',

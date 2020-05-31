@@ -60,9 +60,6 @@
                 ></v-file-input>
             </v-col>
         </v-row>
-        <div class="test">
-            <div class="con"></div>
-        </div>
     </div>
 </template>
 
@@ -102,19 +99,5 @@ export default {
 <style lang="less" scoped>
 .page-attrs {
     position: relative;
-    .test {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        background-color: pink;
-        .con {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-color: yellow;
-            right: -20px;
-            cursor: pointer;
-        }
-    }
 }
 </style>
