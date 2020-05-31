@@ -13,11 +13,11 @@ const routes = [
         component: () => import('@/views/login')
     },
     {
-        path: '/admin',
+        path: '/admin/:id',
         component: () => import('@/views/admin'),
         children: [
             {
-                path: 'product',
+                path: '/',
                 component: () => import('@/views/admin/product')
             }
         ]

@@ -12,9 +12,27 @@
                     <div class="login__form">
                         <div class="tit">登录</div>
                         <div class="content">
-                            <v-text-field color="#baeaec" label="账号"></v-text-field>
-                            <v-text-field color="#baeaec" label="密码"></v-text-field>
-                            <v-btn class="confirm" dark color="#baeaec">确定</v-btn>
+                            <v-form ref="loginForm">
+                                <v-text-field
+                                    v-model="loginForm.userName"
+                                    :rules="accountRules"
+                                    color="#baeaec"
+                                    label="账号"
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="loginForm.password"
+                                    :rules="passwordRules"
+                                    color="#baeaec"
+                                    label="密码"
+                                ></v-text-field>
+                                <v-btn
+                                    :loading="loading"
+                                    class="confirm"
+                                    dark
+                                    color="#baeaec"
+                                    @click="login"
+                                >确定</v-btn>
+                            </v-form>
                         </div>
                     </div>
                     <div class="register__form" @click="isLogin = false">
@@ -29,10 +47,38 @@
                             </div>
                             <div class="tit">注册</div>
                             <div class="content">
-                                <v-text-field class="input" dark color="#fff" label="账号"></v-text-field>
-                                <v-text-field class="input" dark color="#fff" label="密码"></v-text-field>
-                                <v-text-field class="input" dark color="#fff" label="确认密码"></v-text-field>
-                                <v-btn class="confirm" color="#fff">确定</v-btn>
+                                <v-form ref="registerFrom">
+                                    <v-text-field
+                                        v-model="registerFrom.userName"
+                                        :rules="accountRules"
+                                        class="input"
+                                        dark
+                                        color="#fff"
+                                        label="账号"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="registerFrom.password"
+                                        :rules="passwordRules"
+                                        class="input"
+                                        dark
+                                        color="#fff"
+                                        label="密码"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="registerFrom.againPassword"
+                                        :rules="passwordRules"
+                                        class="input"
+                                        dark
+                                        color="#fff"
+                                        label="确认密码"
+                                    ></v-text-field>
+                                    <v-btn
+                                        :loading="loading"
+                                        class="confirm"
+                                        color="#fff"
+                                        @click="register"
+                                    >确定</v-btn>
+                                </v-form>
                             </div>
                         </div>
                     </div>
@@ -43,10 +89,46 @@
 </template>
 
 <script>
+import { register, login } from '@/api/user'
 export default {
     data() {
         return {
-            isLogin: true
+            isLogin: true,
+            accountRules: [v => v.length > 6 || '账号长度不能少于6位'],
+            passwordRules: [v => v.length > 6 || '密码长度不能少于6位'],
+            loginForm: {
+                userName: 'qwe1234',
+                password: 'qwe1234'
+            },
+            registerFrom: {
+                userName: '',
+                password: '',
+                againPassword: ''
+            },
+            loading: false
+        }
+    },
+    methods: {
+        async login() {
+            const validRes = this.$refs.loginForm.validate()
+            if (!validRes) return
+            this.loading = true
+            try {
+                const { data } = await login(this.loginForm)
+                this.$router.push(`/admin/${data._id}`)
+            } finally {
+                this.loading = false
+            }
+        },
+        async register() {
+            const validRes = this.$refs.registerFrom.validate()
+            if (!validRes) return
+            this.loading = true
+            try {
+                const res = await register(this.registerFrom)
+            } finally {
+                this.loading = false
+            }
         }
     }
 }
