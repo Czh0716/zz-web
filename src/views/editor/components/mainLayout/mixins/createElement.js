@@ -55,11 +55,6 @@ export default {
                 initOption.data.style.fontSize = '16px'
                 initOption.data.style.borderStyle = 'solid'
                 initOption.data.style.borderWidth = '0px'
-            } else if (this.subAction === 'input') {
-                initOption.data.style.borderWidth = '1px'
-                initOption.data.style.borderStyle = 'solid'
-                initOption.data.style.borderColor = 'pink'
-                initOption.data.style.borderRadius = '4px'
             }
 
             this.$store.commit('config/ADD_ELEMENT', initOption)
