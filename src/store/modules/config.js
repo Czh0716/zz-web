@@ -79,7 +79,7 @@ const state = {
     hasChildrenTypes: ['page', 'group', 'container'],
     overflowHidden: false,
     workAreaBGC: 'rgba(250,250,250,1)',
-    primaryElBGC: 'rgba(212,152,164,1)'
+    primaryElBGC: 'rgba(136, 222, 255,1)'
 }
 
 const mutations = {

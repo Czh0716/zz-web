@@ -88,9 +88,13 @@
             >
                 <v-icon>mdi-play</v-icon>
             </v-btn>
-            <v-btn class="ml-6" dark color="blue lighten-4">
+            <v-btn class="ml-6" dark color="blue lighten-4" @click="save">
                 <v-icon left>mdi-content-save-outline</v-icon>保存
             </v-btn>
+            <v-snackbar v-model="saveSnack" :timeout="2000" right>
+                保存成功！
+                <v-btn @click="saveSnack = false" text>Close</v-btn>
+            </v-snackbar>
             <v-btn class="ml-4" dark color="indigo lighten-4">
                 <v-icon left>mdi-send</v-icon>发布
             </v-btn>
@@ -161,6 +165,9 @@ export default {
             }
 
             this.fullScreenStatus = !this.fullScreenStatus
+        },
+        save() {
+            this.saveSnack = true
         }
     },
     components: {
@@ -170,7 +177,8 @@ export default {
     data() {
         return {
             fullScreenStatus: false,
-            running: false
+            running: false,
+            saveSnack: false
         }
     }
 }
