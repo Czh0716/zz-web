@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { cloneDeep } from 'lodash'
 import { v4 as uuidV4 } from 'uuid'
 import { getElementById, removeUnit, resizeChildrenId } from '@/util/tool.js'
+import { updateProject } from '@/api/project'
 
 function deleteElementById(elements, id) {
     let length = elements.length
@@ -39,6 +40,7 @@ function resetAllId(arr) {
 }
 
 const state = {
+    projectInfo: null,
     configRecord: [],
     currentRecordIndex: -1,
     pages: [],
@@ -83,6 +85,15 @@ const state = {
 }
 
 const mutations = {
+    INIT_PROJECT(state, { config, ...info }) {
+        state.projectInfo = info
+        if (!config || config === '{}') return
+        config = JSON.parse(config)
+        state.pages = config.pages
+        state.elementNameMap = config.nameMap
+        state.activePage = state.pages[0]
+        state.activeElement = state.pages[0]
+    },
     ADD_PAGE(state, page) {
         const length = state.pages.length
         if (!page) {
@@ -376,6 +387,18 @@ const actions = {
         commit('COPY_ELEMENT')
         dispatch('deleteElement')
         commit('SET_CONFIG_RECORD')
+    },
+    saveProject({ state }) {
+        return new Promise(async resolve => {
+            await updateProject({
+                ...state.projectInfo,
+                config: JSON.stringify({
+                    pages: state.pages,
+                    nameMap: state.elementNameMap
+                })
+            })
+            resolve()
+        })
     }
 }
 

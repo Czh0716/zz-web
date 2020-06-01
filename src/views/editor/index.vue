@@ -13,6 +13,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getProject } from '@/api/project'
 export default {
     provide() {
         return {
@@ -91,12 +92,17 @@ export default {
                     this.$store.dispatch('app/changeAction', 'create-ellipse')
                     break
             }
+        },
+        async initProject() {
+            const { data } = await getProject(this.$route.params.id)
+            this.$store.commit('config/INIT_PROJECT', data)
         }
     },
     mounted() {
         this.$store.commit('config/ADD_PAGE')
         this.$store.commit('config/SET_CONFIG_RECORD')
         window.addEventListener('keydown', this.handleKeyDown)
+        this.initProject()
     }
 }
 </script>

@@ -166,7 +166,8 @@ export default {
 
             this.fullScreenStatus = !this.fullScreenStatus
         },
-        save() {
+        async save() {
+            await this.$store.dispatch('config/saveProject')
             this.saveSnack = true
         }
     },

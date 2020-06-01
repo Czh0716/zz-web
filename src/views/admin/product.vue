@@ -88,7 +88,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn text color="red" @click="deleteProject(project._id)">DELETE</v-btn>
-                            <v-btn text @click="$router.push(`/editor/${project.id}`)">Edit NOW</v-btn>
+                            <v-btn text @click="$router.push(`/editor/${project._id}`)">Edit NOW</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-slide-item>
