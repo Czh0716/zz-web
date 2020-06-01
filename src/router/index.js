@@ -23,7 +23,7 @@ const routes = [
         ]
     },
     {
-        path: '/editor',
+        path: '/editor/:id',
         component: () => import('@/views/editor')
     }
 ]

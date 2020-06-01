@@ -37,6 +37,32 @@
                 <img src="../../assets/record_bg.png" alt />
             </v-card-text>
         </v-card>
+        <v-dialog v-model="addProjectDialogVisible" max-width="400">
+            <v-card>
+                <v-card-title>添加项目</v-card-title>
+                <v-card-text>
+                    <v-form ref="addForm">
+                        <v-text-field
+                            v-model="addProjectForm.name"
+                            placeholder="请输入项目名称"
+                            outlined
+                            label="项目名称"
+                        ></v-text-field>
+                        <v-textarea
+                            v-model="addProjectForm.description"
+                            placeholder="请输入项目描述"
+                            outlined
+                            label="项目描述"
+                        ></v-textarea>
+                    </v-form>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click="addProject" color="primary">添加</v-btn>
+                        <v-btn @click="closeAddDialog">取消</v-btn>
+                    </v-card-actions>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-card class="group">
             <v-card-text class="pb-0">
                 <div class="header">
@@ -45,34 +71,53 @@
                     </div>
                     <span class="title">项目组</span>
                     <div class="add-btn ml-auto">
-                        <v-btn dark color="#B39DDB">新建项目</v-btn>
+                        <v-btn dark color="#B39DDB" @click="addProjectDialogVisible = true">新建项目</v-btn>
                     </div>
                 </div>
             </v-card-text>
-            <v-slide-group show-arrows class="pa-4">
-                <v-slide-item v-for="n in 10" :key="n">
-                    <v-card :color="`${calcColor(n)} lighten-4`" class="mx-4 my-1" width="250">
+            <v-slide-group show-arrows class="pa-4" style="minHeight:200px">
+                <v-slide-item v-for="(project,index) in projects" :key="project._id">
+                    <v-card :color="`${calcColor(index)} lighten-4`" class="mx-4 my-1" width="250">
                         <v-card-title class="overline pb-0">OVERLINE</v-card-title>
                         <v-card-title>
-                            <span class="text-truncate">这是我的第一百个项目</span>
+                            <span class="text-truncate">{{project.name}}</span>
                         </v-card-title>
                         <v-card-subtitle>
-                            <span
-                                class="introduce"
-                            >Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui, soluta?</span>
+                            <span class="introduce">{{project.description}}</span>
                         </v-card-subtitle>
                         <v-card-actions>
-                            <v-btn class="ml-auto" text>Edit NOW</v-btn>
+                            <v-spacer></v-spacer>
+                            <v-btn text color="red" @click="deleteProject(project._id)">DELETE</v-btn>
+                            <v-btn text @click="$router.push(`/editor/${project.id}`)">Edit NOW</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-slide-item>
             </v-slide-group>
         </v-card>
+        <v-dialog v-model="deleteConfirmDialogVisible" max-width="300" persistent>
+            <v-card>
+                <v-card-title class="headline">
+                    <span>是否确认删除该项目？</span>
+                </v-card-title>
+                <v-card-text>
+                    <v-icon color="red" class="mr-2">mdi-emoticon-neutral-outline</v-icon>警告：如删除后则无法还原！
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="()=>confirmF()">确定</v-btn>
+                    <v-btn text @click="deleteConfirmDialogVisible = false">取消</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
 <script>
+import { getProjects, addProject, deleteProject } from '@/api/project'
 export default {
+    mounted() {
+        this.getProjects()
+    },
     data() {
         return {
             list: [
@@ -107,6 +152,7 @@ export default {
                     status: 0
                 }
             ],
+            projects: [],
             colors: [
                 'red',
                 'pink',
@@ -120,7 +166,14 @@ export default {
                 'orange',
                 'brown',
                 'blue-grey'
-            ]
+            ],
+            addProjectDialogVisible: false,
+            addProjectForm: {
+                name: '',
+                description: ''
+            },
+            deleteConfirmDialogVisible: false,
+            confirmF: () => {}
         }
     },
     filters: {
@@ -134,6 +187,32 @@ export default {
             const colors = this.colors
             const length = colors.length
             return colors[i <= length - 1 ? i : i % length]
+        },
+        closeAddDialog() {
+            this.$refs.addForm.reset()
+            this.addProjectDialogVisible = false
+        },
+        async getProjects() {
+            const { data } = await getProjects(this.$route.params.id)
+            this.projects = data
+        },
+        async addProject() {
+            await addProject({ createUser: this.$route.params.id, ...this.addProjectForm })
+            this.closeAddDialog()
+            this.getProjects()
+        },
+        confirmDeleteProject() {
+            this.deleteConfirmDialogVisible = true
+            return new Promise(resolve => {
+                this.confirmF = resolve
+            })
+        },
+        async deleteProject(id) {
+            console.log(id)
+            await this.confirmDeleteProject()
+            await deleteProject({ id })
+            this.getProjects()
+            this.deleteConfirmDialogVisible = false
         }
     }
 }
