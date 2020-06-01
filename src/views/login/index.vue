@@ -24,6 +24,7 @@
                                     :rules="passwordRules"
                                     color="#baeaec"
                                     label="密码"
+                                    type="password"
                                 ></v-text-field>
                                 <v-btn
                                     :loading="loading"
@@ -63,6 +64,7 @@
                                         dark
                                         color="#fff"
                                         label="密码"
+                                        type="password"
                                     ></v-text-field>
                                     <v-text-field
                                         v-model="registerFrom.againPassword"
@@ -71,6 +73,7 @@
                                         dark
                                         color="#fff"
                                         label="确认密码"
+                                        type="password"
                                     ></v-text-field>
                                     <v-btn
                                         :loading="loading"
@@ -78,6 +81,7 @@
                                         color="#fff"
                                         @click="register"
                                     >确定</v-btn>
+                                    <v-snackbar v-model="registerSnack" :timeout="2000" right>注册成功！</v-snackbar>
                                 </v-form>
                             </div>
                         </div>
@@ -97,15 +101,16 @@ export default {
             accountRules: [v => v.length > 6 || '账号长度不能少于6位'],
             passwordRules: [v => v.length > 6 || '密码长度不能少于6位'],
             loginForm: {
-                userName: 'qwe1234',
-                password: 'qwe1234'
+                userName: '',
+                password: ''
             },
             registerFrom: {
                 userName: '',
                 password: '',
                 againPassword: ''
             },
-            loading: false
+            loading: false,
+            registerSnack: false
         }
     },
     methods: {
@@ -126,6 +131,7 @@ export default {
             this.loading = true
             try {
                 const res = await register(this.registerFrom)
+                this.registerSnack = true
             } finally {
                 this.loading = false
             }

@@ -25,6 +25,10 @@ const routes = [
     {
         path: '/editor/:id',
         component: () => import('@/views/editor')
+    },
+    {
+        path: '/running/:id',
+        component: () => import('@/views/running')
     }
 ]
 

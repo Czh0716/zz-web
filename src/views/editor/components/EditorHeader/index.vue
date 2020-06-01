@@ -95,7 +95,14 @@
                 保存成功！
                 <v-btn @click="saveSnack = false" text>Close</v-btn>
             </v-snackbar>
-            <v-btn class="ml-4" dark color="indigo lighten-4">
+            <v-btn
+                class="ml-4"
+                dark
+                color="indigo lighten-4"
+                link
+                target="_blank"
+                :to="`/running/${$route.params.id}`"
+            >
                 <v-icon left>mdi-send</v-icon>发布
             </v-btn>
         </div>

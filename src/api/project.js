@@ -37,3 +37,10 @@ export function updateProject(data) {
         data
     })
 }
+
+export function getOperationRecord() {
+    return request({
+        url: `/getOperationRecord`,
+        method: 'get'
+    })
+}

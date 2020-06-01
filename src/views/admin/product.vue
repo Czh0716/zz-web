@@ -19,13 +19,13 @@
             </v-card-text>
             <v-card-text class="content pt-0">
                 <v-list dense class="list pt-0">
-                    <v-list-item v-for="(item,index) in list" :key="index" @click=" ">
+                    <v-list-item v-for="item in records" :key="item._id" @click=" ">
                         <v-list-item-avatar>
-                            <v-icon v-text="item.icon" :color="item.status?'#64B5F6':'#FF80AB'"></v-icon>
+                            <v-icon v-text="icons[item.status]" :color="recordColors[item.status]"></v-icon>
                         </v-list-item-avatar>
                         <v-list-item-content>
-                            <v-list-item-title v-text="item.content"></v-list-item-title>
-                            <v-list-item-subtitle>{{item.date | formatDate}}</v-list-item-subtitle>
+                            <v-list-item-title v-text="item.message"></v-list-item-title>
+                            <v-list-item-subtitle>{{item.createAt | formatDate}}</v-list-item-subtitle>
                         </v-list-item-content>
                         <v-list-item-action>
                             <v-btn icon>
@@ -113,10 +113,11 @@
 </template>
 
 <script>
-import { getProjects, addProject, deleteProject } from '@/api/project'
+import { getProjects, addProject, deleteProject, getOperationRecord } from '@/api/project'
 export default {
     mounted() {
         this.getProjects()
+        this.getOperationRecord()
     },
     data() {
         return {
@@ -152,6 +153,9 @@ export default {
                     status: 0
                 }
             ],
+            records: [],
+            recordColors: ['#FF80AB', '#64B5F6', 'grey'],
+            icons: ['mdi-file-document-edit-outline', 'mdi-content-save-outline', 'mdi-delete'],
             projects: [],
             colors: [
                 'red',
@@ -200,6 +204,7 @@ export default {
             await addProject({ createUser: this.$route.params.id, ...this.addProjectForm })
             this.closeAddDialog()
             this.getProjects()
+            this.getOperationRecord()
         },
         confirmDeleteProject() {
             this.deleteConfirmDialogVisible = true
@@ -208,11 +213,15 @@ export default {
             })
         },
         async deleteProject(id) {
-            console.log(id)
             await this.confirmDeleteProject()
             await deleteProject({ id })
             this.getProjects()
             this.deleteConfirmDialogVisible = false
+            this.getOperationRecord()
+        },
+        async getOperationRecord() {
+            const { data } = await getOperationRecord()
+            this.records = data.reverse().slice(0, 5)
         }
     }
 }
