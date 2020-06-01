@@ -226,7 +226,11 @@ export default {
                 ellipse: 'mdi-checkbox-blank-circle-outline',
                 line: 'mdi-vector-line',
                 container: 'mdi-package-variant',
-                text: 'mdi-format-text'
+                text: 'mdi-format-text',
+                star: 'mdi-star',
+                heart: 'mdi-cards-heart',
+                triangle: 'mdi-triangle',
+                polygon: 'mdi-shape-polygon-plus'
             },
             pagesExpand: [],
             menuVisible: false,

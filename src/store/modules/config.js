@@ -76,6 +76,22 @@ const state = {
         input: {
             text: '输入框',
             count: 0
+        },
+        star: {
+            text: '星形',
+            count: 0
+        },
+        heart: {
+            text: '心形',
+            count: 0
+        },
+        triangle: {
+            text: '三角形',
+            count: 0
+        },
+        polygon: {
+            text: '多边形',
+            count: 0
         }
     },
     hasChildrenTypes: ['page', 'group', 'container'],

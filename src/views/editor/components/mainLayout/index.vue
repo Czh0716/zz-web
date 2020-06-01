@@ -158,6 +158,10 @@ export default {
                     return h('img', { ...element.data, ...events })
                 } else if (element.type === 'input') {
                     return h('input', { ...element.data, ...events })
+                } else if (['star', 'heart', 'triangle', 'polygon'].includes(element.type)) {
+                    return h('svg', { ...element.data, ...events }, [
+                        h('path', { ...element.subData })
+                    ])
                 }
             })
         }

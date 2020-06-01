@@ -84,6 +84,16 @@ export default {
                         icon: 'mdi-cards-heart',
                         title: '心形'
                     },
+                    {
+                        action: 'create-triangle',
+                        icon: 'mdi-triangle',
+                        title: '三角形'
+                    },
+                    {
+                        action: 'create-polygon',
+                        icon: 'mdi-shape-polygon-plus',
+                        title: '多边形'
+                    },
                     { action: 'create-line', icon: 'mdi-vector-line', title: '线' }
                 ]
             ]

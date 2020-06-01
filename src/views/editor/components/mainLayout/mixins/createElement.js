@@ -9,6 +9,15 @@ export default {
             const tag = isShape ? this.subAction : 'div'
             const type = this.subAction
             const nameMap = this.elementNameMap[this.subAction]
+            const specialShape = {
+                star:
+                    'M50 0L64.6946 29.7746L97.5528 34.5492L73.7764 57.7254L79.3893 90.4509L50 75L20.6107 90.4508L26.2236 57.7254L2.44718 34.5491L35.3054 29.7746L50 0Z',
+                triangle: 'M50 0L100 100L0 100L50 0Z',
+                polygon:
+                    'M20.6107 90.4508L2.44718 34.5491L50 0L97.5528 34.5491L79.3893 90.4509L20.6107 90.4508Z',
+                heart:
+                    'M94.63,40.56,82.43,56.77,49.71,100.09,17,56.77,4.78,40.56A24.78,24.78,0,0,1,10.57,5a27.09,27.09,0,0,1,37,5.58l2.16,2.79,2.09-2.79A27.09,27.09,0,0,1,88.78,5,24.84,24.84,0,0,1,94.63,40.56Z'
+            }
             const initOption = {
                 name: nameMap ? `${nameMap.text}${nameMap.count}` : '未命名',
                 tag,
@@ -28,17 +37,28 @@ export default {
                         opacity: 0.4,
                         filter: '',
                         transform: 'translate3d(0,0,0)',
-                        ...(isShape ? { fill: this.primaryElBGC } : {}),
+                        ...(isShape || specialShape[this.subAction]
+                            ? { fill: this.primaryElBGC }
+                            : {}),
                         ...(type === 'container'
                             ? { border: '1px dashed grey' }
                             : {}),
                         backgroundColor: 'rgba(255,255,255,0)'
                     },
                     attrs: {
-                        'data-type': type
+                        'data-type': type,
+                        ...(specialShape[this.subAction]
+                            ? { viewBox: '0 0 100 100' }
+                            : {})
                     }
                 },
-                subData: { attrs: {} },
+                subData: {
+                    attrs: {
+                        ...(specialShape[this.subAction]
+                            ? { d: specialShape[this.subAction] }
+                            : {})
+                    }
+                },
                 startPosition: {
                     clientX,
                     clientY,
