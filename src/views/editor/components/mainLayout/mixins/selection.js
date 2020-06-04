@@ -26,6 +26,9 @@ export default {
                 }
             }
         },
-        onElementMouseUp() {}
+        onElementMouseUp(e, id) {
+            this.$store.commit('config/SET_CURRENT_ELEMENT', id)
+            this.initOutlined()
+        }
     }
 }

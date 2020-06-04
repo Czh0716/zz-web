@@ -10,7 +10,8 @@ export default {
             resizeOrigin: [],
             outlinedStyle: {},
             outlinedStyleCopy: {}, //缓存一开始的数据 并不是实时的，用于计算拖拽,
-            elementOrigin: []
+            elementOrigin: [],
+            preventOutlinedEvent: false
         }
     },
     methods: {
@@ -155,7 +156,13 @@ export default {
                     class: {
                         'line-active': activeEl.type === 'line'
                     },
-                    style: { ...this.outlinedStyle, ...expandStyle },
+                    style: {
+                        ...this.outlinedStyle,
+                        ...expandStyle,
+                        'pointer-events': this.preventOutlinedEvent
+                            ? 'none'
+                            : 'auto'
+                    },
                     on: {
                         mousedown: this.onOutlinedMouseDown,
                         mouseup: this.onOutlinedMouseUp
@@ -168,6 +175,7 @@ export default {
             const active = this.activeElement
             if (!active) return
             if (active.type === 'page') return this.resizeOutlined()
+            this.preventOutlinedEvent = false
             this.hideTextEditor = !(active.type === 'text')
             this.hideOutlined = false
             this.hideOutlinedResize = hideResize || active.lock
@@ -183,6 +191,7 @@ export default {
         onOutlinedMouseDown(e) {
             const MOUSE_KEY = e.button
             this.initOutlined()
+
             if (MOUSE_KEY === 2) {
                 if (this.action.includes('selection')) {
                     this.menuVisibility = false
@@ -194,6 +203,7 @@ export default {
             } else {
                 if (this.action.includes('selection')) {
                     this.clutched = true
+                    this.preventOutlinedEvent = true
                 }
             }
         },

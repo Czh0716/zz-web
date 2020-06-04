@@ -60,6 +60,10 @@
                 ></v-file-input>
             </v-col>
         </v-row>
+        <div class="test">
+            <div class="box-1" @mouseup="log('1')"></div>
+            <div class="box-2" @mouseup="prevent"></div>
+        </div>
     </div>
 </template>
 
@@ -73,6 +77,12 @@ export default {
         }
     },
     methods: {
+        log(v) {
+            console.log(v)
+        },
+        prevent(e) {
+            e.target.style.pointerEvents = 'none'
+        },
         removeUnit(value) {
             if (!value) return ''
             const str = String(value)
@@ -99,5 +109,18 @@ export default {
 <style lang="less" scoped>
 .page-attrs {
     position: relative;
+    .box-1,
+    .box-2 {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background-color: pink;
+        left: 0;
+    }
+
+    .box-2 {
+        background-color: skyblue;
+        left: 20px;
+    }
 }
 </style>

@@ -62,6 +62,7 @@ export default {
             if (action.includes('create')) {
                 this.stretchElement(e)
             } else if (action.includes('selection')) {
+                this.preventOutlinedEvent = false
                 this.clutched && this.dragElement(e)
             } else if (action.includes('resize')) {
                 this.stretchElement(e, true)
