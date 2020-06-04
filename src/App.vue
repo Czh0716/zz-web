@@ -7,9 +7,12 @@
 <script>
 export default {
     name: 'App',
-
     data: () => ({
-        //
-    })
+        a: {
+            b: 1
+        }
+    }),
+    mounted() {},
+    methods: {}
 }
 </script>

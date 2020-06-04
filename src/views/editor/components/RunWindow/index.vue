@@ -54,7 +54,9 @@ export default {
     },
     render() {
         const page = this.activePage
-        return   <div class="run-window" style={page.style}>{this.genLayoutElements(page.children)}</div>
+        return  <div class="run-window">
+                   <div style={page.style}>{this.genLayoutElements(page.children)}</div>
+                </div>
     }
 }
 </script>

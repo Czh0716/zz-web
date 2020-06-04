@@ -168,7 +168,7 @@ export default {
             const active = this.activeElement
             if (!active) return
             if (active.type === 'page') return this.resizeOutlined()
-            if (active.type === 'text') this.hideTextEditor = false
+            this.hideTextEditor = !(active.type === 'text')
             this.hideOutlined = false
             this.hideOutlinedResize = hideResize || active.lock
             this.outlinedStyle = active.data.style

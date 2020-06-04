@@ -94,7 +94,14 @@
 
 <script>
 import { register, login } from '@/api/user'
+
 export default {
+    props: {
+        value: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             isLogin: true,
@@ -134,6 +141,31 @@ export default {
                 this.registerSnack = true
             } finally {
                 this.loading = false
+            }
+        },
+        async test() {
+            let arr = [
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        reject('hah')
+                    }, 5000)
+                }),
+                new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve()
+                    }, 1000)
+                }),
+                new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve()
+                    }, 1000)
+                })
+            ]
+            for (let i = 0; i < arr.length; i++) {
+                try {
+                    await arr[i]
+                    console.log('test')
+                } catch (err) {}
             }
         }
     }
