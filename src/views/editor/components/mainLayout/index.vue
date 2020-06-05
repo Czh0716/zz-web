@@ -62,7 +62,11 @@ export default {
             if (action.includes('create')) {
                 this.stretchElement(e)
             } else if (action.includes('selection')) {
-                this.preventOutlinedEvent = false
+                if (this.preventOutlinedEvent) {
+                    const diff = performance.now() - Number(this.$refs.outlined.dataset.activated)
+                    if (diff < 100) return
+                    this.preventOutlinedEvent = false
+                }
                 this.clutched && this.dragElement(e)
             } else if (action.includes('resize')) {
                 this.stretchElement(e, true)
@@ -238,6 +242,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@tips-color: #ef5350;
 .work-area {
     width: 100%;
     height: 100%;
@@ -257,7 +262,12 @@ export default {
         justify-content: center;
     }
 }
-
+.layout__element {
+    &:hover {
+        cursor: pointer;
+        outline: 1px solid @tips-color;
+    }
+}
 .global-upload {
     display: none;
 }

@@ -147,7 +147,6 @@ export default {
 
                 children.push(...resizeEls, textEditor, rotationEl)
             }
-
             return h(
                 'div',
                 {
@@ -175,6 +174,7 @@ export default {
             const active = this.activeElement
             if (!active) return
             if (active.type === 'page') return this.resizeOutlined()
+
             this.preventOutlinedEvent = false
             this.hideTextEditor = !(active.type === 'text')
             this.hideOutlined = false
@@ -190,8 +190,8 @@ export default {
         },
         onOutlinedMouseDown(e) {
             const MOUSE_KEY = e.button
+            e.target.dataset.activated = String(performance.now())
             this.initOutlined()
-
             if (MOUSE_KEY === 2) {
                 if (this.action.includes('selection')) {
                     this.menuVisibility = false

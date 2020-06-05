@@ -61,6 +61,8 @@
             </v-col>
         </v-row>
         <div class="test">
+            h
+            <span>asd</span>
             <div class="box-1" @mouseup="log('1')"></div>
             <div class="box-2" @mouseup="prevent"></div>
         </div>
