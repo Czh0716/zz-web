@@ -11,7 +11,10 @@ export default {
             outlinedStyle: {},
             outlinedStyleCopy: {}, //缓存一开始的数据 并不是实时的，用于计算拖拽,
             elementOrigin: [],
-            preventOutlinedEvent: false
+            preventOutlinedEvent: false,
+            lineMap: {
+                xl: false
+            }
         }
     },
     methods: {
@@ -96,7 +99,8 @@ export default {
                               }
                           })
                       })
-
+                const xPosMap = { '0': 'xl', '50%': 'xc', '100%': 'xr' }
+                const yPosMap = { '0': 'yt', '50%': 'yc', '100%': 'yb' }
                 const compareLineEls = ['0', '50%', '100%'].reduce(
                     (acc, item) => {
                         for (let i = 0; i < 2; i++) {
@@ -107,7 +111,9 @@ export default {
                                 width: '0',
                                 position: 'absolute',
                                 borderLeft: '1px dashed black',
-                                display: 'none'
+                                visibility: this.lineMap[xPosMap[item]]
+                                    ? 'visible'
+                                    : 'hidden'
                             }
                             acc.push(h('div', { style }))
                         }
@@ -119,7 +125,9 @@ export default {
                                 height: '0',
                                 position: 'absolute',
                                 borderTop: '1px dashed black',
-                                display: 'none'
+                                visibility: this.lineMap[yPosMap[item]]
+                                    ? 'visible'
+                                    : 'hidden'
                             }
                             acc.push(h('div', { style }))
                         }
@@ -256,7 +264,35 @@ export default {
                 yc = top + height / 2,
                 yb = top + height
 
-            this.flatGather.forEach(item => {})
+            this.flatGather.forEach(item => {
+                if (item.id === this.activeElement.id) return
+                this.lineMap = {
+                    xl:
+                        Math.abs(xl - item.xl) < 3 ||
+                        Math.abs(xl - item.xc) < 3 ||
+                        Math.abs(xl - item.xr) < 3,
+                    xc:
+                        Math.abs(xc - item.xl) < 3 ||
+                        Math.abs(xc - item.xc) < 3 ||
+                        Math.abs(xc - item.xr) < 3,
+                    xr:
+                        Math.abs(xr - item.xl) < 3 ||
+                        Math.abs(xr - item.xc) < 3 ||
+                        Math.abs(xr - item.xr) < 3,
+                    yt:
+                        Math.abs(yt - item.yt) < 3 ||
+                        Math.abs(yt - item.yc) < 3 ||
+                        Math.abs(yt - item.yb) < 3,
+                    yc:
+                        Math.abs(yc - item.yt) < 3 ||
+                        Math.abs(yc - item.yc) < 3 ||
+                        Math.abs(yc - item.yb) < 3,
+                    yb:
+                        Math.abs(yb - item.yt) < 3 ||
+                        Math.abs(yb - item.yc) < 3 ||
+                        Math.abs(yb - item.yb) < 3
+                }
+            })
         },
         dragElement(e) {
             if (this.activeElement.lock) return
