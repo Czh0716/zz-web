@@ -110,7 +110,7 @@ export default {
                                 height: '120%',
                                 width: '0',
                                 position: 'absolute',
-                                borderLeft: '1px dashed black',
+                                borderLeft: '1px dashed #ef5350',
                                 visibility: this.lineMap[xPosMap[item]]
                                     ? 'visible'
                                     : 'hidden'
@@ -124,7 +124,7 @@ export default {
                                 width: '120%',
                                 height: '0',
                                 position: 'absolute',
-                                borderTop: '1px dashed black',
+                                borderTop: '1px dashed #ef5350',
                                 visibility: this.lineMap[yPosMap[item]]
                                     ? 'visible'
                                     : 'hidden'
@@ -264,35 +264,44 @@ export default {
                 yc = top + height / 2,
                 yb = top + height
 
+            let obj = {}
             this.flatGather.forEach(item => {
                 if (item.id === this.activeElement.id) return
-                this.lineMap = {
+
+                obj = {
                     xl:
+                        obj.xl ||
                         Math.abs(xl - item.xl) < 3 ||
                         Math.abs(xl - item.xc) < 3 ||
                         Math.abs(xl - item.xr) < 3,
                     xc:
+                        obj.xc ||
                         Math.abs(xc - item.xl) < 3 ||
                         Math.abs(xc - item.xc) < 3 ||
                         Math.abs(xc - item.xr) < 3,
                     xr:
+                        obj.xr ||
                         Math.abs(xr - item.xl) < 3 ||
                         Math.abs(xr - item.xc) < 3 ||
                         Math.abs(xr - item.xr) < 3,
                     yt:
+                        obj.yt ||
                         Math.abs(yt - item.yt) < 3 ||
                         Math.abs(yt - item.yc) < 3 ||
                         Math.abs(yt - item.yb) < 3,
                     yc:
+                        obj.yc ||
                         Math.abs(yc - item.yt) < 3 ||
                         Math.abs(yc - item.yc) < 3 ||
                         Math.abs(yc - item.yb) < 3,
                     yb:
+                        obj.yb ||
                         Math.abs(yb - item.yt) < 3 ||
                         Math.abs(yb - item.yc) < 3 ||
                         Math.abs(yb - item.yb) < 3
                 }
             })
+            this.lineMap = obj
         },
         dragElement(e) {
             if (this.activeElement.lock) return
