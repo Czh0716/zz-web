@@ -59,12 +59,7 @@ export default {
                             : {})
                     }
                 },
-                startPosition: {
-                    clientX,
-                    clientY,
-                    localX,
-                    localY
-                },
+                position: {},
                 children: [],
                 events: {},
                 visible: true,

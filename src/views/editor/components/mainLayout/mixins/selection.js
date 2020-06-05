@@ -27,9 +27,10 @@ export default {
             }
         },
         onElementMouseUp(e, id) {
-            console.log('hh')
-            this.$store.commit('config/SET_CURRENT_ELEMENT', id)
-            this.initOutlined()
+            if (this.action.includes('selection')) {
+                this.$store.commit('config/SET_CURRENT_ELEMENT', id)
+                this.initOutlined()
+            }
         }
     }
 }

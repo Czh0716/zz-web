@@ -1,5 +1,5 @@
 import { VIcon } from 'vuetify/lib'
-
+import { removeUnit } from '@/util/tool.js'
 export default {
     data() {
         return {
@@ -97,6 +97,37 @@ export default {
                           })
                       })
 
+                const compareLineEls = ['0', '50%', '100%'].reduce(
+                    (acc, item) => {
+                        for (let i = 0; i < 2; i++) {
+                            const style = {
+                                left: item,
+                                ...(i ? { top: 0 } : { bottom: 0 }),
+                                height: '120%',
+                                width: '0',
+                                position: 'absolute',
+                                borderLeft: '1px dashed black',
+                                display: 'none'
+                            }
+                            acc.push(h('div', { style }))
+                        }
+                        for (let i = 0; i < 2; i++) {
+                            const style = {
+                                top: item,
+                                ...(i ? { left: 0 } : { right: 0 }),
+                                width: '120%',
+                                height: '0',
+                                position: 'absolute',
+                                borderTop: '1px dashed black',
+                                display: 'none'
+                            }
+                            acc.push(h('div', { style }))
+                        }
+
+                        return acc
+                    },
+                    []
+                )
                 const rotationEl = this.hideOutlinedResize
                     ? []
                     : h(
@@ -145,7 +176,12 @@ export default {
                           }
                       })
 
-                children.push(...resizeEls, textEditor, rotationEl)
+                children.push(
+                    ...resizeEls,
+                    ...compareLineEls,
+                    textEditor,
+                    rotationEl
+                )
             }
             return h(
                 'div',
@@ -175,7 +211,7 @@ export default {
             if (!active) return
             if (active.type === 'page') return this.resizeOutlined()
 
-            this.preventOutlinedEvent = false
+            this.preventOutlinedEvent = true
             this.hideTextEditor = !(active.type === 'text')
             this.hideOutlined = false
             this.hideOutlinedResize = hideResize || active.lock
@@ -208,6 +244,20 @@ export default {
             }
         },
         onOutlinedMouseUp() {},
+        comparePosition() {
+            const { left, top, width, height } = removeUnit(
+                this.activeElement.data.style,
+                true
+            )
+            const xl = left,
+                xc = left + width / 2,
+                xr = left + width,
+                yt = top,
+                yc = top + height / 2,
+                yb = top + height
+
+            this.flatGather.forEach(item => {})
+        },
         dragElement(e) {
             if (this.activeElement.lock) return
 
@@ -219,7 +269,10 @@ export default {
 
             this.outlinedStyle.left = `${startLeft + offsetX}px`
             this.outlinedStyle.top = `${startTop + offsetY}px`
+
+            this.comparePosition()
         },
+
         rotationElement(e) {
             const [centerX, centerY] = this.elementOrigin
             let end =

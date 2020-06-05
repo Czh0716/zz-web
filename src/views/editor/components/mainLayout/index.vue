@@ -33,7 +33,8 @@ export default {
             'activeElement',
             'overflowHidden',
             'workAreaBGC',
-            'primaryElBGC'
+            'primaryElBGC',
+            'flatGather'
         ])
     },
     methods: {
@@ -62,9 +63,10 @@ export default {
             if (action.includes('create')) {
                 this.stretchElement(e)
             } else if (action.includes('selection')) {
-                if (this.preventOutlinedEvent) {
+                if (this.preventOutlinedEvent && this.clutched) {
                     const diff = performance.now() - Number(this.$refs.outlined.dataset.activated)
                     if (diff < 100) return
+
                     this.preventOutlinedEvent = false
                 }
                 this.clutched && this.dragElement(e)
@@ -80,13 +82,16 @@ export default {
             if (action.includes('create')) {
                 this.completeCreation()
                 this.$store.commit('config/SET_CONFIG_RECORD')
+                this.$store.commit('config/SET_POSITION')
             } else if (action.includes('resize')) {
                 this.$store.commit('config/SET_CONFIG_RECORD')
+                this.$store.commit('config/SET_POSITION')
                 this.changeAction('selection')
             } else if (action.includes('selection')) {
                 if (this.clutched) {
                     this.clutched = false
                     this.$store.commit('config/SET_CONFIG_RECORD')
+                    this.$store.commit('config/SET_POSITION')
                 }
             } else if (action.includes('rotation')) {
                 this.changeAction('selection')
@@ -274,6 +279,11 @@ export default {
 
 [class*='create'] {
     cursor: crosshair;
+    .layout__element {
+        &:hover {
+            cursor: crosshair;
+        }
+    }
 }
 .page__content {
     position: relative;

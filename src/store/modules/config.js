@@ -39,6 +39,30 @@ function resetAllId(arr) {
     })
 }
 
+function getRealVal(obj, key) {
+    if (!key) return obj
+
+    if (key.includes('.')) {
+        key = key.split('.')
+        key.forEach(key => (obj = obj[key]))
+    } else {
+        obj = obj[key]
+    }
+    return obj
+}
+
+function flattenArr(arr, key) {
+    const flatArr = arr.reduce((gather, item) => {
+        const childrenLength = item.children.length
+        return gather.concat(
+            getRealVal(item, key),
+            childrenLength ? flattenArr(item.children) : []
+        )
+    }, [])
+
+    return flatArr
+}
+
 const state = {
     projectInfo: null,
     configRecord: [],
@@ -97,7 +121,8 @@ const state = {
     hasChildrenTypes: ['page', 'group', 'container'],
     overflowHidden: false,
     workAreaBGC: 'rgba(250,250,250,1)',
-    primaryElBGC: 'rgba(136, 222, 255,1)'
+    primaryElBGC: 'rgba(136, 222, 255,1)',
+    flatGather: []
 }
 
 const mutations = {
@@ -366,6 +391,24 @@ const mutations = {
     },
     SET_PRIMARYEL_BGC(state, color) {
         state.primaryElBGC = color
+    },
+    SET_POSITION(state) {
+        let { left, top, width, height } = removeUnit(
+            state.activeElement.data.style,
+            true
+        )
+
+        state.activeElement.position = {
+            xl: left,
+            xc: left + width / 2,
+            xr: left + width,
+            yt: top,
+            yc: top + height / 2,
+            yb: top + height,
+            id: state.activeElement.id
+        }
+
+        state.flatGather = flattenArr(state.activePage.children, 'position')
     }
 }
 

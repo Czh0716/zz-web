@@ -21,10 +21,11 @@ export function getElementById(arr, id, forMove = false) {
     }
 }
 
-export function removeUnit(target) {
+export function removeUnit(target, parseInt) {
     const obj = {}
     Object.keys(target).forEach(key => {
-        obj[key] = String(target[key]).replace(/px/g, '')
+        const value = String(target[key]).replace(/px/g, '')
+        obj[key] = parseInt ? +value : value
     })
     return obj
 }
