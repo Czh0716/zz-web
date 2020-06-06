@@ -253,6 +253,9 @@ export default {
     height: 100%;
     position: relative;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .content {
         // position: absolute;
         // transition: 0.2s;
@@ -265,6 +268,9 @@ export default {
         // }
         display: flex;
         justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
     }
 }
 .layout__element {
@@ -285,10 +291,10 @@ export default {
         }
     }
 }
+
 .page__content {
     position: relative;
     width: 100%;
-    margin: 0 auto;
     box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.05);
 
     .auxiliary-outlined {

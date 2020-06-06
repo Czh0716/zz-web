@@ -65,6 +65,7 @@ function flattenArr(arr, key) {
 
 const state = {
     projectInfo: null,
+    projectType: 0,
     configRecord: [],
     currentRecordIndex: -1,
     pages: [],
