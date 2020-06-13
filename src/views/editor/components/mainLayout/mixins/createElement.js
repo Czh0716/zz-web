@@ -174,7 +174,7 @@ export default {
                 }
                 this.$set(element.subData, 'attrs', attrs)
             }
-            this.comparePosition()
+            // this.comparePosition()
         },
         completeCreation() {
             this.initOutlined()

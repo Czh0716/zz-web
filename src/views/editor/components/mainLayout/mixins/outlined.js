@@ -1,5 +1,5 @@
 import { VIcon } from 'vuetify/lib'
-import { removeUnit } from '@/util/tool.js'
+import { removeUnit, createGetMinDiff } from '@/util/tool.js'
 export default {
     data() {
         return {
@@ -266,44 +266,35 @@ export default {
 
             let obj = {}
             const posMap = this.positionMap
+            const getMinDiff = createGetMinDiff(5)
             Object.keys(posMap).forEach(key => {
                 const item = posMap[key]
 
                 if (key === this.activeElement.id) return
-
+                const xGather = [item.xl, item.xc, item.xr]
+                const yGather = [item.yt, item.yc, item.yb]
                 obj = {
-                    xl:
-                        obj.xl ||
-                        Math.abs(xl - item.xl) < 3 ||
-                        Math.abs(xl - item.xc) < 3 ||
-                        Math.abs(xl - item.xr) < 3,
-                    xc:
-                        obj.xc ||
-                        Math.abs(xc - item.xl) < 3 ||
-                        Math.abs(xc - item.xc) < 3 ||
-                        Math.abs(xc - item.xr) < 3,
-                    xr:
-                        obj.xr ||
-                        Math.abs(xr - item.xl) < 3 ||
-                        Math.abs(xr - item.xc) < 3 ||
-                        Math.abs(xr - item.xr) < 3,
-                    yt:
-                        obj.yt ||
-                        Math.abs(yt - item.yt) < 3 ||
-                        Math.abs(yt - item.yc) < 3 ||
-                        Math.abs(yt - item.yb) < 3,
-                    yc:
-                        obj.yc ||
-                        Math.abs(yc - item.yt) < 3 ||
-                        Math.abs(yc - item.yc) < 3 ||
-                        Math.abs(yc - item.yb) < 3,
-                    yb:
-                        obj.yb ||
-                        Math.abs(yb - item.yt) < 3 ||
-                        Math.abs(yb - item.yc) < 3 ||
-                        Math.abs(yb - item.yb) < 3
+                    xl: obj.xl || getMinDiff(xGather, xl),
+                    xc: obj.xc || getMinDiff(xGather, xc),
+                    xr: obj.xr || getMinDiff(xGather, xr),
+                    yt: obj.yt || getMinDiff(yGather, yt),
+                    yc: obj.yc || getMinDiff(yGather, yc),
+                    yb: obj.yb || getMinDiff(yGather, yb)
                 }
             })
+            console.log(obj)
+
+            Object.keys(obj).forEach(key => {
+                if (!obj[key]) return
+                if (key.includes('x')) {
+                    const startLeft = +this.outlinedStyle.left.replace('px', '')
+                    this.outlinedStyle.left = `${startLeft - obj[key]}px`
+                } else {
+                    const startTop = +this.outlinedStyle.top.replace('px', '')
+                    this.outlinedStyle.top = `${startTop - obj[key]}px`
+                }
+            })
+
             this.lineMap = obj
         },
         dragElement(e) {

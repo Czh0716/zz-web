@@ -123,7 +123,9 @@ const state = {
     overflowHidden: false,
     workAreaBGC: 'rgba(250,250,250,1)',
     primaryElBGC: 'rgba(136, 222, 255,1)',
-    positionMap: {}
+    positionMap: {
+        0: { xl: 0, xc: 375 / 2, xr: 375, yt: 0, yc: 300, yb: 600 }
+    }
 }
 
 const mutations = {
