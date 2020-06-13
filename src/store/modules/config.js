@@ -123,7 +123,7 @@ const state = {
     overflowHidden: false,
     workAreaBGC: 'rgba(250,250,250,1)',
     primaryElBGC: 'rgba(136, 222, 255,1)',
-    flatGather: []
+    positionMap: {}
 }
 
 const mutations = {
@@ -398,8 +398,7 @@ const mutations = {
             state.activeElement.data.style,
             true
         )
-
-        state.activeElement.position = {
+        const obj = {
             xl: left,
             xc: left + width / 2,
             xr: left + width,
@@ -409,7 +408,9 @@ const mutations = {
             id: state.activeElement.id
         }
 
-        state.flatGather = flattenArr(state.activePage.children, 'position')
+        state.activeElement.position = obj
+
+        state.positionMap[state.activeElement.id] = obj
     }
 }
 

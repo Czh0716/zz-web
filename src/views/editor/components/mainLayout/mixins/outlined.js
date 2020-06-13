@@ -265,8 +265,11 @@ export default {
                 yb = top + height
 
             let obj = {}
-            this.flatGather.forEach(item => {
-                if (item.id === this.activeElement.id) return
+            const posMap = this.positionMap
+            Object.keys(posMap).forEach(key => {
+                const item = posMap[key]
+
+                if (key === this.activeElement.id) return
 
                 obj = {
                     xl:

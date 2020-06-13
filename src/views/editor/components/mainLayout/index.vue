@@ -34,7 +34,7 @@ export default {
             'overflowHidden',
             'workAreaBGC',
             'primaryElBGC',
-            'flatGather'
+            'positionMap'
         ])
     },
     methods: {

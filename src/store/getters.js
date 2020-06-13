@@ -18,6 +18,6 @@ const getters = {
     overflowHidden: state => state.config.overflowHidden,
     workAreaBGC: state => state.config.workAreaBGC,
     primaryElBGC: state => state.config.primaryElBGC,
-    flatGather: state => state.config.flatGather
+    positionMap: state => state.config.positionMap
 }
 export default getters
