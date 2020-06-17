@@ -1,5 +1,6 @@
 import { VIcon } from 'vuetify/lib'
 import { removeUnit, createGetMinDiff } from '@/util/tool.js'
+
 export default {
     data() {
         return {
@@ -14,7 +15,8 @@ export default {
             preventOutlinedEvent: false,
             lineMap: {
                 xl: false
-            }
+            },
+            compareLines: []
         }
     },
     methods: {
@@ -99,43 +101,44 @@ export default {
                               }
                           })
                       })
-                const xPosMap = { '0': 'xl', '50%': 'xc', '100%': 'xr' }
-                const yPosMap = { '0': 'yt', '50%': 'yc', '100%': 'yb' }
-                const compareLineEls = ['0', '50%', '100%'].reduce(
-                    (acc, item) => {
-                        for (let i = 0; i < 2; i++) {
-                            const style = {
-                                left: item,
-                                ...(i ? { top: 0 } : { bottom: 0 }),
-                                height: '120%',
-                                width: '0',
-                                position: 'absolute',
-                                borderLeft: '1px dashed #ef5350',
-                                visibility: this.lineMap[xPosMap[item]]
-                                    ? 'visible'
-                                    : 'hidden'
-                            }
-                            acc.push(h('div', { style }))
-                        }
-                        for (let i = 0; i < 2; i++) {
-                            const style = {
-                                top: item,
-                                ...(i ? { left: 0 } : { right: 0 }),
-                                width: '120%',
-                                height: '0',
-                                position: 'absolute',
-                                borderTop: '1px dashed #ef5350',
-                                visibility: this.lineMap[yPosMap[item]]
-                                    ? 'visible'
-                                    : 'hidden'
-                            }
-                            acc.push(h('div', { style }))
-                        }
+                // const xPosMap = { '0': 'xl', '50%': 'xc', '100%': 'xr' }
+                // const yPosMap = { '0': 'yt', '50%': 'yc', '100%': 'yb' }
+                // const compareLineEls = ['0', '50%', '100%'].reduce(
+                //     (acc, item) => {
+                //         for (let i = 0; i < 2; i++) {
+                //             const style = {
+                //                 left: item,
+                //                 ...(i ? { top: 0 } : { bottom: 0 }),
+                //                 height: '120%',
+                //                 width: '0',
+                //                 position: 'absolute',
+                //                 borderLeft: '1px dashed #ef5350',
+                //                 visibility:
+                //                     this.lineMap[xPosMap[item]] !== undefined
+                //                         ? 'visible'
+                //                         : 'hidden'
+                //             }
+                //             acc.push(h('div', { style }))
+                //         }
+                //         for (let i = 0; i < 2; i++) {
+                //             const style = {
+                //                 top: item,
+                //                 ...(i ? { left: 0 } : { right: 0 }),
+                //                 width: '120%',
+                //                 height: '0',
+                //                 position: 'absolute',
+                //                 borderTop: '1px dashed #ef5350',
+                //                 visibility: this.lineMap[yPosMap[item]]
+                //                     ? 'visible'
+                //                     : 'hidden'
+                //             }
+                //             acc.push(h('div', { style }))
+                //         }
 
-                        return acc
-                    },
-                    []
-                )
+                //         return acc
+                //     },
+                //     []
+                // )
                 const rotationEl = this.hideOutlinedResize
                     ? []
                     : h(
@@ -184,41 +187,39 @@ export default {
                           }
                       })
 
-                children.push(
-                    ...resizeEls,
-                    ...compareLineEls,
-                    textEditor,
-                    rotationEl
-                )
+                children.push(...resizeEls, textEditor, rotationEl)
             }
-            return h(
-                'div',
-                {
-                    ref: 'outlined',
-                    staticClass: 'auxiliary-outlined',
-                    class: {
-                        'line-active': activeEl.type === 'line'
+            return [
+                h(
+                    'div',
+                    {
+                        ref: 'outlined',
+                        staticClass: 'auxiliary-outlined',
+                        class: {
+                            'line-active': activeEl.type === 'line'
+                        },
+                        style: {
+                            ...this.outlinedStyle,
+                            ...expandStyle,
+                            'pointer-events': this.preventOutlinedEvent
+                                ? 'none'
+                                : 'auto'
+                        },
+                        on: {
+                            mousedown: this.onOutlinedMouseDown,
+                            mouseup: this.onOutlinedMouseUp
+                        }
                     },
-                    style: {
-                        ...this.outlinedStyle,
-                        ...expandStyle,
-                        'pointer-events': this.preventOutlinedEvent
-                            ? 'none'
-                            : 'auto'
-                    },
-                    on: {
-                        mousedown: this.onOutlinedMouseDown,
-                        mouseup: this.onOutlinedMouseUp
-                    }
-                },
-                children
-            )
+                    children
+                ),
+                ...this.compareLines.map(d => h('div', { ...d }))
+            ]
         },
         initOutlined(hideResize = false) {
             const active = this.activeElement
             if (!active) return
             if (active.type === 'page') return this.resizeOutlined()
-
+            this.lineMap = {}
             this.preventOutlinedEvent = true
             this.hideTextEditor = !(active.type === 'text')
             this.hideOutlined = false
@@ -253,49 +254,107 @@ export default {
         },
         onOutlinedMouseUp() {},
         comparePosition() {
-            const { left, top, width, height } = removeUnit(
+            this.compareLines = []
+            let { left, top, width, height } = removeUnit(
                 this.activeElement.data.style,
                 true
             )
-            const xl = left,
-                xc = left + width / 2,
-                xr = left + width,
-                yt = top,
-                yc = top + height / 2,
-                yb = top + height
-
-            let obj = {}
             const posMap = this.positionMap
-            const getMinDiff = createGetMinDiff(5)
+            const curTargetPos = [
+                [left, top],
+                [left + width, top],
+                [left, top + height],
+                [left + width, top + height],
+                [left + width / 2, top + height / 2]
+            ]
+            const MIN_DISTANCE = 5
+
             Object.keys(posMap).forEach(key => {
                 const item = posMap[key]
-
                 if (key === this.activeElement.id) return
-                const xGather = [item.xl, item.xc, item.xr]
-                const yGather = [item.yt, item.yc, item.yb]
-                obj = {
-                    xl: obj.xl || getMinDiff(xGather, xl),
-                    xc: obj.xc || getMinDiff(xGather, xc),
-                    xr: obj.xr || getMinDiff(xGather, xr),
-                    yt: obj.yt || getMinDiff(yGather, yt),
-                    yc: obj.yc || getMinDiff(yGather, yc),
-                    yb: obj.yb || getMinDiff(yGather, yb)
-                }
-            })
-            console.log(obj)
+                curTargetPos.forEach(([x1, y1]) => {
+                    const res = item.find(([x2, y2]) => {
+                        const hDistance = Math.abs(x1 - x2)
+                        const vDistance = Math.abs(y1 - y2)
+                        if (hDistance < MIN_DISTANCE) {
+                            const duplicate = this.compareLines.findIndex(
+                                line => line.style.left === `${x2}px`
+                            )
+                            if (duplicate !== -1) {
+                                // this.compareLines[
+                                //     duplicate
+                                // ].style.height = `${vDistance}px`
+                                return
+                            }
+                            this.compareLines.push({
+                                style: {
+                                    position: 'absolute',
+                                    left: `${x2}px`,
+                                    top: `${y1 > y2 ? y2 : y1}px`,
+                                    height: `${vDistance}px`,
+                                    width: '1px',
+                                    backgroundColor: 'red'
+                                },
+                                attrs: {
+                                    'data-direction': 'v',
+                                    'data-diff': hDistance
+                                }
+                            })
+                        } else if (vDistance < MIN_DISTANCE) {
+                            const duplicate = this.compareLines.findIndex(
+                                line => line.style.top === `${y2}px`
+                            )
+                            if (duplicate !== -1) {
+                                // this.compareLines[
+                                //     duplicate
+                                // ].style.width = `${hDistance}px`
+                                return
+                            }
+                            this.compareLines.push({
+                                style: {
+                                    position: 'absolute',
+                                    left: `${x1 < x2 ? x1 : x2}px`,
+                                    top: `${y2}px`,
+                                    width: `${hDistance}px`,
+                                    height: '1px',
+                                    backgroundColor: 'red'
+                                },
+                                attrs: {
+                                    'data-direction': 'h',
+                                    'data-diff': vDistance
+                                }
+                            })
+                        }
+                    })
 
-            Object.keys(obj).forEach(key => {
-                if (!obj[key]) return
-                if (key.includes('x')) {
+                    if (res) return
+                })
+            })
+            this.compareLines.forEach(line => {
+                if (line.attrs['data-direction'] === 'v') {
                     const startLeft = +this.outlinedStyle.left.replace('px', '')
-                    this.outlinedStyle.left = `${startLeft - obj[key]}px`
+                    this.outlinedStyle.left = `${startLeft -
+                        line.attrs['data-diff']}px`
                 } else {
                     const startTop = +this.outlinedStyle.top.replace('px', '')
-                    this.outlinedStyle.top = `${startTop - obj[key]}px`
+                    this.outlinedStyle.top = `${startTop -
+                        line.attrs['data-diff']}px`
                 }
             })
 
-            this.lineMap = obj
+            // Object.keys(obj).forEach(key => {
+            //     const val = obj[key]
+            //     if (!val) return
+            //     if (key.includes('v')) {
+            //         const startLeft = +this.outlinedStyle.left.replace('px', '')
+            //         this.outlinedStyle.left = `${startLeft - val}px`
+            //     } else {
+            //         const startTop = +this.outlinedStyle.top.replace('px', '')
+            //         this.outlinedStyle.top = `${startTop - val}px`
+            //     }
+            // })
+
+            // this.lineMap = obj
         },
         dragElement(e) {
             if (this.activeElement.lock) return

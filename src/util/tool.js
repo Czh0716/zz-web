@@ -38,15 +38,3 @@ export function resizeChildrenId(arr, parentId) {
         if (children) resizeChildrenId(children, target.id)
     })
 }
-
-export function createGetMinDiff(minDiff) {
-    return function(arr, num) {
-        const target = arr.find(item => {
-            return Math.abs(num - item) < minDiff
-        })
-
-        if (target !== undefined) {
-            return num - target
-        }
-    }
-}

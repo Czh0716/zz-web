@@ -123,9 +123,7 @@ const state = {
     overflowHidden: false,
     workAreaBGC: 'rgba(250,250,250,1)',
     primaryElBGC: 'rgba(136, 222, 255,1)',
-    positionMap: {
-        0: { xl: 0, xc: 375 / 2, xr: 375, yt: 0, yc: 300, yb: 600 }
-    }
+    positionMap: {}
 }
 
 const mutations = {
@@ -401,18 +399,26 @@ const mutations = {
             true
         )
         const obj = {
-            xl: left,
-            xc: left + width / 2,
-            xr: left + width,
-            yt: top,
-            yc: top + height / 2,
-            yb: top + height,
-            id: state.activeElement.id
+            vl: left,
+            vc: left + width / 2,
+            vr: left + width,
+            ht: top,
+            hc: top + height / 2,
+            hb: top + height,
+            id: state.activeElement.id,
+            w: width,
+            h: height
         }
+        const arr = [
+            [left, top],
+            [left + width, top],
+            [left, top + height],
+            [left + width, top + height],
+            [left + width / 2, top + height / 2]
+        ]
 
-        state.activeElement.position = obj
-
-        state.positionMap[state.activeElement.id] = obj
+        state.activeElement.position = arr
+        state.positionMap[state.activeElement.id] = arr
     }
 }
 
